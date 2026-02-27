@@ -1,0 +1,28 @@
+{
+  "" : {
+    "diagnostics" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/Runner-master.dia",
+    "emit-module-dependencies" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/Runner-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/Runner-master-emit-module.dia",
+    "swift-dependencies" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/Runner-master.swiftdeps"
+  },
+  "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/Runner/AppDelegate.swift" : {
+    "const-values" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/AppDelegate.swiftconstvalues",
+    "dependencies" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/AppDelegate.d",
+    "diagnostics" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/AppDelegate.dia",
+    "index-unit-output-path" : "/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/AppDelegate.o",
+    "llvm-bc" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/AppDelegate.bc",
+    "object" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/AppDelegate.o",
+    "swift-dependencies" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/AppDelegate.swiftdeps",
+    "swiftmodule" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/AppDelegate~partial.swiftmodule"
+  },
+  "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/sheraz-ali/Documents/FlutterDev/upwork_projects/portalixmx_resident/ios/build/Runner.build/Debug-iphoneos/Runner.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

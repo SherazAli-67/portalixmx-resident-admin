@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "892365070783",
+    "project_id": "portalixmx-project",
+    "storage_bucket": "portalixmx-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:892365070783:android:5a6f73de0731c44fd3410a",
+        "android_client_info": {
+          "package_name": "com.portalixmx.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA74O1idbvZDvWaTH2F2yFjNnzlabWcr-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
