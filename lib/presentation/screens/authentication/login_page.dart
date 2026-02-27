@@ -1,6 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portalixmx_resident_admin/core/common_ui.dart';
+import 'package:portalixmx_resident_admin/providers/authentication_provider/authentication_provider.dart';
+import 'package:provider/provider.dart';
 import '../../../core/res/app_constants.dart';
 import '../../../core/res/app_textstyles.dart';
 import '../../../l10n/app_localizations.dart';
@@ -29,7 +32,6 @@ class _LoginPageState extends State<LoginPage> {
     _passwordController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +86,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onLoginTap()async{
-    /*
     FocusManager.instance.primaryFocus?.unfocus();
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
@@ -93,52 +94,13 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    setState(()=> _isLogging = true);
-    final authRepo = AuthRepository();
-
-    try {
-      final response = await authRepo.loginUser(email: email, password: password);
-      final responseMap = jsonDecode(response.body);
-      
-      if(responseMap['status']){
-        String token = responseMap['data']['token']!['token'];
-        String userID = responseMap['data']['token']!['userId'];
-        String name = responseMap['data']['token']!['name'];
-        // bool isResidentAdmin = responseMap['data']['token']!['role'] == 'admin';
-        bool isResidentAdmin = true;
-        // Calculate token expiry (24 hours from now)
-        final tokenExpiry = DateTime.now().add(Duration(hours: 24));
-
-        if (mounted) {
-          setState(()=> _isLogging = false);
-          final provider = Provider.of<UserInfoProvider>(context,listen: false);
-          await provider.setUserInfo(
-              token: token,
-              name: name,
-              userID: userID,
-              email: email,
-              isResidentAdmin: isResidentAdmin,
-              expiry: tokenExpiry
-          );
-
-          if (mounted) {
-            context.push(NamedRoutes.verifyOtp.routeName);
-          }
-        }
-      } else {
-        if (mounted) {
-          Fluttertoast.showToast(msg: responseMap['message']);
-        }
-      }
-    } catch(e) {
-      debugPrint("Error while login user: ${e.toString()}");
-      if (mounted) {
-        Fluttertoast.showToast(msg: "Login failed. Please try again.");
+   final isError =  await context.read<AuthenticationProvider>().onLoginTap(email: email, password: password);
+    if(isError != null){
+      CommonUI.showSnackBarMessage(context, isError: true, message: isError);
+    }else{
+      if(mounted){
+        context.go(NamedRoutes.home.routeName);
       }
     }
-    
-    if (mounted) {
-      setState(()=> _isLogging = false);
-    }*/
   }
 }

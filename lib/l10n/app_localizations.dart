@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @residentLogin.
   ///
   /// In en, this message translates to:
-  /// **'Resident Login'**
+  /// **'Resident Admin Login'**
   String get residentLogin;
 
   /// No description provided for @email.
@@ -647,14 +647,20 @@ abstract class AppLocalizations {
   /// No description provided for @createAccount.
   ///
   /// In en, this message translates to:
-  /// **'Create Account'**
+  /// **'Create Admin Account'**
   String get createAccount;
 
   /// No description provided for @createAccountDescription.
   ///
   /// In en, this message translates to:
-  /// **'Create account with Portalixmx and get started with the society management'**
+  /// **'Create Portalixmx resident admin account and get started with the society management'**
   String get createAccountDescription;
+
+  /// No description provided for @selectSociety.
+  ///
+  /// In en, this message translates to:
+  /// **'Select society'**
+  String get selectSociety;
 
   /// No description provided for @alreadyHaveAnAccount.
   ///

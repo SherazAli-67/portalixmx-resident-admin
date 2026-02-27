@@ -12,7 +12,7 @@ class UserService {
   Future<UserModel?> getCurrentUser() async {
     try{
       String currentUID = _auth.currentUser!.uid;
-     final docSnap = await _firestore.collection(FirebaseConst.residentsCol).doc(currentUID).get();
+     final docSnap = await _firestore.collection(FirebaseConst.residentAdminCol).doc(currentUID).get();
      if(docSnap.exists){
        return UserModel.fromMap(docSnap.data()!);
      }

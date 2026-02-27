@@ -1,5 +1,7 @@
 class FirebaseConst {
+  static const residentAdminCol = 'resident-admins';
   static const residentsCol = 'residents';
+  static const societiesCol = 'societies';
   static const visitorsCol = 'visitors';
   static const guestsDirectoryCol = 'guests_directory';
   static const complaintsCol = 'complaints';

@@ -6,11 +6,7 @@ import 'core/res/app_constants.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/authentication_provider/authentication_provider.dart';
-import 'providers/home_provider.dart';
 import 'providers/language_provider.dart';
-import 'providers/maintenance_provider.dart';
-import 'providers/profile_provider.dart';
-import 'providers/user_info_provider.dart';
 import 'router/app_router.dart';
 
 void main()async {
@@ -18,13 +14,9 @@ void main()async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_)=> AuthenticationProvider()),
-      ChangeNotifierProvider(create: (_)=> UserInfoProvider()),
-      ChangeNotifierProvider(create: (_)=> HomeProvider()),
-      ChangeNotifierProvider(create: (_)=> MaintenanceProvider()),
       ChangeNotifierProvider(create: (_)=> LocaledProvider()),
-      // ChangeNotifierProvider(create: (_)=> RequestAccessProvider()),
-      ChangeNotifierProvider(create: (_)=> ProfileProvider()),
+
+      ChangeNotifierProvider(create: (_)=> AuthenticationProvider()),
     ], child: const MyApp(),)
   );
 }

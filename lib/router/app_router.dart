@@ -1,14 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import '../core/models/access_request_model.dart';
-import '../core/models/community_event_model.dart';
 import '../core/models/complaints_model.dart';
 import '../presentation/screens/authentication/create_account_page.dart';
 import '../presentation/screens/authentication/forget_password_page.dart';
 import '../presentation/screens/authentication/login_page.dart';
 import '../presentation/screens/authentication/otp_page.dart';
-import '../presentation/screens/complete_profile_screen/complete_profile_screen.dart';
 import '../presentation/screens/main_menu/access/access_page.dart';
 import '../presentation/screens/main_menu/access/access_summary_page.dart';
 import '../presentation/screens/main_menu/homepage/home_page.dart';
@@ -23,7 +20,6 @@ GoRouter appRouter = GoRouter(
   initialLocation: NamedRoutes.createAccount.routeName,
   routes: [
     GoRoute(path: NamedRoutes.createAccount.routeName, builder: (ctx, state)=> CreateAccountPage()),
-    GoRoute(path: NamedRoutes.completeProfile.routeName, builder: (ctx, state)=> CompleteProfileScreen()),
     GoRoute(path: NamedRoutes.login.routeName, builder: (ctx, state)=> LoginPage()),
       GoRoute(path: NamedRoutes.forgetPassword.routeName, builder: (ctx, state)=> ForgetPasswordPage()),
       StatefulShellRoute.indexedStack(
@@ -54,7 +50,7 @@ GoRouter appRouter = GoRouter(
     GoRoute(path: NamedRoutes.verifyOtp.routeName, builder: (ctx, state)=> VerifyOTPPage()),
 
   ],
-  redirect: (BuildContext context, GoRouterState state) {
+/*  redirect: (BuildContext context, GoRouterState state) {
     final isAuthenticated = FirebaseAuth.instance.currentUser != null;
     final isOnLoginPage = state.matchedLocation == NamedRoutes.login.routeName;
     final isOnSignupPage = state.matchedLocation == NamedRoutes.createAccount.routeName;
@@ -71,7 +67,7 @@ GoRouter appRouter = GoRouter(
     }
 
     return null;
-  },
+  },*/
 );
 
 enum NamedRoutes {
@@ -86,7 +82,6 @@ enum NamedRoutes {
   accessRequestDetail('/access-request-detail'),
   complaintSummary('/complaint-detail'),
   privacyPolicy('/privacy-policy'),
-  completeProfile('/complete-profile'),
   verifyOtp('/verify-otp')
   ;
   final String routeName;

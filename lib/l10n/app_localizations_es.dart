@@ -296,11 +296,14 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get createAccount => 'Create Account';
+  String get createAccount => 'Create Admin Account';
 
   @override
   String get createAccountDescription =>
-      'Create account with Portalixmx and get started with the society management';
+      'Create Portalixmx resident admin account and get started with the society management';
+
+  @override
+  String get selectSociety => 'Select society';
 
   @override
   String get alreadyHaveAnAccount => 'Already have an account? ';

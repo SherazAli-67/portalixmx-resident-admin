@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:portalixmx_resident_admin/core/models/society_model.dart';
 import '../../core/models/user_model.dart';
 import '../../services/auth_service/auth_service.dart';
 
@@ -8,11 +9,16 @@ class AuthenticationProvider extends ChangeNotifier{
   final _authService = AuthService.instance;
 
   bool _isSigningUp = false;
-  bool _isCompletingProfile = false;
+  bool isSigningIn = false;
+  bool loadingSocieties =false;
 
   bool get isSigningUp => _isSigningUp;
-  bool get isCompletingProfile => _isCompletingProfile;
+  List<SocietyModel> societies = [];
+  SocietyModel? selectedSociety;
 
+  AuthenticationProvider(){
+    _initSocieties();
+  }
   void onPickImageTap()async{
     ImagePicker imagPicked = ImagePicker();
     pickedImage = await imagPicked.pickImage(source: .gallery);
@@ -21,13 +27,11 @@ class AuthenticationProvider extends ChangeNotifier{
     }
   }
 
-
-
   Future<String?> onCreateAccountTap({required String email, required String name, required String password})async{
     _isSigningUp = true;
     notifyListeners();
     try{
-      await _authService.signup(name: name, email: email, password: password);
+      await _authService.signup(name: name, email: email, password: password, societyID: selectedSociety!.id);
       return null;
     }catch(e){
       return e.toString();
@@ -37,27 +41,38 @@ class AuthenticationProvider extends ChangeNotifier{
     }
   }
 
-  Future<String?> onCompleteProfileTap({
-    required String phoneNum,
-    required String vehicleName,
-    required String vehicleColor,
-    required String licensePlateNum,
-    required String registrationNum,
-    required String emergencyContact}) async {
-    _isCompletingProfile = true;
+  void _initSocieties() async{
+    try{
+      loadingSocieties = true;
+      notifyListeners();
+     societies = await _authService.getSocieties();
+      loadingSocieties = false;
+      notifyListeners();
+    }catch(e){
+      loadingSocieties = false;
+      notifyListeners();
+      debugPrint("Exception while initializing societies:${e.toString()}");
+    }
+  }
+
+  void onSelectSocietyTap(SocietyModel society){
+    selectedSociety = society;
+    notifyListeners();
+  }
+
+  Future<String?> onLoginTap({required String email, required String password}) async{
+    isSigningIn = true;
     notifyListeners();
     try{
-      UserModel? user = await _authService.getCurrentUser();
-      if(user != null){
-        VehicleInformation vehicleInformation = VehicleInformation(name: vehicleName, color: vehicleColor, registrationNumber: registrationNum, licensePlateNumber: licensePlateNum);
-        final updatedUser = user.copyWith(vehicleInformation: vehicleInformation, emergencyContacts: [emergencyContact]);
-        return await _authService.updateUser(user: updatedUser);
+      bool result = await _authService.signIn(email: email, password: password,);
+      if(!result){
+        return "Account not found!";
       }
       return null;
     }catch(e){
       return e.toString();
     }finally{
-      _isCompletingProfile = false;
+      _isSigningUp = false;
       notifyListeners();
     }
   }

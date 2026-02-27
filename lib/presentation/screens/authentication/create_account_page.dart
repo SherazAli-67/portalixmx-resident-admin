@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portalixmx_resident_admin/core/models/society_model.dart';
+import 'package:portalixmx_resident_admin/presentation/widgets/app_dropdown_widget.dart';
 import 'package:provider/provider.dart';
 import '../../../core/common_ui.dart';
 import '../../../core/res/app_colors.dart';
@@ -91,6 +93,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     AppTextField(title: localization.name, controller: _nameController, hintText: localization.name,),
                     AppTextField(title: localization.email, controller: _emailController, hintText: localization.email,textInputType: TextInputType.emailAddress,),
                     AppTextField(title: localization.password, controller: _passwordController, hintText: localization.password, isPassword: true,),
+                    AppDropdownWidget<SocietyModel>(title: localization.selectSociety, list: _provider.societies, value: _provider.selectedSociety, onChanged: (val)=> _provider.onSelectSocietyTap(val), getTitle: (item) => item.name)
                   ],
                 ),
               ),
@@ -127,7 +130,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     if(isError != null){
       CommonUI.showSnackBarMessage(context, isError: true, message: isError, title: "Signup failed");
     }else{
-      context.push(NamedRoutes.completeProfile.routeName);
+      context.go(NamedRoutes.home.routeName);
     }
   }
 }

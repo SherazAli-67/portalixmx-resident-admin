@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:portalixmx_resident_admin/core/models/society_model.dart';
 import '../../core/models/user_model.dart';
 import '../../core/res/firebase_constant.dart';
 
@@ -9,13 +10,13 @@ class AuthService {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
-  Future<User?> signup({required String name, required String email, required String password})async{
+  Future<User?> signup({required String name, required String email, required String password, required String societyID})async{
     try{
      final userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
      if(userCredential.user != null){
        User authUser = userCredential.user!;
-       UserModel user = UserModel(userID: authUser.uid, userName: name, email: email, createdAt: DateTime.now().toUtc());
-       await _firestore.collection(FirebaseConst.residentsCol).doc(user.userID).set(user.toMap());
+       UserModel user = UserModel(userID: authUser.uid, userName: name, email: email, createdAt: DateTime.now().toUtc(), societyID: societyID);
+       await _firestore.collection(FirebaseConst.residentAdminCol).doc(user.userID).set(user.toMap());
        return authUser;
      }
      return null;
@@ -26,13 +27,18 @@ class AuthService {
     }
   }
 
-  Future<User?> signIn({
+  Future<bool> signIn({
     required String email,
     required String password,
   }) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password,);
-      return userCredential.user;
+      if(userCredential.user != null) {
+        DocumentSnapshot docSnap = await _firestore.collection(
+            FirebaseConst.residentAdminCol).doc(userCredential.user!.uid).get();
+        return docSnap.exists;
+      }
+      return false;
     } on FirebaseAuthException catch (e) {
       throw _handleFirebaseAuthError(e);
     } catch (e) {
@@ -125,6 +131,15 @@ class AuthService {
       String currentUID = FirebaseAuth.instance.currentUser!.uid;
        await _firestore.collection(FirebaseConst.residentsCol).doc(currentUID).set(user.toMap());
        return null;
+    } catch (e) {
+      throw 'Failed to get user: $e';
+    }
+  }
+
+  Future<List<SocietyModel>> getSocieties()async {
+    try{
+      final querySnap = await _firestore.collection(FirebaseConst.societiesCol).get();
+      return querySnap.docs.map((doc)=> SocietyModel.fromMap( doc.data())).toList();
     } catch (e) {
       throw 'Failed to get user: $e';
     }

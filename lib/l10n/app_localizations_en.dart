@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Portalixmx';
 
   @override
-  String get residentLogin => 'Resident Login';
+  String get residentLogin => 'Resident Admin Login';
 
   @override
   String get email => 'Email';
@@ -296,11 +296,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get createAccount => 'Create Account';
+  String get createAccount => 'Create Admin Account';
 
   @override
   String get createAccountDescription =>
-      'Create account with Portalixmx and get started with the society management';
+      'Create Portalixmx resident admin account and get started with the society management';
+
+  @override
+  String get selectSociety => 'Select society';
 
   @override
   String get alreadyHaveAnAccount => 'Already have an account? ';

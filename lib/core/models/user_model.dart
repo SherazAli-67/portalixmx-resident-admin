@@ -6,7 +6,7 @@ class UserModel {
   final DateTime createdAt;
   final String? profileImg;
   final VehicleInformation? vehicleInformation;
-  final String? societyID;
+  final String societyID;
   final List<String> emergencyContacts;
 
   UserModel({
@@ -16,7 +16,7 @@ class UserModel {
     required this.createdAt,
     this.profileImg,
     this.phoneNum,
-    this.societyID,
+    required this.societyID,
     this.vehicleInformation,
     this.emergencyContacts = const [],
   });
