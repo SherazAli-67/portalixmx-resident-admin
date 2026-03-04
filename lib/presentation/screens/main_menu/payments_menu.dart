@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/res/app_colors.dart';
+import 'package:portalixmx_resident_admin/presentation/widgets/filter_tab_widget.dart';
 import '../../../core/res/app_textstyles.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -36,46 +36,6 @@ class _PaymentsMenuState extends State<PaymentsMenu> {
           ),
           Expanded(
             child: Center(child: Text("No payment requests found", style: AppTextStyles.regularTextStyle,),)
-            
-           /* ListView.builder(
-                itemCount: 5,
-                itemBuilder: (ctx, index){
-                  return Container(
-                    margin: .only(bottom: 10),
-                    padding: .symmetric(horizontal: 12, vertical: 15),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: .circular(15)),
-                    child: Row(
-                      spacing: 17,
-                      crossAxisAlignment: .start,
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
-                          child: Center(child: Text("SN", style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor),),),
-                        ),
-                        Expanded(
-                          child: Column(
-                            spacing: 2,
-                            crossAxisAlignment: .start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: .spaceBetween,
-                                children: [
-                                  Text(localization.serviceName, style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor),),
-                                  Text("\$500", style: TextStyle(fontSize: 12, fontWeight: .w700, color: AppColors.btnColor),)
-                                ],
-                              ),
-                              Text("Sep 20, 2024", style: TextStyle(fontSize: 10, fontWeight: .w500, color: AppColors.serviceSubTitleGreyColor),),
-                              const SizedBox(height: 3,),
-                              _buildServiceInfoItemWidget(serviceText: localization.maintenance, serviceCharges: 300),
-                              _buildServiceInfoItemWidget(serviceText: localization.cleaningOfCommonAreas, serviceCharges: 200),
-                              _buildServiceInfoItemWidget(serviceText: localization.garbageCollection, serviceCharges: 100),
-                            ],
-                          ),
-                        )
-                      ],
-                    )
-                  );
-                }),*/
           )
         ],
       ),
@@ -84,9 +44,9 @@ class _PaymentsMenuState extends State<PaymentsMenu> {
 
   Widget _buildServiceTypeTab({required String serviceTypeTitle, required int index}) {
     bool isSelected = index == _selectedServiceTypeIndex;
-    return Expanded(child: ElevatedButton(
-        style: isSelected ? ElevatedButton.styleFrom(backgroundColor: AppColors.btnColor): null,
-        onPressed: ()=> setState(()=>  _selectedServiceTypeIndex = index),
-        child: Text(serviceTypeTitle, style: AppTextStyles.tabsTextStyle.copyWith(color: isSelected ? Colors.white : AppColors.primaryColor),)));
+    return Expanded(
+        child: FilterTabWidget(isSelected: isSelected,
+        onTap: () => setState(() => _selectedServiceTypeIndex = index),
+        title: serviceTypeTitle));
   }
 }

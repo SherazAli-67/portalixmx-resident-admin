@@ -51,4 +51,16 @@ class ComplaintsService {
       throw Exception('Failed to delete complaint: $e');
     }
   }
+
+  Future<int> getCountBySociety(String societyID) async {
+    try {
+      final snapshot = await _getComplaintsCollection
+          .where('societyID', isEqualTo: societyID)
+          .count()
+          .get();
+      return snapshot.count ?? 0;
+    } catch (e) {
+      return 0;
+    }
+  }
 }

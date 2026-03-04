@@ -140,17 +140,47 @@ abstract class AppLocalizations {
   /// **'Welcome {name}'**
   String welcomeMessage(Object name);
 
-  /// No description provided for @regularVisitors.
+  /// No description provided for @dashboard.
   ///
   /// In en, this message translates to:
-  /// **'Regular Visitors'**
-  String get regularVisitors;
+  /// **'Dashboard'**
+  String get dashboard;
 
-  /// No description provided for @guest.
+  /// No description provided for @dashboardDescription.
   ///
   /// In en, this message translates to:
-  /// **'Guest'**
-  String get guest;
+  /// **'Here’s an overview of residents, payments, and requests'**
+  String get dashboardDescription;
+
+  /// No description provided for @totalResidents.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Residents'**
+  String get totalResidents;
+
+  /// No description provided for @acceptedRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted requests'**
+  String get acceptedRequests;
+
+  /// No description provided for @totalPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments'**
+  String get totalPayments;
+
+  /// No description provided for @totalComplaints.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Complaints'**
+  String get totalComplaints;
+
+  /// No description provided for @totalAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Access Requests'**
+  String get totalAccess;
 
   /// No description provided for @accessRequests.
   ///
@@ -158,11 +188,53 @@ abstract class AppLocalizations {
   /// **'Access Requests'**
   String get accessRequests;
 
+  /// No description provided for @residentsOfTheSociety.
+  ///
+  /// In en, this message translates to:
+  /// **'Residents of the {society}'**
+  String residentsOfTheSociety(Object society);
+
   /// No description provided for @poolAccess.
   ///
   /// In en, this message translates to:
   /// **'Pool Access'**
   String get poolAccess;
+
+  /// No description provided for @joinedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined On'**
+  String get joinedOn;
+
+  /// No description provided for @residents.
+  ///
+  /// In en, this message translates to:
+  /// **'Residents'**
+  String get residents;
+
+  /// No description provided for @newRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'New Requests'**
+  String get newRequests;
+
+  /// No description provided for @emptyResidentsMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'The residents of the society will appear here'**
+  String get emptyResidentsMsg;
+
+  /// No description provided for @emptyResidentRequestsMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'The new requests from the residents will appear here'**
+  String get emptyResidentRequestsMsg;
+
+  /// No description provided for @approve.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get approve;
 
   /// No description provided for @add.
   ///
@@ -230,11 +302,11 @@ abstract class AppLocalizations {
   /// **'Menu'**
   String get menu;
 
-  /// No description provided for @regularVisitor.
+  /// No description provided for @guest.
   ///
   /// In en, this message translates to:
-  /// **'Regular Visitor'**
-  String get regularVisitor;
+  /// **'Guest'**
+  String get guest;
 
   /// No description provided for @requestedTime.
   ///

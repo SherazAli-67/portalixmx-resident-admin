@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:portalixmx_resident_admin/providers/home_provider.dart';
 import 'package:provider/provider.dart';
 import 'core/res/app_colors.dart';
 import 'core/res/app_constants.dart';
@@ -14,8 +15,8 @@ void main()async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_)=> HomeProvider()),
       ChangeNotifierProvider(create: (_)=> LocaledProvider()),
-
       ChangeNotifierProvider(create: (_)=> AuthenticationProvider()),
     ], child: const MyApp(),)
   );

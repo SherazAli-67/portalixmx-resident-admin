@@ -1,3 +1,8 @@
+enum UserStatus {
+  pending,   // 0
+  approved,  // 1
+}
+
 class UserModel {
   final String userID;
   final String userName;
@@ -8,6 +13,7 @@ class UserModel {
   final VehicleInformation? vehicleInformation;
   final String societyID;
   final List<String> emergencyContacts;
+  final UserStatus status;
 
   UserModel({
     required this.userID,
@@ -19,6 +25,7 @@ class UserModel {
     required this.societyID,
     this.vehicleInformation,
     this.emergencyContacts = const [],
+    this.status = UserStatus.pending,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,12 +33,13 @@ class UserModel {
       'userID': userID,
       'userName': userName,
       'emailAddress': email,
-      'phoneNum' : phoneNum,
+      'phoneNum': phoneNum,
       'societyID': societyID,
       'createdAt': createdAt.toIso8601String(),
       'profileImg': profileImg,
       'vehicleInformation': vehicleInformation?.toMap(),
       'emergencyContacts': emergencyContacts,
+      'status': status.index, // stored as 0 or 1
     };
   }
 
@@ -40,10 +48,12 @@ class UserModel {
       userID: map['userID'] ?? '',
       userName: map['userName'] ?? '',
       email: map['emailAddress'] ?? '',
-      createdAt: DateTime.parse(map['createdAt']),
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
+          : DateTime.now(),
       profileImg: map['profileImg'],
       phoneNum: map['phoneNum'],
-      societyID: map['societyID'],
+      societyID: map['societyID'] ?? '',
       vehicleInformation: map['vehicleInformation'] != null
           ? VehicleInformation.fromMap(
           Map<String, dynamic>.from(map['vehicleInformation']))
@@ -51,6 +61,10 @@ class UserModel {
       emergencyContacts: map['emergencyContacts'] != null
           ? List<String>.from(map['emergencyContacts'])
           : [],
+      status: (map['status'] != null &&
+          map['status'] < UserStatus.values.length)
+          ? UserStatus.values[map['status']]
+          : UserStatus.pending,
     );
   }
 
@@ -64,6 +78,7 @@ class UserModel {
     String? societyID,
     VehicleInformation? vehicleInformation,
     List<String>? emergencyContacts,
+    UserStatus? status,
   }) {
     return UserModel(
       userID: userID ?? this.userID,
@@ -77,10 +92,10 @@ class UserModel {
       vehicleInformation ?? this.vehicleInformation,
       emergencyContacts:
       emergencyContacts ?? this.emergencyContacts,
+      status: status ?? this.status,
     );
   }
 }
-
 
 class VehicleInformation {
   final String name;

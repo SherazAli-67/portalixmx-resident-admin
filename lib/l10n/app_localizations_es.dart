@@ -32,16 +32,57 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get regularVisitors => 'Visitantes Frecuentes';
+  String get dashboard => 'Dashboard';
 
   @override
-  String get guest => 'Invitado';
+  String get dashboardDescription =>
+      'Here’s an overview of residents, payments, and requests';
+
+  @override
+  String get totalResidents => 'Total Residents';
+
+  @override
+  String get acceptedRequests => 'Accepted requests';
+
+  @override
+  String get totalPayments => 'Payments';
+
+  @override
+  String get totalComplaints => 'Total Complaints';
+
+  @override
+  String get totalAccess => 'Total Access Requests';
 
   @override
   String get accessRequests => 'Solicitudes de Acceso';
 
   @override
+  String residentsOfTheSociety(Object society) {
+    return 'Residents of the $society';
+  }
+
+  @override
   String get poolAccess => 'Acceso a la Piscina';
+
+  @override
+  String get joinedOn => 'Joined On';
+
+  @override
+  String get residents => 'Residents';
+
+  @override
+  String get newRequests => 'New Requests';
+
+  @override
+  String get emptyResidentsMsg =>
+      'The residents of the society will appear here';
+
+  @override
+  String get emptyResidentRequestsMsg =>
+      'The new requests from the residents will appear here';
+
+  @override
+  String get approve => 'Approve';
 
   @override
   String get add => 'Agregar';
@@ -78,7 +119,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get menu => 'Menú';
 
   @override
-  String get regularVisitor => 'Visitante Frecuente';
+  String get guest => 'Invitado';
 
   @override
   String get requestedTime => 'HORA SOLICITADA';

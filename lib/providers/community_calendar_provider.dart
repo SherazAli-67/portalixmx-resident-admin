@@ -37,7 +37,7 @@ class CommunityCalendarProvider extends ChangeNotifier {
         throw Exception('User not found');
       }
 
-      _communityEvents = await _directoryService.initCommunityEvents(user.societyID ?? '1');
+      _communityEvents = await _directoryService.initCommunityEvents(user.societyID );
       loadingCommunityEvents = false;
       notifyListeners();
     } catch (e) {

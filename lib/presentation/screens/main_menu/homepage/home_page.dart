@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:portalixmx_resident_admin/core/res/app_icons.dart';
+import 'package:portalixmx_resident_admin/presentation/widgets/filter_tab_widget.dart';
+import 'package:portalixmx_resident_admin/presentation/widgets/loading_widget.dart';
+import 'package:portalixmx_resident_admin/presentation/widgets/resident_item_widget.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/res/app_colors.dart';
@@ -13,104 +18,161 @@ class HomePage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
-    return ChangeNotifierProvider(
-      create: (_)=> HomeProvider(),
-      builder: (ctx, child){
-        return Stack(
-          children: [
-            Consumer<HomeProvider>(
-              builder: (ctx, provider, child){
-                return Stack(
-                  children: [
-                    SafeArea(
-                      child: Padding(
-                        padding: const .symmetric(horizontal: 16.0, vertical: 20),
-                        child: Column(
-                          spacing: 20,
-                          crossAxisAlignment: .start,
-                          children: [
-                            Column(
-                              children: [
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: PopupMenuButton(
-                                      elevation: 0,
-                                      color: Colors.white,
-                                      position: PopupMenuPosition.under,
-                                      padding: EdgeInsets.zero,
-                                      icon: Icon(Icons.add, color: Colors.white,),
-                                      style: IconButton.styleFrom(backgroundColor: AppColors.btnColor),
-                                      onSelected: (val){
-                                        if(val ==1){
-                                        }else {
-                                        }
-                                      },
-                                      itemBuilder: (ctx){
-                                        return [
-                                          PopupMenuItem(
-                                              value: 1,
-                                              child: Text(localization.addGuest)),
-                                          PopupMenuItem(
-                                              value: 2,
-                                              child: Text(localization.generateAccessCode)),
 
-                                        ];
-                                      }),
-                                  /*      IconButton(
-                                  style: IconButton.styleFrom(backgroundColor: AppColors.btnColor),
-                                  onPressed: provider.onAddGuestTap, icon: Icon(Icons.add_rounded, color: Colors.white,)),*/
-                                ),
-                                FutureBuilder(future: provider.getCurrentUser(), builder: (ctx, snapshot){
-                                  UserModel? user = snapshot.data;
-                                  if(user != null){
-                                    return Row(
-                                      spacing: 10,
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundColor: AppColors.btnColor,
-                                          child: Center(child:  Icon(Icons.person, color: Colors.white,),),
-                                        ),
-                                        Text(localization.welcomeMessage(user.userName), style: AppTextStyles.regularTextStyle,)
-                                      ],
-                                    );
-                                  }
-                                  return Text(localization.welcomeMessage(''), style: AppTextStyles.regularTextStyle,);
-                                }),
-                              ],
-                            ),
-                            Expanded(
-                              child: Column(
+    return Stack(
+      children: [
+        Consumer<HomeProvider>(
+          builder: (ctx, provider, child){
+            return Stack(
+              children: [
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FutureBuilder(future: provider.getCurrentUser(), builder: (ctx, snapshot){
+                                UserModel? user = snapshot.data;
+                                if(user != null){
+                                  return Row(
+                                    spacing: 10,
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundColor: AppColors.btnColor,
+                                        child: Center(child: Icon(Icons.person, color: Colors.white,),),
+                                      ),
+                                      Text(localization.welcomeMessage(user.userName), style: AppTextStyles.regularTextStyle,)
+                                    ],
+                                  );
+                                }
+                                return Text(localization.welcomeMessage(''), style: AppTextStyles.regularTextStyle,);
+                              }),
+                            ],
+                          ),
+                        ),
+                        const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                        SliverToBoxAdapter(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(localization.dashboard, style: AppTextStyles.headingTextStyle.copyWith(fontSize: 20),),
+                              Text(localization.dashboardDescription, style: AppTextStyles.subHeadingTextStyle),
+                            ],
+                          ),
+                        ),
+                        const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                        SliverToBoxAdapter(
+                          child: Column(
+                            spacing: 20,
+                            children: [
+                              Row(
                                 spacing: 20,
                                 children: [
-                                  Row(
-                                    spacing: 20,
-                                    children: [
-                                      ElevatedButton(
-                                          style: ElevatedButton.styleFrom(backgroundColor: provider.selectedTab == 0 ?  AppColors.btnColor : Colors.white),
-                                          onPressed: ()=> provider.onTabChange(0), child: Text(localization.regularVisitors, style: AppTextStyles.tabsTextStyle.copyWith(color: provider.selectedTab == 0 ?  Colors.white : AppColors.primaryColor),)),
-                                      ElevatedButton(
-                                          style: ElevatedButton.styleFrom(backgroundColor: provider.selectedTab == 1 ?  AppColors.btnColor : Colors.white),
-                                          onPressed: ()=> provider.onTabChange(1), child: Text(localization.guest, style: AppTextStyles.tabsTextStyle.copyWith(color: provider.selectedTab == 1 ?  Colors.white : AppColors.primaryColor),)),
-                                    ],
-                                  ),
-                                  Center(child: Text("Selected tab: ${provider.selectedTab}"),)
+                                  Expanded(child: _buildOverviewItemWidget(title: localization.totalResidents, icon: AppIcons.icUser, total: provider.totalResidents)),
+                                  Expanded(child: _buildOverviewItemWidget(title: localization.totalPayments, icon: AppIcons.icPaymentsMenu, total: provider.totalPayments)),
                                 ],
                               ),
-                            )
-                          ],
+                              Row(
+                                spacing: 20,
+                                children: [
+                                  Expanded(child: _buildOverviewItemWidget(title: localization.totalComplaints, icon: AppIcons.icMaintenance, total: provider.totalComplaints)),
+                                  Expanded(child: _buildOverviewItemWidget(title: localization.totalAccess, icon: AppIcons.icAccess, total: provider.totalAccessRequests)),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                        const SliverToBoxAdapter(child: SizedBox(height: 30)),
+                        SliverToBoxAdapter(
+                          child: Text(provider.society?.name?? '', style: AppTextStyles.headingTextStyle.copyWith(fontSize: 20),),
+                        ),
+                        const SliverToBoxAdapter(child: SizedBox(height: 10)),
+                        SliverToBoxAdapter(
+                          child: Row(
+                            spacing: 10,
+                            children: [
+                              FilterTabWidget(isSelected: provider.selectedTab == .approved, onTap: ()=> provider.onTabChange(.approved), title: localization.residents),
+                              FilterTabWidget(isSelected: provider.selectedTab == .pending, onTap: ()=> provider.onTabChange(.pending), title: localization.newRequests),
+                            ],
+                          ),
+                        ),
+                        const SliverToBoxAdapter(child: SizedBox(height: 10)),
+                        if (provider.loadingResidents)
+                          const SliverToBoxAdapter(child: SizedBox(height: 120, child: LoadingWidget()),),
+                        if(provider.residents.isEmpty)
+                          SliverToBoxAdapter(child: Column(
+                            spacing: 10,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.1),
+                                    shape: BoxShape.circle
+                                ),
+                                padding: const EdgeInsets.all(10),
+                                margin: .only(top: 15),
+                                child: SvgPicture.asset(
+                                  AppIcons.icUser, colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),),
+                              ),
+                              if(provider.selectedTab == .approved)
+                                Text(localization.emptyResidentsMsg, style: AppTextStyles.tileSubtitleTextStyle.copyWith(color: Colors.white),)
+                              else
+                                Text(localization.emptyResidentRequestsMsg, style: AppTextStyles.tileSubtitleTextStyle.copyWith(color: Colors.white),)
+                            ],
+                          ),)
+                        else
+                          SliverList.separated(
+                            itemBuilder: (ctx, index) => ResidentItemWidget(resident: provider.residents[index]),
+                            separatorBuilder: (ctx, index) => const SizedBox(height: 10),
+                            itemCount: provider.residents.length,
+                          ),
+                        const SliverToBoxAdapter(child: SizedBox(height: 24)),
+                      ],
                     ),
-                    if(provider.loading)
-                      FullPageLoadingWidget()
-                  ],
-                );
-              },
-            ),
+                  ),
+                ),
+                if(provider.loading)
+                  FullPageLoadingWidget()
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
 
-          ],
-        );
-      },
+  Widget _buildOverviewItemWidget({required String icon, required String title, required int total}) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: AppColors.borderColor),
+          color: Colors.white
+      ),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        spacing: 10,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                color: AppColors.btnColor.withValues(alpha: 0.1),
+                shape: BoxShape.circle
+            ),
+            padding: const EdgeInsets.all(10),
+            child: SvgPicture.asset(
+              icon, colorFilter: ColorFilter.mode(AppColors.btnColor, BlendMode.srcIn),),
+          ),
+          Column(
+            children: [
+              Text(total.toString(), style: AppTextStyles.regularTextStyle.copyWith(
+                  color: Colors.black),),
+              Text(title,
+                style: AppTextStyles.tileSubtitleTextStyle,)
+            ],
+          )
+        ],
+      ),
     );
   }
 }

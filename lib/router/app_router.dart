@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portalixmx_resident_admin/core/models/user_model.dart';
+import 'package:portalixmx_resident_admin/presentation/screens/resident_detail/resident_detail_page.dart';
 import '../core/models/access_request_model.dart';
 import '../core/models/complaints_model.dart';
 import '../presentation/screens/authentication/create_account_page.dart';
@@ -17,7 +20,7 @@ import '../presentation/screens/main_menu/main_menu.dart';
 
 
 GoRouter appRouter = GoRouter(
-  initialLocation: NamedRoutes.createAccount.routeName,
+  initialLocation: NamedRoutes.home.routeName,
   routes: [
     GoRoute(path: NamedRoutes.createAccount.routeName, builder: (ctx, state)=> CreateAccountPage()),
     GoRoute(path: NamedRoutes.login.routeName, builder: (ctx, state)=> LoginPage()),
@@ -48,26 +51,25 @@ GoRouter appRouter = GoRouter(
 
     GoRoute(path: NamedRoutes.privacyPolicy.routeName, builder: (ctx, state)=> Center(child: Text("Privacy Policy Page"),)),
     GoRoute(path: NamedRoutes.verifyOtp.routeName, builder: (ctx, state)=> VerifyOTPPage()),
+    GoRoute(path: NamedRoutes.residentDetail.routeName, builder: (ctx, state)=> ResidentDetailPage(resident: state.extra as UserModel)),
 
   ],
-/*  redirect: (BuildContext context, GoRouterState state) {
+  redirect: (BuildContext context, GoRouterState state) {
     final isAuthenticated = FirebaseAuth.instance.currentUser != null;
     final isOnLoginPage = state.matchedLocation == NamedRoutes.login.routeName;
     final isOnSignupPage = state.matchedLocation == NamedRoutes.createAccount.routeName;
     final isOnForgetPasswordPage = state.matchedLocation == NamedRoutes.forgetPassword.routeName;
-    final isOnCompleteProfilePage = state.matchedLocation == NamedRoutes.completeProfile.routeName;
-    // final isOnVerifyOtpProfilePage = state.matchedLocation == NamedRoutes.verifyOtp.routeName;
 
     if (isAuthenticated && (isOnLoginPage || isOnSignupPage)) {
       return NamedRoutes.home.routeName;
     }
 
-    if (!isAuthenticated && !isOnSignupPage && !isOnLoginPage && !isOnForgetPasswordPage && !isOnCompleteProfilePage) {
+    if (!isAuthenticated && !isOnSignupPage && !isOnLoginPage && !isOnForgetPasswordPage) {
       return NamedRoutes.createAccount.routeName;
     }
 
     return null;
-  },*/
+  },
 );
 
 enum NamedRoutes {
@@ -82,7 +84,8 @@ enum NamedRoutes {
   accessRequestDetail('/access-request-detail'),
   complaintSummary('/complaint-detail'),
   privacyPolicy('/privacy-policy'),
-  verifyOtp('/verify-otp')
+  verifyOtp('/verify-otp'),
+  residentDetail('/resident-detail')
   ;
   final String routeName;
   const NamedRoutes(this.routeName);

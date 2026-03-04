@@ -7,6 +7,7 @@ class AppIcons {
   static const icAccess = 'assets/icons/ic_access_menu.svg';
   static const icMenu = 'assets/icons/ic_menu.svg';
   static const icQRCode = 'assets/icons/ic_qrcode.png';
+  static const icUser = 'assets/icons/ic_user.svg';
   static const icEdit = 'assets/icons/ic_edit.svg';
   static const icDelete = 'assets/icons/ic_delete.svg';
   static const icCamera = 'assets/icons/ic_camera.svg';

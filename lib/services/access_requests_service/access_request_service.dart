@@ -80,4 +80,16 @@ class AccessRequestService {
     }
     return [];
   }
+
+  Future<int> getCountBySociety(String societyID) async {
+    try {
+      final snapshot = await _getAccessRequestsCollection
+          .where('societyID', isEqualTo: societyID)
+          .count()
+          .get();
+      return snapshot.count ?? 0;
+    } catch (e) {
+      return 0;
+    }
+  }
 }

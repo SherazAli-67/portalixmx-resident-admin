@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:portalixmx_resident_admin/core/models/society_model.dart';
-import '../../core/models/user_model.dart';
 import '../../services/auth_service/auth_service.dart';
 
 class AuthenticationProvider extends ChangeNotifier{

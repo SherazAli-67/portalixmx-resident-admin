@@ -69,7 +69,7 @@ abstract class BaseVisitor {
     final type = data['visitorType'] as String;
 
     if (type == 'guest') {
-      return GuestVisitor.fromFirestore(doc);
+      return UserModel.fromFirestore(doc);
     } else if (type == 'regular') {
       return RegularVisitor.fromFirestore(doc);
     } else {
@@ -82,11 +82,11 @@ abstract class BaseVisitor {
   BaseVisitor copyWith();
 }
 
-class GuestVisitor extends BaseVisitor {
+class UserModel extends BaseVisitor {
   final DateTime fromDateTime;
   final DateTime toDateTime;
 
-  GuestVisitor({
+  UserModel({
     required super.id,
     // required super.code,
     required super.name,
@@ -101,9 +101,9 @@ class GuestVisitor extends BaseVisitor {
 
   Duration get duration => toDateTime.difference(fromDateTime);
 
-  factory GuestVisitor.fromFirestore(DocumentSnapshot doc) {
+  factory UserModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    return GuestVisitor(
+    return UserModel(
       id: doc.id,
       // code: data['code']?.toString() ?? '',
       name: data['name'] ?? '',
@@ -134,7 +134,7 @@ class GuestVisitor extends BaseVisitor {
   }
 
   @override
-  GuestVisitor copyWith({
+  UserModel copyWith({
     String? id,
     String? code,
     String? name,
@@ -146,7 +146,7 @@ class GuestVisitor extends BaseVisitor {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
-    return GuestVisitor(
+    return UserModel(
       id: id ?? this.id,
       // code: code ?? this.code,
       name: name ?? this.name,
