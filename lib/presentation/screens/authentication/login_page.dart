@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = .new();
   final TextEditingController _passwordController = .new();
 
-  bool _isLogging = false;
+  final bool _isLogging = false;
 
   @override
   void dispose() {

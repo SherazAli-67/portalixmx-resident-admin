@@ -5,7 +5,6 @@ import 'package:portalixmx_resident_admin/l10n/app_localizations.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/primary_btn.dart';
 import 'package:portalixmx_resident_admin/providers/datetime_format_helpers.dart';
 import 'package:portalixmx_resident_admin/providers/home_provider.dart';
-import 'package:portalixmx_resident_admin/services/residents_service/residents_service.dart';
 import 'package:provider/provider.dart';
 import '../../../core/res/app_textstyles.dart';
 import '../../widgets/bg_gradient_screen.dart';

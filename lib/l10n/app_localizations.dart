@@ -236,6 +236,36 @@ abstract class AppLocalizations {
   /// **'Approve'**
   String get approve;
 
+  /// No description provided for @paymentDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Details'**
+  String get paymentDetails;
+
+  /// No description provided for @paymentFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment for'**
+  String get paymentFor;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amount;
+
+  /// No description provided for @receipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Receipt'**
+  String get receipt;
+
   /// No description provided for @add.
   ///
   /// In en, this message translates to:

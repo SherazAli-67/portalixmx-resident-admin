@@ -7,7 +7,7 @@ class FirebaseConst {
   static const complaintsCol = 'complaints';
   static const accessRequestsCol = 'access_requests';
   static const accessCol = 'access';
-  static const paymentsCol = 'payment';
+  static const paymentsCol = 'payments';
   static const communityCalendarEventsCol = 'community_calendar_events';
 
   // Visitor types
