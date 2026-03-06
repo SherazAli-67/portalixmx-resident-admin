@@ -3,6 +3,11 @@ enum PaymentType {
   paymentToAdmin,      // 1
 }
 
+enum PaymentStatus {
+  pending,   // 0
+  received,      // 1
+}
+
 class PaymentModel {
   final String paymentID;
   final String paymentForTitle;
@@ -11,6 +16,7 @@ class PaymentModel {
   final String societyID;
   final String paymentByUID;
   final PaymentType paymentType;
+  final PaymentStatus paymentStatus;
   final DateTime dateTime;
 
   PaymentModel({
@@ -21,6 +27,7 @@ class PaymentModel {
     required this.societyID,
     required this.paymentByUID,
     required this.paymentType,
+    this.paymentStatus = .pending,
     required this.dateTime
   });
 
@@ -33,7 +40,8 @@ class PaymentModel {
       'societyID': societyID,
       'paymentByUID': paymentByUID,
       'dateTime': dateTime.toIso8601String(),
-      'paymentType': paymentType.index, // store enum as int
+      'paymentType': paymentType.index,
+      'paymentStatus' :  paymentStatus.index
     };
   }
 
@@ -50,8 +58,12 @@ class PaymentModel {
           : DateTime.now(),
       paymentType: (map['paymentType'] != null &&
           map['paymentType'] < PaymentType.values.length)
-          ? PaymentType.values[map['paymentType']]
-          : PaymentType.paymentByResident,
+          ? .values[map['paymentType']]
+          : .paymentByResident,
+      paymentStatus: (map['paymentStatus'] != null &&
+          map['paymentStatus'] < PaymentStatus.values.length)
+          ? .values[map['paymentType']]
+          : .pending,
     );
   }
 }

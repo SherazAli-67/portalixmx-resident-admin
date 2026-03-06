@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
-import 'package:portalixmx_resident_admin/presentation/widgets/filter_tab_widget.dart';
+import 'package:portalixmx_resident_admin/presentation/widgets/app_dropdown_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/full_page_loading_widget.dart';
+import 'package:portalixmx_resident_admin/presentation/widgets/loading_widget.dart';
 import 'package:portalixmx_resident_admin/providers/datetime_format_helpers.dart';
 import 'package:portalixmx_resident_admin/providers/payments_provider/payment_provider.dart';
 import 'package:provider/provider.dart';
@@ -52,15 +53,25 @@ class _PaymentsMenuState extends State<PaymentsMenu> {
                       ],
                     ),
                     Row(
+                      spacing: 20,
+                      children: [
+                        Expanded(child: AppDropdownWidget<String>(list: provider.getFilterList(localization), title: 'Date', value: provider.selectedFilter, onChanged: (val)=> provider.onChangeFilterTap(val), getTitle: (item) => item)),
+                        Expanded(child: AppDropdownWidget<String>(list: provider.getStatusList(localization), title: 'Status', value: provider.selectedPaymentStatusFilter, onChanged: (val)=> provider.onChangeStatusFilterTap(val), getTitle: (item) => item)),
+
+                      ],
+                    ),
+                  /*  Row(
                       spacing: 10,
                       children: [
                         _buildServiceTypeTab(serviceTypeTitle: localization.all, index: 0, provider: provider),
                         _buildServiceTypeTab(serviceTypeTitle: localization.week, index: 1, provider: provider),
                         _buildServiceTypeTab(serviceTypeTitle: localization.month, index: 2, provider: provider),
                       ],
-                    ),
+                    ),*/
                     Expanded(
-                        child: provider.payments.isEmpty
+                        child: provider.loadingPayments
+                            ? LoadingWidget()
+                            : provider.payments.isEmpty
                             ? Center(child: Text("No payment requests found", style: AppTextStyles.regularTextStyle,),)
                             : ListView.builder(
                             itemCount: provider.payments.length,
@@ -111,13 +122,5 @@ class _PaymentsMenuState extends State<PaymentsMenu> {
         });
       },
     );
-  }
-
-  Widget _buildServiceTypeTab({required String serviceTypeTitle, required int index, required PaymentProvider provider}) {
-    bool isSelected = index == provider.selectedFilterTab;
-    return Expanded(
-        child: FilterTabWidget(isSelected: isSelected,
-        onTap: () => provider.onChangeFilterTab(index),
-        title: serviceTypeTitle));
   }
 }

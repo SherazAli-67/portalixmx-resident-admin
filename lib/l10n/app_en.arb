@@ -29,6 +29,8 @@
   "amount" : "Amount",
   "receipt" : "Payment Receipt",
   "add": "Add",
+  "pending" : "Pending",
+  "received" : "Received",
   "twoStepVerification" : "2 Step Verification",
   "twoStepVerificationDescription" : "Enter the 2 step verification code sent on your email address",
   "otp" : "OTP",
@@ -136,6 +138,7 @@
   "all" : "All",
   "week" : "Week",
   "month" : "Month",
+  "year" : "Year",
   "automaticVisitorCode" : "Visitor Code",
   "generateAccessCode" : "Generate Access Code"
 }

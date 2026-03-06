@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/core/models/user_model.dart';
+import 'package:portalixmx_resident_admin/l10n/app_localizations.dart';
 import 'package:portalixmx_resident_admin/presentation/bottomsheets/add_payment_sheet.dart';
 import 'package:portalixmx_resident_admin/services/payments_service/payments_service.dart';
 import 'package:portalixmx_resident_admin/services/user_service/user_service.dart';
@@ -21,6 +22,25 @@ class PaymentProvider extends ChangeNotifier{
 
   PaymentProvider(){
     _initPayments();
+  }
+
+  String? selectedFilter;
+  String? selectedPaymentStatusFilter;
+
+  List<String> getFilterList(AppLocalizations localization){
+    return [
+      localization.all,
+      localization.week,
+      localization.month,
+      localization.year
+    ];
+  }
+
+  List<String> getStatusList(AppLocalizations localization){
+    return [
+      localization.pending,
+      localization.received,
+    ];
   }
 
   void _initPayments()async {
@@ -45,6 +65,15 @@ class PaymentProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  void onChangeFilterTap(String val){
+    selectedFilter = val;
+    notifyListeners();
+  }
+
+  void onChangeStatusFilterTap(String val){
+    selectedPaymentStatusFilter = val;
+    notifyListeners();
+  }
   void onAddPaymentTap()async {
     final result = await BottomSheetHelper.showDraggableBottomSheet(scaffoldKey: scaffoldKey, child: AddPaymentSheet(),);
     if(result != null){

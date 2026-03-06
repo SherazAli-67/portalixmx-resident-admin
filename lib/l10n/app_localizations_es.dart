@@ -103,6 +103,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get add => 'Agregar';
 
   @override
+  String get pending => 'Pending';
+
+  @override
+  String get received => 'Received';
+
+  @override
   String get twoStepVerification => 'Verificación en 2 Pasos';
 
   @override
@@ -431,6 +437,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get month => 'Month';
+
+  @override
+  String get year => 'Year';
 
   @override
   String get automaticVisitorCode => 'Visitor Code';
