@@ -19,22 +19,35 @@ class AppTextField extends StatefulWidget {
     TextCapitalization? capitalization,
     TextStyle? titleTextStyle,
     bool isDense = false,
-  }) : _textController = controller,_hintText = hintText, _textInputType = textInputType, _fillColor = fillColor, _hintTextColor = hintTextColor, _borderColor = borderColor, _title = title, _capitalization = capitalization, _titleTextStyle = titleTextStyle, _isDense = isDense;
+    this.validator,
+  })
+      : _textController = controller,
+        _hintText = hintText,
+        _textInputType = textInputType,
+        _fillColor = fillColor,
+        _hintTextColor = hintTextColor,
+        _borderColor = borderColor,
+        _title = title,
+        _capitalization = capitalization,
+        _titleTextStyle = titleTextStyle,
+        _maxLines = maxLines,
+        _isDense = isDense;
 
   final TextEditingController? _textController;
   final String _hintText;
-
   final bool isPassword;
   final bool readOnly;
   final TextInputType? _textInputType;
   final Color _fillColor;
   final Color _hintTextColor;
   final Color _borderColor;
-  // final int? _maxLines;
+  final int? _maxLines;
   final String? _title;
   final TextStyle? _titleTextStyle;
   final TextCapitalization? _capitalization;
   final bool _isDense;
+
+  final String? Function(String?)? validator;
   @override
   State<AppTextField> createState() => _AppTextFieldState();
 }
@@ -49,7 +62,7 @@ class _AppTextFieldState extends State<AppTextField> {
       children: [
         if(widget._title != null)
           Text(widget._title!, style: widget._titleTextStyle ?? AppTextStyles.tileTitleTextStyle.copyWith(color: Colors.white),),
-        TextField(
+        TextFormField(
           controller: widget._textController,
           readOnly: widget.readOnly,
           obscureText: widget.isPassword && hidePassword,
@@ -57,22 +70,33 @@ class _AppTextFieldState extends State<AppTextField> {
           // textCapitalization: widget._capitalization ?? .sentences,
           textCapitalization: widget._capitalization ?? (widget._textInputType != null && widget._textInputType == .emailAddress ? .none : .sentences),
           onTapOutside: (_)=>  FocusManager.instance.primaryFocus?.unfocus(),
+          maxLines: widget.isPassword ? 1: widget._maxLines,
+          validator: widget.validator,
           decoration: InputDecoration(
               hintText: widget._hintText,
               isDense: widget._isDense,
               hintStyle: AppTextStyles.hintTextStyle.copyWith(color: widget._hintTextColor),
               enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: .circular(8),
                 borderSide:  BorderSide(color: widget._borderColor)
               ),
               suffixIcon: widget.isPassword ? TextButton(
                   onPressed: () => setState(() => hidePassword = !hidePassword),
                   child: Text(hidePassword ? AppLocalizations.of(context)!.show : AppLocalizations.of(context)!.hide, style: AppTextStyles.regularTextStyle.copyWith(color: AppColors.primaryColor),)) : null,
-              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
+              focusedBorder: OutlineInputBorder(borderRadius: .circular(8),
                   borderSide: BorderSide(color: widget._borderColor)),
+              errorBorder: OutlineInputBorder(
+                  borderRadius: .circular(8),
+                  borderSide: BorderSide(color: AppColors.btnColorDark)
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: .circular(8),
+                  borderSide: BorderSide(color: AppColors.btnColorDark)
+              ),
               fillColor: widget._fillColor,
               filled: true
           ),
+
         ),
       ],
     );

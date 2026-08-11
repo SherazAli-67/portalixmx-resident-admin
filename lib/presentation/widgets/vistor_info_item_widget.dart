@@ -12,7 +12,7 @@ class VisitorInfoItemWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         Text(_title, style: AppTextStyles.visitorDetailTitleTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.w400),),
         Text(_subtitle, style: AppTextStyles.visitorDetailSubtitleTextStyle.copyWith(fontSize: 14),),

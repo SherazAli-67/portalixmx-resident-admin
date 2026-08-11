@@ -27,6 +27,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgetPassword => 'Forget your password';
 
   @override
+  String get enterEmailToSendPasswordReset =>
+      'Enter email address, a password reset link will be sent to that';
+
+  @override
+  String get forgetPassLinkSent => 'Password reset link sent';
+
+  @override
+  String get checkYourEmailAddress =>
+      'Please check your email address, a password reset link sent to it.';
+
+  @override
+  String accountRequestPending(Object societyName) {
+    return 'Your admin request for $societyName is pending. You will be notified as the admin update your request';
+  }
+
+  @override
+  String get uploadYourProfileImage => 'Please upload your profile image';
+
+  @override
   String welcomeMessage(Object name) {
     return 'Welcome $name';
   }
@@ -55,6 +74,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accessRequests => 'Access Requests';
+
+  @override
+  String get viewAll => 'View All';
+
+  @override
+  String get paymentDetail => 'Payment Details';
 
   @override
   String residentsOfTheSociety(Object society) {
@@ -91,6 +116,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentFor => 'Payment for';
 
   @override
+  String get status => 'Status';
+
+  @override
   String get description => 'Description';
 
   @override
@@ -106,7 +134,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pending => 'Pending';
 
   @override
+  String get approved => 'Approved';
+
+  @override
   String get received => 'Received';
+
+  @override
+  String get markAsResolved => 'Mark as resolved';
+
+  @override
+  String get markAsInProgress => 'Mark as In-progress';
+
+  @override
+  String get markAsReceived => 'Mark as received';
+
+  @override
+  String get paymentHistory => 'Payment History';
+
+  @override
+  String get paymentToAdmin => 'Payment to Admin';
+
+  @override
+  String get reject => 'Reject';
+
+  @override
+  String get aboutResident => 'About Resident';
+
+  @override
+  String get houseNumber => 'House Number';
+
+  @override
+  String get aboutComplaint => 'About Complaint';
+
+  @override
+  String get createNewAccess => 'Create new access';
+
+  @override
+  String get title => 'Title';
+
+  @override
+  String get freeToUse => 'Free to use';
+
+  @override
+  String get setItFreeToUse => 'Set, Free to use';
+
+  @override
+  String get setItRequestToUse => 'Set, Request to use';
+
+  @override
+  String get createEvent => 'Create Event';
+
+  @override
+  String get eventTitle => 'Event Title';
+
+  @override
+  String get eventDescription => 'Enter details about the event';
+
+  @override
+  String get eventDateAndTime => 'Date & Time';
 
   @override
   String get twoStepVerification => '2 Step Verification';
@@ -218,6 +303,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get communityPolls => 'Community Polls';
 
   @override
+  String get createPoll => 'Create Poll';
+
+  @override
+  String get pollQuestion => 'Poll Question';
+
+  @override
+  String get addOption => 'Add Option';
+
+  @override
   String get guards => 'Guards';
 
   @override
@@ -228,6 +322,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get termsCondition => 'Terms & Conditions';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get societyInformationUpdated =>
+      'Society information updated successfully';
 
   @override
   String get logout => 'Logout';
@@ -358,7 +462,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get createAccount => 'Create Admin Account';
+  String get createAccount => 'Create Account';
 
   @override
   String get createAccountDescription =>
@@ -441,4 +545,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get generateAccessCode => 'Generate Access Code';
+
+  @override
+  String get communityMembers => 'Community Members';
+
+  @override
+  String get editCommunity => 'Edit Community';
 }

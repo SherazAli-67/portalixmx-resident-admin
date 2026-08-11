@@ -59,10 +59,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCD1vcTGvT1F1D9Z6W4TX5GV8IYMM-GuAw',
-    appId: '1:892365070783:ios:9838f4775301ff24d3410a',
+    appId: '1:892365070783:ios:653cd92e8952d039d3410a',
     messagingSenderId: '892365070783',
     projectId: 'portalixmx-project',
     storageBucket: 'portalixmx-project.firebasestorage.app',
-    iosBundleId: 'com.portalixmx.app',
+    iosBundleId: 'com.portalixmx.residentadmin',
   );
 }

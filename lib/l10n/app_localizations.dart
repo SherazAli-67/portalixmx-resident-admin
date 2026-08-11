@@ -134,6 +134,36 @@ abstract class AppLocalizations {
   /// **'Forget your password'**
   String get forgetPassword;
 
+  /// No description provided for @enterEmailToSendPasswordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter email address, a password reset link will be sent to that'**
+  String get enterEmailToSendPasswordReset;
+
+  /// No description provided for @forgetPassLinkSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset link sent'**
+  String get forgetPassLinkSent;
+
+  /// No description provided for @checkYourEmailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your email address, a password reset link sent to it.'**
+  String get checkYourEmailAddress;
+
+  /// No description provided for @accountRequestPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Your admin request for {societyName} is pending. You will be notified as the admin update your request'**
+  String accountRequestPending(Object societyName);
+
+  /// No description provided for @uploadYourProfileImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload your profile image'**
+  String get uploadYourProfileImage;
+
   /// No description provided for @welcomeMessage.
   ///
   /// In en, this message translates to:
@@ -187,6 +217,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Access Requests'**
   String get accessRequests;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
+
+  /// No description provided for @paymentDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Details'**
+  String get paymentDetail;
 
   /// No description provided for @residentsOfTheSociety.
   ///
@@ -248,6 +290,12 @@ abstract class AppLocalizations {
   /// **'Payment for'**
   String get paymentFor;
 
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
   /// No description provided for @description.
   ///
   /// In en, this message translates to:
@@ -278,11 +326,125 @@ abstract class AppLocalizations {
   /// **'Pending'**
   String get pending;
 
+  /// No description provided for @approved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get approved;
+
   /// No description provided for @received.
   ///
   /// In en, this message translates to:
   /// **'Received'**
   String get received;
+
+  /// No description provided for @markAsResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as resolved'**
+  String get markAsResolved;
+
+  /// No description provided for @markAsInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as In-progress'**
+  String get markAsInProgress;
+
+  /// No description provided for @markAsReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as received'**
+  String get markAsReceived;
+
+  /// No description provided for @paymentHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment History'**
+  String get paymentHistory;
+
+  /// No description provided for @paymentToAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment to Admin'**
+  String get paymentToAdmin;
+
+  /// No description provided for @reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reject;
+
+  /// No description provided for @aboutResident.
+  ///
+  /// In en, this message translates to:
+  /// **'About Resident'**
+  String get aboutResident;
+
+  /// No description provided for @houseNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'House Number'**
+  String get houseNumber;
+
+  /// No description provided for @aboutComplaint.
+  ///
+  /// In en, this message translates to:
+  /// **'About Complaint'**
+  String get aboutComplaint;
+
+  /// No description provided for @createNewAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new access'**
+  String get createNewAccess;
+
+  /// No description provided for @title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get title;
+
+  /// No description provided for @freeToUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Free to use'**
+  String get freeToUse;
+
+  /// No description provided for @setItFreeToUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Set, Free to use'**
+  String get setItFreeToUse;
+
+  /// No description provided for @setItRequestToUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Set, Request to use'**
+  String get setItRequestToUse;
+
+  /// No description provided for @createEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Event'**
+  String get createEvent;
+
+  /// No description provided for @eventTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Title'**
+  String get eventTitle;
+
+  /// No description provided for @eventDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter details about the event'**
+  String get eventDescription;
+
+  /// No description provided for @eventDateAndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & Time'**
+  String get eventDateAndTime;
 
   /// No description provided for @twoStepVerification.
   ///
@@ -500,6 +662,24 @@ abstract class AppLocalizations {
   /// **'Community Polls'**
   String get communityPolls;
 
+  /// No description provided for @createPoll.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Poll'**
+  String get createPoll;
+
+  /// No description provided for @pollQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll Question'**
+  String get pollQuestion;
+
+  /// No description provided for @addOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Option'**
+  String get addOption;
+
   /// No description provided for @guards.
   ///
   /// In en, this message translates to:
@@ -523,6 +703,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy Policy'**
   String get privacyPolicy;
+
+  /// No description provided for @termsCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Conditions'**
+  String get termsCondition;
+
+  /// No description provided for @address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get address;
+
+  /// No description provided for @societyInformationUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Society information updated successfully'**
+  String get societyInformationUpdated;
 
   /// No description provided for @logout.
   ///
@@ -761,7 +959,7 @@ abstract class AppLocalizations {
   /// No description provided for @createAccount.
   ///
   /// In en, this message translates to:
-  /// **'Create Admin Account'**
+  /// **'Create Account'**
   String get createAccount;
 
   /// No description provided for @createAccountDescription.
@@ -919,6 +1117,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Generate Access Code'**
   String get generateAccessCode;
+
+  /// No description provided for @communityMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Community Members'**
+  String get communityMembers;
+
+  /// No description provided for @editCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Community'**
+  String get editCommunity;
 }
 
 class _AppLocalizationsDelegate

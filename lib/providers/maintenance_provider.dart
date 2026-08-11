@@ -1,10 +1,22 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../core/helpers/bottom_sheet_helper.dart';
 import '../core/models/complaints_model.dart';
+import '../core/models/user_model.dart';
 import '../presentation/bottomsheets/add_complaint_bottomsheet.dart';
 import '../presentation/screens/main_menu/main_menu.dart';
+import '../router/app_router.dart';
 import '../services/complaints_service/complaints_service.dart';
+import '../services/user_service/user_service.dart';
+
+class ComplaintDateGroup {
+  final DateTime date;
+  final List<ComplaintModel> complaints;
+
+  ComplaintDateGroup({required this.date, required this.complaints});
+}
 
 class MaintenanceProvider extends ChangeNotifier {
   bool addingComplaint =  false;
@@ -14,25 +26,40 @@ class MaintenanceProvider extends ChangeNotifier {
 
   final List<String> _filters = ['All', 'Week', 'Month',];
   String _selectedFilter = 'All';
+  String? error;
   final _complaintService = ComplaintsService.instance;
   List<ComplaintModel> get allComplaints => _allComplaints;
   List<ComplaintModel> get filteredComplaints => _filteredComplaints;
   List<String> get filters => _filters;
   String get selectedFilter => _selectedFilter;
-  MaintenanceProvider(){
-    _initComplaints();
+
+  List<ComplaintDateGroup> get complaintsGroupedByDate {
+    final map = <DateTime, List<ComplaintModel>>{};
+    for (final c in _filteredComplaints) {
+      final date = DateTime(c.createdAt.year, c.createdAt.month, c.createdAt.day);
+      map.putIfAbsent(date, () => []).add(c);
+    }
+    for (final list in map.values) {
+      list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    }
+    final groups = map.entries
+        .map((e) => ComplaintDateGroup(date: e.key, complaints: e.value))
+        .toList();
+    groups.sort((a, b) => b.date.compareTo(a.date));
+    return groups;
   }
 
-  Future<String?> deleteComplaintByID(String complaintID) async {
-    try{
-      debugPrint("onDelete occurred");
-      _allComplaints.removeWhere((complaint) => complaint.id == complaintID);
-      notifyListeners();
-      await _complaintService.deleteComplaintByID(complaintID);
-      return null;
-    }catch(e){
-      return e.toString();
-    }
+  int get groupedComplaintItemCount {
+    return complaintsGroupedByDate.fold<int>(
+      0,
+      (sum, g) => sum + 1 + g.complaints.length,
+    );
+  }
+
+  bool updatingComplaint = false;
+
+  MaintenanceProvider(){
+    _initComplaints();
   }
 
   Future<String?> onAddComplaintTap()async{
@@ -66,8 +93,12 @@ class MaintenanceProvider extends ChangeNotifier {
     try{
       loadingComplaints = true;
       notifyListeners();
-
-      _allComplaints = await _complaintService.getAllComplaints();
+      UserModel? user=  await UserService.instance.getCurrentUser();
+      if(user == null){
+        error = "User not found";
+        return;
+      }
+      _allComplaints = await _complaintService.getAllComplaints(societyID: user.societyID);
       _filteredComplaints.addAll(_allComplaints);
       notifyListeners();
     }catch(e){
@@ -77,6 +108,23 @@ class MaintenanceProvider extends ChangeNotifier {
     loadingComplaints = false;
     notifyListeners();
 
+  }
+
+  Future<void> refreshComplaints() async {
+    try {
+      UserModel? user = await UserService.instance.getCurrentUser();
+      if (user == null) {
+        error = "User not found";
+        notifyListeners();
+        return;
+      }
+      _allComplaints = await _complaintService.getAllComplaints(societyID: user.societyID);
+      onFilterUpdated(_selectedFilter);
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error while refreshing complaints: ${e.toString()}");
+      notifyListeners();
+    }
   }
 
   void onFilterUpdated(dynamic val){
@@ -115,5 +163,38 @@ class MaintenanceProvider extends ChangeNotifier {
       return complaint.createdAt.isAfter(start) &&
           complaint.createdAt.isBefore(end);
     }).toList();
+  }
+
+  Future<UserModel?> getUserByID({required String userID}) async {
+    try{
+     return await UserService.instance.getUserByID(userID: userID);
+    }catch(e){
+      return null;
+    }
+  }
+
+  void updateComplaintStatus({required ComplaintModel complaint}) async{
+    try{
+      updatingComplaint = true;
+      notifyListeners();
+      await _complaintService.updateComplaint(complaint);
+      int index = _allComplaints.indexWhere((item)=> item.id == complaint.id);
+      _allComplaints[index] = complaint;
+      onFilterUpdated(_selectedFilter);
+      notifyListeners();
+    }catch(e){
+      debugPrint("Exception: ${e.toString()}");
+      return null;
+    }
+    updatingComplaint = false;
+    notifyListeners();
+  }
+
+  void onComplaintTap(BuildContext context, {required ComplaintModel complaint}) async{
+    final result = await context.push(NamedRoutes.complaintSummary.routeName, extra: complaint);
+    if(result != null){
+      ComplaintStatus status = result as ComplaintStatus;
+      updateComplaintStatus(complaint: complaint.copyWith(status: status));
+    }
   }
 }

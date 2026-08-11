@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.portalixmx.app"
+    namespace = "com.portalixmx.residentadmin"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 

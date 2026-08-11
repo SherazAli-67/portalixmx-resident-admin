@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:portalixmx_resident_admin/core/models/society_model.dart';
 import '../../core/models/user_model.dart';
 import '../../core/res/firebase_constant.dart';
@@ -10,12 +14,14 @@ class AuthService {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
-  Future<User?> signup({required String name, required String email, required String password, required String societyID})async{
+  Future<User?> signup({required String name, required String email, required String password, required String societyID, required XFile image})async{
     try{
      final userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
      if(userCredential.user != null){
+       //Upload image and get the url
        User authUser = userCredential.user!;
-       UserModel user = UserModel(userID: authUser.uid, userName: name, email: email, createdAt: DateTime.now().toUtc(), societyID: societyID);
+       String? profilePicture = await updateProfilePicture(image);
+       UserModel user = UserModel(userID: authUser.uid, userName: name, email: email, createdAt: DateTime.now().toUtc(), societyID: societyID, profileImg: profilePicture);
        await _firestore.collection(FirebaseConst.residentAdminCol).doc(user.userID).set(user.toMap());
        return authUser;
      }
@@ -27,7 +33,7 @@ class AuthService {
     }
   }
 
-  Future<bool> signIn({
+  Future<UserModel?> signIn({
     required String email,
     required String password,
   }) async {
@@ -36,9 +42,9 @@ class AuthService {
       if(userCredential.user != null) {
         DocumentSnapshot docSnap = await _firestore.collection(
             FirebaseConst.residentAdminCol).doc(userCredential.user!.uid).get();
-        return docSnap.exists;
+        return UserModel.fromMap(docSnap.data() as Map<String, dynamic>);
       }
-      return false;
+      return null;
     } on FirebaseAuthException catch (e) {
       throw _handleFirebaseAuthError(e);
     } catch (e) {
@@ -142,6 +148,29 @@ class AuthService {
       return querySnap.docs.map((doc)=> SocietyModel.fromMap( doc.data())).toList();
     } catch (e) {
       throw 'Failed to get user: $e';
+    }
+  }
+  Future<SocietyModel?> getSociety() async {
+    try{
+      UserModel? user = await getCurrentUser();
+      if(user == null) throw Exception('User not found');
+      DocumentSnapshot docSnap = await _firestore.collection(FirebaseConst.societiesCol).doc(user.societyID).get();
+      return SocietyModel.fromMap(docSnap.data() as Map<String, dynamic>);
+    } catch (e) {
+      throw 'Failed to get society: $e';
+    }
+  }
+
+  Future<String?> updateProfilePicture(XFile image) async {
+    try{
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child("resident-admin/profile_pictures/${_auth.currentUser!.uid}/${image.name}");
+      TaskSnapshot task = await storageRef.putFile(File(image.path));
+      String imageUrl = await task.ref.getDownloadURL();
+      return imageUrl;
+    }catch(e){
+      throw Exception("Failed to upload image: ${e.toString()}");
     }
   }
 }

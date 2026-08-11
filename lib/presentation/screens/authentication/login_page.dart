@@ -2,7 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portalixmx_resident_admin/core/common_ui.dart';
+import 'package:portalixmx_resident_admin/core/models/user_model.dart';
 import 'package:portalixmx_resident_admin/providers/authentication_provider/authentication_provider.dart';
+import 'package:portalixmx_resident_admin/providers/profile_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../core/res/app_constants.dart';
 import '../../../core/res/app_textstyles.dart';
@@ -56,8 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                     AppTextField(title: localization.password,controller: _passwordController, hintText: localization.password, isPassword: true,),
                     Align(
                       alignment: .topRight,
-                      child: TextButton(onPressed: (){
-                      }, child: Text(localization.forgetPassword, style: AppTextStyles.btnTextStyle,)),
+                      child: TextButton(onPressed: ()=> context.push(NamedRoutes.forgetPassword.routeName), child: Text(localization.forgetPassword, style: AppTextStyles.btnTextStyle,)),
                     ),
                   ],
                 ),
@@ -94,13 +95,16 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-   final isError =  await context.read<AuthenticationProvider>().onLoginTap(email: email, password: password);
-    if(isError != null){
-      CommonUI.showSnackBarMessage(context, isError: true, message: isError);
-    }else{
-      if(mounted){
-        context.go(NamedRoutes.home.routeName);
-      }
+   UserModel? user =  await context.read<AuthenticationProvider>().onLoginTap(email: email, password: password);
+    if (!mounted) return;
+    if(user == null){
+      CommonUI.showSnackBarMessage(context, isError: true, message: 'User not found!');
+    }else if(user.status == .pending){
+      context.go(NamedRoutes.pendingRequest.routeName);
+    } else{
+      await context.read<ProfileProvider>().reloadCurrentUser();
+      if (!mounted) return;
+      context.go(NamedRoutes.home.routeName);
     }
   }
 }

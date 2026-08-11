@@ -58,7 +58,7 @@ class ComplaintModel {
       societyID: map["societyID"] ?? '',
       status: ComplaintStatus.values.firstWhere(
             (e) => e.name == map["status"],
-        orElse: () => ComplaintStatus.pending,
+        orElse: () => .pending,
       ),
       createdAt: (map["createdAt"] as Timestamp).toDate(),
       updatedAt: (map["updatedAt"] as Timestamp).toDate(),

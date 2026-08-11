@@ -6,6 +6,7 @@ enum PaymentType {
 enum PaymentStatus {
   pending,   // 0
   received,      // 1
+  submitted,    // 2
 }
 
 class PaymentModel {
@@ -18,6 +19,7 @@ class PaymentModel {
   final PaymentType paymentType;
   final PaymentStatus paymentStatus;
   final DateTime dateTime;
+  final String? receipt;
 
   PaymentModel({
     required this.paymentID,
@@ -28,7 +30,8 @@ class PaymentModel {
     required this.paymentByUID,
     required this.paymentType,
     this.paymentStatus = .pending,
-    required this.dateTime
+    required this.dateTime,
+    this.receipt
   });
 
   Map<String, dynamic> toMap() {
@@ -41,7 +44,8 @@ class PaymentModel {
       'paymentByUID': paymentByUID,
       'dateTime': dateTime.toIso8601String(),
       'paymentType': paymentType.index,
-      'paymentStatus' :  paymentStatus.index
+      'paymentStatus' :  paymentStatus.index,
+      'receipt' : receipt
     };
   }
 
@@ -62,8 +66,34 @@ class PaymentModel {
           : .paymentByResident,
       paymentStatus: (map['paymentStatus'] != null &&
           map['paymentStatus'] < PaymentStatus.values.length)
-          ? .values[map['paymentType']]
+          ? .values[map['paymentStatus']]
           : .pending,
+      receipt: map['receipt']
+    );
+  }
+  PaymentModel copyWith({
+    String? paymentID,
+    String? paymentForTitle,
+    String? description,
+    double? amount,
+    String? societyID,
+    String? paymentByUID,
+    PaymentType? paymentType,
+    PaymentStatus? paymentStatus,
+    DateTime? dateTime,
+    String? receipt
+  }) {
+    return PaymentModel(
+      paymentID: paymentID ?? this.paymentID,
+      paymentForTitle: paymentForTitle ?? this.paymentForTitle,
+      description: description ?? this.description,
+      amount: amount ?? this.amount,
+      societyID: societyID ?? this.societyID,
+      paymentByUID: paymentByUID ?? this.paymentByUID,
+      paymentType: paymentType ?? this.paymentType,
+      paymentStatus: paymentStatus ?? this.paymentStatus,
+      dateTime: dateTime ?? this.dateTime,
+      receipt: receipt ?? this.receipt
     );
   }
 }

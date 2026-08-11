@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/app_dropdown_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/full_page_loading_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/loading_widget.dart';
 import 'package:portalixmx_resident_admin/providers/datetime_format_helpers.dart';
 import 'package:portalixmx_resident_admin/providers/payments_provider/payment_provider.dart';
+import 'package:portalixmx_resident_admin/router/app_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/res/app_colors.dart';
 import '../../../core/res/app_textstyles.dart';
 import '../../../l10n/app_localizations.dart';
 
-class PaymentsMenu extends StatefulWidget{
+class PaymentsMenu extends StatelessWidget{
   const PaymentsMenu({super.key});
-
-  @override
-  State<PaymentsMenu> createState() => _PaymentsMenuState();
-}
-
-class _PaymentsMenuState extends State<PaymentsMenu> {
 
   @override
   Widget build(BuildContext context) {
@@ -60,57 +56,68 @@ class _PaymentsMenuState extends State<PaymentsMenu> {
 
                       ],
                     ),
-                  /*  Row(
-                      spacing: 10,
-                      children: [
-                        _buildServiceTypeTab(serviceTypeTitle: localization.all, index: 0, provider: provider),
-                        _buildServiceTypeTab(serviceTypeTitle: localization.week, index: 1, provider: provider),
-                        _buildServiceTypeTab(serviceTypeTitle: localization.month, index: 2, provider: provider),
-                      ],
-                    ),*/
                     Expanded(
                         child: provider.loadingPayments
                             ? LoadingWidget()
-                            : provider.payments.isEmpty
-                            ? Center(child: Text("No payment requests found", style: AppTextStyles.regularTextStyle,),)
+                            : RefreshIndicator(
+                                onRefresh: () => provider.refreshPayments(),
+                                child: ((){
+                              final list = provider.getFilteredPayments(localization);
+                              return list.isEmpty
+                            ? ListView(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                children: [
+                                  SizedBox(
+                                    height: MediaQuery.sizeOf(context).height * 0.35,
+                                    child: Center(child: Text("No payment requests found", style: AppTextStyles.regularTextStyle,),),
+                                  ),
+                                ],
+                              )
                             : ListView.builder(
-                            itemCount: provider.payments.length,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: list.length,
                             itemBuilder: (ctx, index){
-                              PaymentModel payment = provider.payments[index];
-                              return Container(
-                                  margin: .only(bottom: 10),
-                                  padding: .symmetric(horizontal: 12, vertical: 15),
-                                  decoration: BoxDecoration(color: Colors.white, borderRadius: .circular(15)),
-                                  child: Row(
-                                    spacing: 17,
-                                    crossAxisAlignment: .start,
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
-                                        child: Center(child: Text('${payment.paymentForTitle[0]}${payment.paymentForTitle[0]}', style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor),),),
-                                      ),
-                                      Expanded(
-                                        child: Column(
-                                          spacing: 2,
-                                          crossAxisAlignment: .start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: .spaceBetween,
-                                              children: [
-                                                Text(payment.paymentForTitle, style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor),),
-                                                Text("\$${payment.amount}", style: TextStyle(fontSize: 12, fontWeight: .w700, color: AppColors.btnColor),)
-                                              ],
-                                            ),
-                                            Text(DateTimeFormatHelpers.formatDateTime(payment.dateTime), style: TextStyle(fontSize: 10, fontWeight: .w500, color: AppColors.serviceSubTitleGreyColor),),
-                                            const SizedBox(height: 3,),
-                                            Text(payment.description, style: AppTextStyles.emergencyContactTitleTextStyle,)
-                                          ],
+                              PaymentModel payment = list[index];
+                              return GestureDetector(
+                                onTap: ()=> _onPaymentItemTap(context, payment: payment, provider: provider),
+                                child: Container(
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+                                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
+                                    child: Row(
+                                      spacing: 17,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
+                                          child: Center(child: Text('${payment.paymentForTitle[0]}${payment.paymentForTitle[0]}', style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor),),),
                                         ),
-                                      )
-                                    ],
-                                  )
+                                        Expanded(
+                                          child: Column(
+                                            spacing: 2,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(payment.paymentForTitle, style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor),),
+                                                  Text("\$${payment.amount}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.btnColor),)
+                                                ],
+                                              ),
+                                              Text(DateTimeFormatHelpers.formatDateTime(payment.dateTime), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.serviceSubTitleGreyColor),),
+                                              const SizedBox(height: 3,),
+                                              Text(payment.description, style: AppTextStyles.emergencyContactTitleTextStyle,)
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                ),
                               );
-                            })
+                            },
+                            );
+                            })(),
+                              ),
                     )
                   ],
                 ),
@@ -122,5 +129,12 @@ class _PaymentsMenuState extends State<PaymentsMenu> {
         });
       },
     );
+  }
+  
+  void _onPaymentItemTap(BuildContext context, {required PaymentModel payment, required PaymentProvider provider})async{
+   final result = await context.push(NamedRoutes.paymentDetail.routeName, extra: payment);
+   if(result != null && result == PaymentStatus.received){
+     provider.markPaymentAsReceived(payment);
+   }
   }
 }

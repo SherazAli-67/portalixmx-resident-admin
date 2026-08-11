@@ -17,12 +17,21 @@ class CommunityService {
 
   Future<List<CommunityEventModel>> initCommunityEvents(String societyID) async {
     try {
-      final snapshot = await _getCommunityEventsCollection().where('societyId', isEqualTo: societyID).get();
+      final snapshot = await _getCommunityEventsCollection().where('societyID', isEqualTo: societyID).get();
       return snapshot.docs
           .map((doc) => CommunityEventModel.fromMap(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
       throw Exception('Failed to get visitors: $e');
+    }
+  }
+
+
+  Future<void> addUpdateEvent({required CommunityEventModel event}) async {
+    try {
+      await _getCommunityEventsCollection().doc(event.id).set(event.toMap());
+    } catch (e) {
+      throw Exception('Failed to add/update event$e');
     }
   }
 }

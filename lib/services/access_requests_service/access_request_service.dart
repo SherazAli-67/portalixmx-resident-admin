@@ -17,6 +17,8 @@ class AccessRequestService {
   CollectionReference get _getAccessRequestsCollection =>
       _firestore.collection(FirebaseConst.accessRequestsCol);
 
+  CollectionReference get _getAccessCollection =>
+      _firestore.collection(FirebaseConst.accessCol);
   Future<AccessRequestModel> createRequest({required DateTime date, required TimeOfDay time, required AccessModel access}) async {
     try {
       DateTime now = DateTime.now().toUtc();
@@ -28,6 +30,7 @@ class AccessRequestService {
           societyID: '1',
           requestedForDate: date,
           requestedForTime: time,
+          status: .pending,
           createdAt: now,
           updatedAt: now);
       await _getAccessRequestsCollection.doc(accessRequestModel.id).set(accessRequestModel.toMap());
@@ -37,13 +40,21 @@ class AccessRequestService {
     }
   }
 
-  Future<List<AccessRequestModel>> getAllRequests() async {
+  Future<List<AccessRequestModel>> getAllRequests({required String societyID}) async {
     try {
-      final snapshot = await _getAccessRequestsCollection.where('requestByUID', isEqualTo: _auth.currentUser!.uid).get();
-      debugPrint("Access requests: ${snapshot.size}");
+      final snapshot = await _getAccessRequestsCollection.where('societyID', isEqualTo: societyID).get();
+
       return snapshot.docs
           .map((doc) => AccessRequestModel.fromMap(doc.data()! as Map<String, dynamic>))
           .toList();
+    } catch (e) {
+      throw Exception('Failed to get requests: $e');
+    }
+  }
+  Future<List<AccessModel>> getAllAccessList() async {
+    try {
+      final snapshot = await _firestore.collection(FirebaseConst.accessCol).get();
+      return snapshot.docs.map((doc) => AccessModel.fromJson(doc.data())).toList();
     } catch (e) {
       throw Exception('Failed to get requests: $e');
     }
@@ -57,7 +68,7 @@ class AccessRequestService {
     }
   }*/
 
-  Future<void> initAccess()async{
+ /* Future<void> initAccess()async{
     List<AccessModel> accessList = [
       AccessModel(id: '1', name: 'Pool', image: 'https://cdn-icons-png.flaticon.com/512/1041/1041007.png'),
       AccessModel(id: '2', name: 'Gym', image: 'https://cdn-icons-png.flaticon.com/512/4471/4471883.png'),
@@ -67,7 +78,7 @@ class AccessRequestService {
     for (var access in accessList) {
       await _firestore.collection(FirebaseConst.accessCol).doc(access.id).set(access.toJson());
     }
-  }
+  }*/
 
   Future<List<AccessModel>> fetchAllAccess() async {
     try {
@@ -90,6 +101,39 @@ class AccessRequestService {
       return snapshot.count ?? 0;
     } catch (e) {
       return 0;
+    }
+  }
+
+  Future<void> updateRequest(AccessRequestModel request) async {
+    try {
+      await _getAccessRequestsCollection.doc(request.id).set(request.toMap());
+      debugPrint("Updated to ${request.status.name}");
+    } catch (e) {
+      throw Exception("Failed to update the request: ${e.toString()}");
+    }
+  }
+
+  Future<void> addUpdateAccess({required AccessModel access}) async{
+    try {
+      await _getAccessCollection.doc(access.id).set(access.toJson());
+    } catch (e) {
+      throw Exception("Failed to add/update the access: ${e.toString()}");
+    }
+  }
+
+  Future<void> deleteAccess({required String accessID}) async {
+    try {
+      await _getAccessCollection.doc(accessID).delete();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> updateAccess(AccessModel access) async {
+    try {
+      await _getAccessCollection.doc(access.id).set(access);
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 }

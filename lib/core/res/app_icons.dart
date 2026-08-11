@@ -24,6 +24,7 @@ class AppIcons {
   static const icProfileEdit = 'assets/icons/ic_profile_edit.svg';
   static const icMap = 'assets/icons/ic_map.png';
   static const icMyLocation = 'assets/icons/ic_my_location.png';
+  static const accountPending = 'assets/icons/account_pending.png';
 
 
   static const icUserImageUrl = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTJ8fFVzZXJ8ZW58MHx8MHx8fDA%3D';

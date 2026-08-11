@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:portalixmx_resident_admin/core/app_data/app_data.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/core/models/user_model.dart';
 import 'package:portalixmx_resident_admin/services/user_service/user_service.dart';
-import 'package:screenshot/screenshot.dart';
 import '../../core/res/firebase_constant.dart';
 
 class PaymentsService {
@@ -38,6 +39,18 @@ class PaymentsService {
       throw Exception(e.toString());
     }
   }
+  Future<List<PaymentModel>> getAdminPayments(String societyID) async {
+    try {
+      final snapshot = await _firestore
+          .collection(FirebaseConst.paymentsToAdminCol)
+          .where('societyID', isEqualTo: societyID)
+          .get();
+
+      return snapshot.docs.map((doc)=> PaymentModel.fromMap(doc.data())).toList();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 
   Future<PaymentModel?> addPayment({required String paymentFor, required String description, required String amount, required List<XFile> receipts})async {
     try {
@@ -60,5 +73,45 @@ class PaymentsService {
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  Future<List<PaymentModel>> getUserPaymentHistory({required String userID}) async {
+    try {
+      final snapshot = await _firestore
+          .collection(FirebaseConst.paymentsCol)
+          .where('paymentByUID', isEqualTo: userID)
+          .get();
+      return snapshot.docs.map((doc)=> PaymentModel.fromMap(doc.data())).toList();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  void createAdminPayments() async{
+    AppData.adminPayments.forEach((payment) async {
+      DocumentReference docRef =  _firestore.collection(FirebaseConst.paymentsToAdminCol).doc();
+      String paymentID = docRef.id;
+      await docRef.set(payment.copyWith(paymentID: paymentID).toMap());
+      debugPrint("Payment #${payment.paymentID} sent");
+    });
+  }
+
+  Future<void> submitPaymentToAdmin({required PaymentModel payment}) async {
+    try{
+      await _firestore
+          .collection(FirebaseConst.paymentsToAdminCol).doc(payment.paymentID).update(payment.toMap());
+    }catch(e){
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> updatePayment({required PaymentModel payment, })async {
+    try{
+      await _firestore
+          .collection(FirebaseConst.paymentsCol).doc(payment.paymentID).update(payment.toMap());
+    }catch(e){
+      throw Exception(e.toString());
+    }
+
   }
 }

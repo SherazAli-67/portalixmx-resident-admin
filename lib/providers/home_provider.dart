@@ -83,7 +83,7 @@ class HomeProvider extends ChangeNotifier {
 
       UserModel? user = await _userService.getCurrentUser();
       if(user == null) throw Exception("No resident admin found");
-
+      debugPrint("SocietyID: ${user.societyID}");
       _residents = await _residentsService.loadResidentsOfSociety(societyID: user.societyID);
       loadingResidents = false;
       notifyListeners();
@@ -100,6 +100,13 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> refresh() async {
+    await Future.wait([
+      initSociety(),
+      loadResidentsOfTheSociety(),
+      loadOverviewCounts(),
+    ]);
+  }
 
   Future<void> updateResident(UserModel updatedUser)async{
     updatingResidentStatus = true;

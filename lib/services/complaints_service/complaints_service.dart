@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import '../../core/models/complaints_model.dart';
 import '../../core/res/firebase_constant.dart';
 
@@ -33,9 +34,10 @@ class ComplaintsService {
     }
   }
 
-  Future<List<ComplaintModel>> getAllComplaints() async {
+  Future<List<ComplaintModel>> getAllComplaints({required String societyID}) async {
     try {
-      final snapshot = await _getComplaintsCollection.where('complaintBy', isEqualTo: _auth.currentUser!.uid).get();
+      final snapshot = await _getComplaintsCollection.where('societyID', isEqualTo: societyID).orderBy('createdAt', descending: true)
+          .get();
       return snapshot.docs
           .map((doc) => ComplaintModel.fromMap(doc.data()! as Map<String, dynamic>))
           .toList();
@@ -61,6 +63,15 @@ class ComplaintsService {
       return snapshot.count ?? 0;
     } catch (e) {
       return 0;
+    }
+  }
+
+  Future<void> updateComplaint(ComplaintModel complaint) async{
+    try {
+      await _getComplaintsCollection.doc(complaint.id).set(complaint.toMap());
+      debugPrint("Updated to ${complaint.status.name}");
+    } catch (e) {
+      throw Exception("Failed to update the complaint: ${e.toString()}");
     }
   }
 }

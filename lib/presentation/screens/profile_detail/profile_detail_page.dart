@@ -10,8 +10,8 @@ import '../../../core/res/app_textstyles.dart';
 import '../../widgets/bg_gradient_screen.dart';
 import '../../widgets/vistor_info_item_widget.dart';
 
-class ResidentDetailPage extends StatelessWidget{
-  const ResidentDetailPage({super.key, required this.resident});
+class ProfileDetailPage extends StatelessWidget{
+  const ProfileDetailPage({super.key, required this.resident});
   final UserModel resident;
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+enum RequestStatus {
+  pending,
+  approved,
+  rejected,
+}
 
 class AccessRequestModel {
   final String id;
@@ -11,6 +16,7 @@ class AccessRequestModel {
   final DateTime requestedForDate;
   final TimeOfDay requestedForTime;
   final DateTime createdAt;
+  final RequestStatus status;
   final DateTime updatedAt;
 
   AccessRequestModel({
@@ -23,6 +29,7 @@ class AccessRequestModel {
     required this.requestedForDate,
     required this.requestedForTime,
     required this.createdAt,
+    required this.status,
     required this.updatedAt
   });
 
@@ -32,6 +39,9 @@ class AccessRequestModel {
     return "$hour:$minute";
   }
 
+  String _statusToString(RequestStatus status) {
+    return status.name;
+  }
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -40,6 +50,7 @@ class AccessRequestModel {
       'requestedAccessImage': requestedAccessImage,
       'residentAdminID': residentAdminID,
       'societyID': societyID,
+      "status": _statusToString(status),
       'requestedForDate': requestedForDate.toIso8601String(),
       'requestedForTime': _timeOfDayToString(requestedForTime),
       "createdAt": Timestamp.fromDate(createdAt),
@@ -57,6 +68,10 @@ class AccessRequestModel {
       requestedAccessImage: map['requestedAccessImage'] ?? '',
       residentAdminID: map['residentAdminID'] ?? '',
       societyID: map['societyID'] ?? '',
+      status: RequestStatus.values.firstWhere(
+            (e) => e.name == map["status"],
+        orElse: () => .pending,
+      ),
       createdAt: (map["createdAt"] as Timestamp).toDate(),
       updatedAt: (map["updatedAt"] as Timestamp).toDate(),
       requestedForDate: DateTime.parse(map['requestedForDate']),
@@ -78,6 +93,8 @@ class AccessRequestModel {
     TimeOfDay? requestedForTime,
     DateTime? createdAt,
     DateTime? updatedAt,
+    RequestStatus? status,
+
   }) {
     return AccessRequestModel(
       id: id ?? this.id,
@@ -88,6 +105,7 @@ class AccessRequestModel {
       requestedAccessImage ?? this.requestedAccessImage,
       residentAdminID: residentAdminID ?? this.residentAdminID,
       societyID: societyID ?? this.societyID,
+      status: status ?? this.status,
       requestedForDate: requestedForDate ?? this.requestedForDate,
       requestedForTime: requestedForTime ?? this.requestedForTime,
       createdAt: createdAt ?? this.createdAt,

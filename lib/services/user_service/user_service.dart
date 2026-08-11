@@ -22,6 +22,17 @@ class UserService {
     }
   }
 
+  Future<UserModel?> getUserByID({required String userID}) async {
+    try{
+      final docSnap = await _firestore.collection(FirebaseConst.residentsCol).doc(userID).get();
+      if(docSnap.exists){
+        return UserModel.fromMap(docSnap.data()!);
+      }
+      return null;
+    } catch (e) {
+      throw 'Failed to get user: $e';
+    }
+  }
   Future<String?> updateUser({required UserModel user}) async{
     try{
       String currentUID = _auth.currentUser!.uid;

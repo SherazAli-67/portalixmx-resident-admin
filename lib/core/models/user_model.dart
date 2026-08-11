@@ -1,6 +1,15 @@
 enum UserStatus {
-  pending,   // 0
-  approved,  // 1
+  pending,
+  approved,
+}
+
+UserStatus _userStatusFromMap(dynamic raw) {
+  if (raw == null) return UserStatus.pending;
+  final idx = raw is int ? raw : int.tryParse(raw.toString());
+  if (idx == null || idx < 0 || idx >= UserStatus.values.length) {
+    return UserStatus.pending;
+  }
+  return UserStatus.values[idx];
 }
 
 class UserModel {
@@ -14,6 +23,7 @@ class UserModel {
   final String societyID;
   final List<String> emergencyContacts;
   final UserStatus status;
+  final String? houseNumber;
 
   UserModel({
     required this.userID,
@@ -26,6 +36,7 @@ class UserModel {
     this.vehicleInformation,
     this.emergencyContacts = const [],
     this.status = UserStatus.pending,
+    this.houseNumber
   });
 
   Map<String, dynamic> toMap() {
@@ -39,7 +50,8 @@ class UserModel {
       'profileImg': profileImg,
       'vehicleInformation': vehicleInformation?.toMap(),
       'emergencyContacts': emergencyContacts,
-      'status': status.index, // stored as 0 or 1
+      'status': status.index,
+      'houseNumber': houseNumber
     };
   }
 
@@ -61,10 +73,8 @@ class UserModel {
       emergencyContacts: map['emergencyContacts'] != null
           ? List<String>.from(map['emergencyContacts'])
           : [],
-      status: (map['status'] != null &&
-          map['status'] < UserStatus.values.length)
-          ? UserStatus.values[map['status']]
-          : UserStatus.pending,
+      status: _userStatusFromMap(map['status']),
+      houseNumber: map['houseNumber']
     );
   }
 
@@ -79,6 +89,7 @@ class UserModel {
     VehicleInformation? vehicleInformation,
     List<String>? emergencyContacts,
     UserStatus? status,
+    String? houseNumber
   }) {
     return UserModel(
       userID: userID ?? this.userID,
@@ -93,6 +104,7 @@ class UserModel {
       emergencyContacts:
       emergencyContacts ?? this.emergencyContacts,
       status: status ?? this.status,
+      houseNumber: houseNumber ?? this.houseNumber
     );
   }
 }

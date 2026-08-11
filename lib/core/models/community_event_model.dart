@@ -7,6 +7,8 @@ class CommunityEventModel {
   final DateTime eventDate;
   final TimeOfDay eventTime;
   final DateTime createdAt;
+  final String imageUrl;
+  final String societyID;
 
   CommunityEventModel({
     required this.id,
@@ -15,6 +17,8 @@ class CommunityEventModel {
     required this.eventDate,
     required this.eventTime,
     required this.createdAt,
+    required this.imageUrl,
+    required this.societyID
   });
 
   Map<String, dynamic> toMap() {
@@ -28,6 +32,8 @@ class CommunityEventModel {
         'minute': eventTime.minute,
       },
       'createdAt': createdAt.millisecondsSinceEpoch,
+      'imageUrl' : imageUrl,
+      'societyID' : societyID
     };
   }
 
@@ -46,6 +52,8 @@ class CommunityEventModel {
       createdAt: DateTime.fromMillisecondsSinceEpoch(
         map['createdAt'],
       ),
+      imageUrl: map['imageUrl'],
+      societyID: map['societyID']
     );
   }
 
@@ -56,6 +64,8 @@ class CommunityEventModel {
     DateTime? eventDate,
     TimeOfDay? eventTime,
     DateTime? createdAt,
+    String? imageUrl,
+    String? societyID
   }) {
     return CommunityEventModel(
       id: id ?? this.id,
@@ -64,6 +74,8 @@ class CommunityEventModel {
       eventDate: eventDate ?? this.eventDate,
       eventTime: eventTime ?? this.eventTime,
       createdAt: createdAt ?? this.createdAt,
+      imageUrl: imageUrl ?? this.imageUrl,
+      societyID: societyID ?? this.societyID
     );
   }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portalixmx_resident_admin/core/res/app_icons.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/filter_tab_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/loading_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/resident_item_widget.dart';
+import 'package:portalixmx_resident_admin/router/app_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/res/app_colors.dart';
@@ -28,8 +30,11 @@ class HomePage extends StatelessWidget{
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
-                    child: CustomScrollView(
-                      slivers: [
+                    child: RefreshIndicator(
+                      onRefresh: () => provider.refresh(),
+                      child: CustomScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        slivers: [
                         SliverToBoxAdapter(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +76,7 @@ class HomePage extends StatelessWidget{
                               Row(
                                 spacing: 20,
                                 children: [
-                                  Expanded(child: _buildOverviewItemWidget(title: localization.totalResidents, icon: AppIcons.icUser, total: provider.totalResidents)),
+                                  Expanded(child: _buildOverviewItemWidget(title: localization.totalResidents, icon: AppIcons.icUser, total: provider.totalResidents,),),
                                   Expanded(child: _buildOverviewItemWidget(title: localization.totalPayments, icon: AppIcons.icPaymentsMenu, total: provider.totalPayments)),
                                 ],
                               ),
@@ -92,10 +97,18 @@ class HomePage extends StatelessWidget{
                         const SliverToBoxAdapter(child: SizedBox(height: 10)),
                         SliverToBoxAdapter(
                           child: Row(
-                            spacing: 10,
                             children: [
-                              FilterTabWidget(isSelected: provider.selectedTab == .approved, onTap: ()=> provider.onTabChange(.approved), title: localization.residents),
-                              FilterTabWidget(isSelected: provider.selectedTab == .pending, onTap: ()=> provider.onTabChange(.pending), title: localization.newRequests),
+                              Expanded(
+                                child: Row(
+                                  spacing: 10,
+                                  children: [
+                                    FilterTabWidget(isSelected: provider.selectedTab == .approved, onTap: ()=> provider.onTabChange(.approved), title: localization.residents),
+                                    FilterTabWidget(isSelected: provider.selectedTab == .pending, onTap: ()=> provider.onTabChange(.pending), title: localization.newRequests),
+                                  ],
+                                ),
+                              ),
+                              
+                              TextButton(onPressed: ()=> context.push(NamedRoutes.residents.routeName), child: Text(localization.viewAll, style: AppTextStyles.regularTextStyle,))
                             ],
                           ),
                         ),
@@ -112,7 +125,7 @@ class HomePage extends StatelessWidget{
                                     shape: BoxShape.circle
                                 ),
                                 padding: const EdgeInsets.all(10),
-                                margin: .only(top: 15),
+                                margin: const EdgeInsets.only(top: 15),
                                 child: SvgPicture.asset(
                                   AppIcons.icUser, colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),),
                               ),
@@ -131,6 +144,7 @@ class HomePage extends StatelessWidget{
                         const SliverToBoxAdapter(child: SizedBox(height: 24)),
                       ],
                     ),
+                    ),
                   ),
                 ),
                 if(provider.loading)
@@ -143,35 +157,38 @@ class HomePage extends StatelessWidget{
     );
   }
 
-  Widget _buildOverviewItemWidget({required String icon, required String title, required int total}) {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: AppColors.borderColor),
-          color: Colors.white
-      ),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        spacing: 10,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                color: AppColors.btnColor.withValues(alpha: 0.1),
-                shape: BoxShape.circle
+  Widget _buildOverviewItemWidget({required String icon, required String title, required int total, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: AppColors.borderColor),
+            color: Colors.white
+        ),
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          spacing: 10,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: AppColors.btnColor.withValues(alpha: 0.1),
+                  shape: BoxShape.circle
+              ),
+              padding: const EdgeInsets.all(10),
+              child: SvgPicture.asset(
+                icon, colorFilter: ColorFilter.mode(AppColors.btnColor, BlendMode.srcIn),),
             ),
-            padding: const EdgeInsets.all(10),
-            child: SvgPicture.asset(
-              icon, colorFilter: ColorFilter.mode(AppColors.btnColor, BlendMode.srcIn),),
-          ),
-          Column(
-            children: [
-              Text(total.toString(), style: AppTextStyles.regularTextStyle.copyWith(
-                  color: Colors.black),),
-              Text(title,
-                style: AppTextStyles.tileSubtitleTextStyle,)
-            ],
-          )
-        ],
+            Column(
+              children: [
+                Text(total.toString(), style: AppTextStyles.regularTextStyle.copyWith(
+                    color: Colors.black),),
+                Text(title,
+                  style: AppTextStyles.tileSubtitleTextStyle,)
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

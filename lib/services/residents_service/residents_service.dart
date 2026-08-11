@@ -14,7 +14,11 @@ class ResidentsService {
 
   Future<List<UserModel>> loadResidentsOfSociety({required String societyID}) async {
     try{
-      final querySnapshot = await _firestore.collection(FirebaseConst.residentsCol).where('societyID', isEqualTo: societyID).get();
+      final querySnapshot = await _firestore
+          .collection(
+          FirebaseConst.residentsCol)
+          .where('societyID', isEqualTo: societyID)
+          .get();
       return querySnapshot.docs.map((doc)=> UserModel.fromMap(doc.data())).toList();
     } catch (e) {
       throw 'Failed to load residents: $e';
@@ -36,6 +40,15 @@ class ResidentsService {
       return SocietyModel.fromMap(docSnap.data() as Map<String, dynamic>);
     } catch (e) {
       throw 'Failed to get user: $e';
+    }
+  }
+
+  Future<SocietyModel?> updateSociety({required SocietyModel society}) async {
+    try{
+      await _firestore.collection(FirebaseConst.societiesCol).doc(society.id).set(society.toMap());
+      return null;
+    } catch (e) {
+      throw 'Failed to update user: $e';
     }
   }
 }

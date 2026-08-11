@@ -9,11 +9,13 @@ class ResidentItemWidget extends StatelessWidget {
   const ResidentItemWidget({
     super.key,
     required this.resident,
-    this.onTap
+    this.onTap,
+    this.showStatus = false
   });
 
   final UserModel resident;
   final VoidCallback? onTap;
+  final bool showStatus;
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -30,7 +32,18 @@ class ResidentItemWidget extends StatelessWidget {
         ),
         title: Text(resident.userName, style: AppTextStyles.tileTitleTextStyle,),
         subtitle: Text(resident.phoneNum ?? resident.vehicleInformation?.name ?? '', style: AppTextStyles.tileSubtitleTextStyle,),
-
+        trailing: showStatus ? Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(99),
+            color: AppColors.primaryColor.withValues(alpha: 0.1),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          margin: .only(right: 10),
+          child: Text(
+            resident.status.name.toUpperCase(),
+            style: AppTextStyles.tileSubtitleTextStyle.copyWith(color: AppColors.primaryColor),
+          ),
+        ) : null,
       ),
     );
   }
