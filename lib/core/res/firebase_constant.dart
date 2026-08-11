@@ -11,6 +11,8 @@ class FirebaseConst {
   static const paymentsToAdminCol = 'payments_to_admin';
   static const communityCalendarEventsCol = 'community_calendar_events';
   static const communityPollsCol = 'community_polls';
+  static const fundReportsCol = 'fund_reports';
+
 
   // Visitor types
   static const visitorTypeGuest = 'guest';

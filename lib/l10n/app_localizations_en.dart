@@ -551,4 +551,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editCommunity => 'Edit Community';
+
+  @override
+  String get fundManagement => 'Fund Management';
+
+  @override
+  String get createFundReport => 'Create Fund Report';
+
+  @override
+  String get reportTitle => 'Report Title';
+
+  @override
+  String get income => 'Income';
+
+  @override
+  String get expenses => 'Expenses';
+
+  @override
+  String get expenseLabel => 'Expense Label';
+
+  @override
+  String get addExpense => 'Add Expense';
+
+  @override
+  String get balance => 'Balance';
+
+  @override
+  String get note => 'Note';
+
+  @override
+  String get publishReport => 'Publish Report';
+
+  @override
+  String get saveAsDraft => 'Save as Draft';
+
+  @override
+  String get published => 'Published';
+
+  @override
+  String get draft => 'Draft';
+
+  @override
+  String get emptyFundReportsMsg => 'No fund reports yet';
+
+  @override
+  String get totalExpenses => 'Total Expenses';
+
+  @override
+  String get noExpenses => 'No expenses listed';
 }

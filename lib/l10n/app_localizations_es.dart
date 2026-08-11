@@ -122,7 +122,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get description => 'Description';
 
   @override
-  String get amount => 'Amount';
+  String get amount => 'Monto';
 
   @override
   String get receipt => 'Payment Receipt';
@@ -540,10 +540,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get week => 'Week';
 
   @override
-  String get month => 'Month';
+  String get month => 'Mes';
 
   @override
-  String get year => 'Year';
+  String get year => 'Año';
 
   @override
   String get automaticVisitorCode => 'Visitor Code';
@@ -556,4 +556,52 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get editCommunity => 'Edit Community';
+
+  @override
+  String get fundManagement => 'Gestión de Fondos';
+
+  @override
+  String get createFundReport => 'Crear Informe de Fondos';
+
+  @override
+  String get reportTitle => 'Título del Informe';
+
+  @override
+  String get income => 'Ingresos';
+
+  @override
+  String get expenses => 'Gastos';
+
+  @override
+  String get expenseLabel => 'Concepto del Gasto';
+
+  @override
+  String get addExpense => 'Agregar Gasto';
+
+  @override
+  String get balance => 'Saldo';
+
+  @override
+  String get note => 'Nota';
+
+  @override
+  String get publishReport => 'Publicar Informe';
+
+  @override
+  String get saveAsDraft => 'Guardar como Borrador';
+
+  @override
+  String get published => 'Publicado';
+
+  @override
+  String get draft => 'Borrador';
+
+  @override
+  String get emptyFundReportsMsg => 'Aún no hay informes de fondos';
+
+  @override
+  String get totalExpenses => 'Gastos Totales';
+
+  @override
+  String get noExpenses => 'No hay gastos registrados';
 }

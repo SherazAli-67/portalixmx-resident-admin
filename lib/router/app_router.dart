@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portalixmx_resident_admin/core/models/community_event_model.dart';
 import 'package:portalixmx_resident_admin/core/models/community_poll_model.dart';
+import 'package:portalixmx_resident_admin/core/models/fund_report_model.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/core/models/user_model.dart';
 import 'package:portalixmx_resident_admin/presentation/screens/account_pending/account_pending_page.dart';
@@ -13,6 +14,8 @@ import 'package:portalixmx_resident_admin/presentation/screens/community_polls/c
 import 'package:portalixmx_resident_admin/presentation/screens/community_polls/community_polls_page.dart';
 import 'package:portalixmx_resident_admin/presentation/screens/edit_profile/edit_profile_page.dart';
 import 'package:portalixmx_resident_admin/presentation/screens/emergency_calls/emergency_calls_page.dart';
+import 'package:portalixmx_resident_admin/presentation/screens/fund_management/fund_management_page.dart';
+import 'package:portalixmx_resident_admin/presentation/screens/fund_management/fund_report_detail_page.dart';
 import 'package:portalixmx_resident_admin/presentation/screens/main_menu/residents/residents_page.dart';
 import 'package:portalixmx_resident_admin/presentation/screens/payment_to_admin_detail/payment_to_admin_detail_page.dart';
 import 'package:portalixmx_resident_admin/presentation/screens/profile_detail/profile_detail_page.dart';
@@ -157,6 +160,13 @@ GoRouter createAppRouter(ProfileProvider profileProvider) {
       GoRoute(
           path: NamedRoutes.emergencyCall.routeName,
           builder: (ctx, state) => EmergencyCallsPage()),
+      GoRoute(
+          path: NamedRoutes.fundManagement.routeName,
+          builder: (ctx, state) => FundManagementPage()),
+      GoRoute(
+          path: NamedRoutes.fundReportDetail.routeName,
+          builder: (ctx, state) => FundReportDetailPage(
+              report: state.extra as FundReportModel)),
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final loc = state.matchedLocation;
@@ -253,6 +263,8 @@ enum NamedRoutes {
   editCommunity('/edit-community'),
   emergencyCall('/emergency-calls'),
   communityDirectory('/community-edit_community'),
+  fundManagement('/fund-management'),
+  fundReportDetail('/fund-report-detail'),
   ;
 
   final String routeName;

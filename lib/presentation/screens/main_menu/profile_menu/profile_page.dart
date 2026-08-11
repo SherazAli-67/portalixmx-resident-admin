@@ -52,8 +52,8 @@ class ProfileMenu extends StatelessWidget{
               children: [
                 ProfileItemWidget(title: localizations.communityCalendar, icon: AppIcons.icCalendar, onTap: ()=> context.push(NamedRoutes.communityCalendar.routeName)),
                 ProfileItemWidget(title: localizations.communityPolls, icon: AppIcons.icCommunityPolls,  onTap: ()=> context.push(NamedRoutes.communityPolls.routeName)),
-                ProfileItemWidget(title: localizations.paymentToAdmin, icon: AppIcons.icPaymentsMenu, onTap: ()=> context.push(NamedRoutes.paymentsToAdmin.routeName)),
-                ProfileItemWidget(title: localizations.editCommunity, icon: AppIcons.icEdit, onTap: () => context.push(NamedRoutes.editCommunity.routeName)),
+                ProfileItemWidget(title: localizations.fundManagement, icon: AppIcons.icPaymentsMenu, onTap: ()=> context.push(NamedRoutes.fundManagement.routeName)),
+                ProfileItemWidget(title: localizations.paymentToAdmin, icon: AppIcons.icPaymentsMenu, onTap: ()=> context.push(NamedRoutes.paymentsToAdmin.routeName)),                ProfileItemWidget(title: localizations.editCommunity, icon: AppIcons.icEdit, onTap: () => context.push(NamedRoutes.editCommunity.routeName)),
                 ProfileItemWidget(title: localizations.directory, icon: AppIcons.icDirectory, onTap: () => context.push(NamedRoutes.communityDirectory.routeName)),
                 ProfileItemWidget(title: localizations.emergencyCalls, icon: AppIcons.icEmergencyCalls, onTap: ()=> context.push(NamedRoutes.emergencyCall.routeName)),
                 TextButton(onPressed: ()=> onPrivacyPolicyTap(localizations: localizations), child: Text(localizations.privacyPolicy, style: AppTextStyles.tileTitleTextStyle2, )),

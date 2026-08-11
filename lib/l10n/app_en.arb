@@ -175,5 +175,21 @@
   "automaticVisitorCode" : "Visitor Code",
   "generateAccessCode" : "Generate Access Code",
   "communityMembers" : "Community Members",
-  "editCommunity" : "Edit Community"
+  "editCommunity" : "Edit Community",
+  "fundManagement" : "Fund Management",
+  "createFundReport" : "Create Fund Report",
+  "reportTitle" : "Report Title",
+  "income" : "Income",
+  "expenses" : "Expenses",
+  "expenseLabel" : "Expense Label",
+  "addExpense" : "Add Expense",
+  "balance" : "Balance",
+  "note" : "Note",
+  "publishReport" : "Publish Report",
+  "saveAsDraft" : "Save as Draft",
+  "published" : "Published",
+  "draft" : "Draft",
+  "emptyFundReportsMsg" : "No fund reports yet",
+  "totalExpenses" : "Total Expenses",
+  "noExpenses" : "No expenses listed"
 }

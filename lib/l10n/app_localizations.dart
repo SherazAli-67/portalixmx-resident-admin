@@ -1129,6 +1129,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Community'**
   String get editCommunity;
+
+  /// No description provided for @fundManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Fund Management'**
+  String get fundManagement;
+
+  /// No description provided for @createFundReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Fund Report'**
+  String get createFundReport;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Title'**
+  String get reportTitle;
+
+  /// No description provided for @income.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get income;
+
+  /// No description provided for @expenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get expenses;
+
+  /// No description provided for @expenseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Label'**
+  String get expenseLabel;
+
+  /// No description provided for @addExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Expense'**
+  String get addExpense;
+
+  /// No description provided for @balance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get balance;
+
+  /// No description provided for @note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get note;
+
+  /// No description provided for @publishReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish Report'**
+  String get publishReport;
+
+  /// No description provided for @saveAsDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as Draft'**
+  String get saveAsDraft;
+
+  /// No description provided for @published.
+  ///
+  /// In en, this message translates to:
+  /// **'Published'**
+  String get published;
+
+  /// No description provided for @draft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get draft;
+
+  /// No description provided for @emptyFundReportsMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'No fund reports yet'**
+  String get emptyFundReportsMsg;
+
+  /// No description provided for @totalExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Expenses'**
+  String get totalExpenses;
+
+  /// No description provided for @noExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses listed'**
+  String get noExpenses;
 }
 
 class _AppLocalizationsDelegate
