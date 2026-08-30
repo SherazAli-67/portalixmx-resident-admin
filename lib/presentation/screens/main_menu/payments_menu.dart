@@ -78,6 +78,7 @@ class PaymentsMenu extends StatelessWidget{
                             itemCount: list.length,
                             itemBuilder: (ctx, index){
                               PaymentModel payment = list[index];
+                              final counts = provider.getCountsFor(payment.paymentID);
                               return GestureDetector(
                                 onTap: ()=> _onPaymentItemTap(context, payment: payment, provider: provider),
                                 child: Container(
@@ -97,16 +98,21 @@ class PaymentsMenu extends StatelessWidget{
                                             spacing: 2,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
+                                              Text(payment.paymentForTitle, style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor),),
+                                              Text(DateTimeFormatHelpers.formatDateTime(payment.dateTime), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.serviceSubTitleGreyColor),),
+                                              const SizedBox(height: 3,),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                mainAxisAlignment: .spaceBetween,
                                                 children: [
-                                                  Text(payment.paymentForTitle, style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor),),
+                                                  Text(payment.description, style: AppTextStyles.emergencyContactTitleTextStyle,),
                                                   Text("\$${payment.amount}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.btnColor),)
                                                 ],
                                               ),
-                                              Text(DateTimeFormatHelpers.formatDateTime(payment.dateTime), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.serviceSubTitleGreyColor),),
-                                              const SizedBox(height: 3,),
-                                              Text(payment.description, style: AppTextStyles.emergencyContactTitleTextStyle,)
+                                              const SizedBox(height: 4,),
+                                              Text(
+                                                '${counts.pending} ${localization.pending} · ${counts.submitted} ${localization.submitted} · ${counts.received} ${localization.received}',
+                                                style: TextStyle(fontSize: 10, fontWeight: .w500, color: AppColors.serviceSubTitleGreyColor),
+                                              )
                                             ],
                                           ),
                                         )
@@ -132,9 +138,7 @@ class PaymentsMenu extends StatelessWidget{
   }
   
   void _onPaymentItemTap(BuildContext context, {required PaymentModel payment, required PaymentProvider provider})async{
-   final result = await context.push(NamedRoutes.paymentDetail.routeName, extra: payment);
-   if(result != null && result == PaymentStatus.received){
-     provider.markPaymentAsReceived(payment);
-   }
+   await context.push(NamedRoutes.paymentDetail.routeName, extra: payment);
+   await provider.refreshPayments();
   }
 }

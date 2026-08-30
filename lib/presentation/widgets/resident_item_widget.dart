@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portalixmx_resident_admin/providers/datetime_format_helpers.dart';
 import '../../core/models/user_model.dart';
 import '../../core/res/app_colors.dart';
 import '../../core/res/app_textstyles.dart';
@@ -23,7 +24,7 @@ class ResidentItemWidget extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: .circular(15), side: BorderSide(color: AppColors.borderColor2)),
       child: ListTile(
         onTap: onTap ?? ()=> context.push(NamedRoutes.residentDetail.routeName, extra: resident),
-        contentPadding: EdgeInsets.only(left: 10),
+        contentPadding: .symmetric(horizontal: 10),
         leading: CircleAvatar(
           backgroundColor: AppColors.btnColor,
           child: Center(
@@ -43,7 +44,7 @@ class ResidentItemWidget extends StatelessWidget {
             resident.status.name.toUpperCase(),
             style: AppTextStyles.tileSubtitleTextStyle.copyWith(color: AppColors.primaryColor),
           ),
-        ) : null,
+        ) : Text(DateTimeFormatHelpers.formatDateTime(resident.createdAt), style: AppTextStyles.tileSubtitleTextStyle),
       ),
     );
   }

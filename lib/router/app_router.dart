@@ -41,6 +41,7 @@ import '../presentation/screens/main_menu/profile_menu/profile_page.dart';
 import '../presentation/screens/main_menu/main_menu.dart';
 import '../presentation/screens/payment_detail/payment_detail_page.dart';
 import '../presentation/screens/payments_to_admin/payments_to_admin_page.dart';
+import '../presentation/screens/transfer_ownership/transfer_ownership_page.dart';
 
 GoRouter createAppRouter(ProfileProvider profileProvider) {
   return GoRouter(
@@ -152,6 +153,9 @@ GoRouter createAppRouter(ProfileProvider profileProvider) {
               create: (_)=> EditUpdateCommunityProvider(),
               child: EditCommunity())),
       GoRoute(
+          path: NamedRoutes.transferOwnership.routeName,
+          builder: (ctx, state) => const TransferOwnershipPage()),
+      GoRoute(
           path: NamedRoutes.communityDirectory.routeName,
           builder: (ctx, state) => CommunityDirectoryPage()),
       GoRoute(
@@ -261,6 +265,7 @@ enum NamedRoutes {
   paymentsToAdmin('/payments-to-admin'),
   paymentsToAdminDetail('/payments-to-admin-detail'),
   editCommunity('/edit-community'),
+  transferOwnership('/transfer-ownership'),
   emergencyCall('/emergency-calls'),
   communityDirectory('/community-edit_community'),
   fundManagement('/fund-management'),

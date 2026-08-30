@@ -40,6 +40,7 @@
   "pending" : "Pending",
   "approved" : "Approved",
   "received" : "Received",
+  "submitted" : "Submitted",
   "markAsResolved" : "Mark as resolved",
   "markAsInProgress" : "Mark as In-progress",
   "markAsReceived" : "Mark as received",
@@ -191,5 +192,21 @@
   "draft" : "Draft",
   "emptyFundReportsMsg" : "No fund reports yet",
   "totalExpenses" : "Total Expenses",
-  "noExpenses" : "No expenses listed"
+  "noExpenses" : "No expenses listed",
+  "transferOwnership" : "Transfer Ownership",
+  "transferOwnershipDescription" : "Hand over society management to another admin who has already signed up for this society. You will lose admin access.",
+  "selectNewAdmin" : "Select new admin",
+  "confirmTransfer" : "Confirm Transfer",
+  "confirmTransferMessage" : "Transfer ownership to {name}? You will lose admin access immediately.",
+  "@confirmTransferMessage" : {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transferSuccess" : "Ownership transferred successfully",
+  "noTransferCandidates" : "No other admins have signed up for this society yet",
+  "notSocietyOwner" : "Only the society owner can transfer ownership",
+  "cancel" : "Cancel"
 }

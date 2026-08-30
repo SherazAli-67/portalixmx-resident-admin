@@ -140,6 +140,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get received => 'Received';
 
   @override
+  String get submitted => 'Submitted';
+
+  @override
   String get markAsResolved => 'Mark as resolved';
 
   @override
@@ -599,4 +602,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noExpenses => 'No expenses listed';
+
+  @override
+  String get transferOwnership => 'Transfer Ownership';
+
+  @override
+  String get transferOwnershipDescription =>
+      'Hand over society management to another admin who has already signed up for this society. You will lose admin access.';
+
+  @override
+  String get selectNewAdmin => 'Select new admin';
+
+  @override
+  String get confirmTransfer => 'Confirm Transfer';
+
+  @override
+  String confirmTransferMessage(String name) {
+    return 'Transfer ownership to $name? You will lose admin access immediately.';
+  }
+
+  @override
+  String get transferSuccess => 'Ownership transferred successfully';
+
+  @override
+  String get noTransferCandidates =>
+      'No other admins have signed up for this society yet';
+
+  @override
+  String get notSocietyOwner => 'Only the society owner can transfer ownership';
+
+  @override
+  String get cancel => 'Cancel';
 }

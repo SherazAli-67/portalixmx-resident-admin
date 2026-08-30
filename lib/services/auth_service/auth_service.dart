@@ -23,6 +23,7 @@ class AuthService {
        String? profilePicture = await updateProfilePicture(image);
        UserModel user = UserModel(userID: authUser.uid, userName: name, email: email, createdAt: DateTime.now().toUtc(), societyID: societyID, profileImg: profilePicture);
        await _firestore.collection(FirebaseConst.residentAdminCol).doc(user.userID).set(user.toMap());
+       await _claimSocietyAdminIfEmpty(societyID: societyID, adminUid: user.userID);
        return authUser;
      }
      return null;
@@ -172,5 +173,22 @@ class AuthService {
     }catch(e){
       throw Exception("Failed to upload image: ${e.toString()}");
     }
+  }
+
+  Future<void> _claimSocietyAdminIfEmpty({
+    required String societyID,
+    required String adminUid,
+  }) async {
+    final societyRef =
+        _firestore.collection(FirebaseConst.societiesCol).doc(societyID);
+    await _firestore.runTransaction((transaction) async {
+      final snap = await transaction.get(societyRef);
+      if (!snap.exists) return;
+      final data = snap.data() as Map<String, dynamic>;
+      final currentAdmin = data['residentAdmin'] as String?;
+      if (currentAdmin == null || currentAdmin.isEmpty) {
+        transaction.update(societyRef, {'residentAdmin': adminUid});
+      }
+    });
   }
 }

@@ -132,5 +132,22 @@
   "noExpenses" : "No hay gastos registrados",
   "month" : "Mes",
   "year" : "Año",
-  "amount" : "Monto"
+  "amount" : "Monto",
+  "transferOwnership" : "Transferir Propiedad",
+  "transferOwnershipDescription" : "Entrega la gestión de la sociedad a otro administrador que ya se haya registrado para esta sociedad. Perderás el acceso de administrador.",
+  "selectNewAdmin" : "Seleccionar nuevo administrador",
+  "confirmTransfer" : "Confirmar Transferencia",
+  "confirmTransferMessage" : "¿Transferir la propiedad a {name}? Perderás el acceso de administrador inmediatamente.",
+  "@confirmTransferMessage" : {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transferSuccess" : "Propiedad transferida exitosamente",
+  "noTransferCandidates" : "Ningún otro administrador se ha registrado para esta sociedad",
+  "notSocietyOwner" : "Solo el propietario de la sociedad puede transferir la propiedad",
+  "cancel" : "Cancelar",
+  "submitted" : "Enviado"
 }

@@ -338,6 +338,12 @@ abstract class AppLocalizations {
   /// **'Received'**
   String get received;
 
+  /// No description provided for @submitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted'**
+  String get submitted;
+
   /// No description provided for @markAsResolved.
   ///
   /// In en, this message translates to:
@@ -1225,6 +1231,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No expenses listed'**
   String get noExpenses;
+
+  /// No description provided for @transferOwnership.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer Ownership'**
+  String get transferOwnership;
+
+  /// No description provided for @transferOwnershipDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand over society management to another admin who has already signed up for this society. You will lose admin access.'**
+  String get transferOwnershipDescription;
+
+  /// No description provided for @selectNewAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Select new admin'**
+  String get selectNewAdmin;
+
+  /// No description provided for @confirmTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Transfer'**
+  String get confirmTransfer;
+
+  /// No description provided for @confirmTransferMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer ownership to {name}? You will lose admin access immediately.'**
+  String confirmTransferMessage(String name);
+
+  /// No description provided for @transferSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Ownership transferred successfully'**
+  String get transferSuccess;
+
+  /// No description provided for @noTransferCandidates.
+  ///
+  /// In en, this message translates to:
+  /// **'No other admins have signed up for this society yet'**
+  String get noTransferCandidates;
+
+  /// No description provided for @notSocietyOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the society owner can transfer ownership'**
+  String get notSocietyOwner;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

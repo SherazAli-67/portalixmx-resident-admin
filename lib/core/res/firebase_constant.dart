@@ -8,6 +8,7 @@ class FirebaseConst {
   static const accessRequestsCol = 'access_requests';
   static const accessCol = 'access';
   static const paymentsCol = 'payments';
+  static const paymentsSubmittedCol = 'payments_submitted';
   static const paymentsToAdminCol = 'payments_to_admin';
   static const communityCalendarEventsCol = 'community_calendar_events';
   static const communityPollsCol = 'community_polls';

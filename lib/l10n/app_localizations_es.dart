@@ -140,6 +140,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get received => 'Received';
 
   @override
+  String get submitted => 'Enviado';
+
+  @override
   String get markAsResolved => 'Mark as resolved';
 
   @override
@@ -604,4 +607,36 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noExpenses => 'No hay gastos registrados';
+
+  @override
+  String get transferOwnership => 'Transferir Propiedad';
+
+  @override
+  String get transferOwnershipDescription =>
+      'Entrega la gestión de la sociedad a otro administrador que ya se haya registrado para esta sociedad. Perderás el acceso de administrador.';
+
+  @override
+  String get selectNewAdmin => 'Seleccionar nuevo administrador';
+
+  @override
+  String get confirmTransfer => 'Confirmar Transferencia';
+
+  @override
+  String confirmTransferMessage(String name) {
+    return '¿Transferir la propiedad a $name? Perderás el acceso de administrador inmediatamente.';
+  }
+
+  @override
+  String get transferSuccess => 'Propiedad transferida exitosamente';
+
+  @override
+  String get noTransferCandidates =>
+      'Ningún otro administrador se ha registrado para esta sociedad';
+
+  @override
+  String get notSocietyOwner =>
+      'Solo el propietario de la sociedad puede transferir la propiedad';
+
+  @override
+  String get cancel => 'Cancelar';
 }

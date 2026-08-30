@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/res/app_colors.dart';
 import '../../../../core/res/app_textstyles.dart';
@@ -49,7 +50,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         Padding(
           padding: const EdgeInsets.only(top: 65.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: .spaceBetween,
             children: [
               BackButton(color: Colors.white,),
               Text(AppLocalizations.of(context)!.profile, style: AppTextStyles.regularTextStyle,),
@@ -127,13 +128,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
       return;
     }
 
-
     String? isError = await provider.onUpdateTap(name: name, phoneNum: phone, );
     if(isError != null){
       Fluttertoast.showToast(msg: isError);
       return;
     }
 
-    Navigator.pop(context);
+    context.pop();
   }
 }

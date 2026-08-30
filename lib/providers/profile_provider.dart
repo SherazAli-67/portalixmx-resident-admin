@@ -74,8 +74,7 @@ class ProfileProvider extends ChangeNotifier {
 
   void onPickImageTap() async {
     ImagePicker imagePicker = ImagePicker();
-    XFile? selectedImage =
-        await imagePicker.pickImage(source: ImageSource.gallery);
+    XFile? selectedImage = await imagePicker.pickImage(source: ImageSource.gallery);
     if (selectedImage != null) {
       _pickedImage = selectedImage;
       notifyListeners();
@@ -91,8 +90,13 @@ class ProfileProvider extends ChangeNotifier {
       _updatingProfile = true;
       notifyListeners();
       try {
+        String? imageUrl = user?.profileImg;
+        if(_pickedImage != null){
+          imageUrl = await _profileService.uploadImage(selectedImageFile: _pickedImage!, userID: user!.userID);
+        }
         final updatedUser = user!.copyWith(
           userName: name,
+          profileImg: imageUrl,
           phoneNum: phoneNum.isNotEmpty ? phoneNum : null,
         );
         _user = updatedUser;

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:portalixmx_resident_admin/core/app_data/app_data.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
+import 'package:portalixmx_resident_admin/core/models/payment_submitted_model.dart';
 import 'package:portalixmx_resident_admin/core/models/user_model.dart';
 import 'package:portalixmx_resident_admin/services/user_service/user_service.dart';
 import '../../core/res/firebase_constant.dart';
@@ -77,11 +78,45 @@ class PaymentsService {
 
   Future<List<PaymentModel>> getUserPaymentHistory({required String userID}) async {
     try {
+      final user = await UserService.instance.getUserByID(userID: userID);
+      if (user == null) return [];
+      final payments = await getPayments(user.societyID);
+      final matches = await Future.wait(payments.map((payment) async {
+        final doc = await _firestore
+            .collection(FirebaseConst.paymentsCol)
+            .doc(payment.paymentID)
+            .collection(FirebaseConst.paymentsSubmittedCol)
+            .doc(userID)
+            .get();
+        return doc.exists ? payment : null;
+      }));
+      return matches.whereType<PaymentModel>().toList();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<List<PaymentSubmittedModel>> getSubmissions({required String paymentID}) async {
+    try {
       final snapshot = await _firestore
           .collection(FirebaseConst.paymentsCol)
-          .where('paymentByUID', isEqualTo: userID)
+          .doc(paymentID)
+          .collection(FirebaseConst.paymentsSubmittedCol)
           .get();
-      return snapshot.docs.map((doc)=> PaymentModel.fromMap(doc.data())).toList();
+      return snapshot.docs.map((doc) => PaymentSubmittedModel.fromMap(doc.data())).toList();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> markResidentPaymentReceived({required String paymentID, required String residentUid}) async {
+    try {
+      await _firestore
+          .collection(FirebaseConst.paymentsCol)
+          .doc(paymentID)
+          .collection(FirebaseConst.paymentsSubmittedCol)
+          .doc(residentUid)
+          .update({'approvedOnDate': DateTime.now().toUtc().toIso8601String()});
     } catch (e) {
       throw Exception(e.toString());
     }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,7 @@ import 'package:portalixmx_resident_admin/core/res/app_icons.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/filter_tab_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/loading_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/resident_item_widget.dart';
+import 'package:portalixmx_resident_admin/providers/profile_provider.dart';
 import 'package:portalixmx_resident_admin/router/app_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/models/user_model.dart';
@@ -39,15 +41,16 @@ class HomePage extends StatelessWidget{
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              FutureBuilder(future: provider.getCurrentUser(), builder: (ctx, snapshot){
-                                UserModel? user = snapshot.data;
+                              Consumer<ProfileProvider>(builder: (ctx, provider, _){
+                                UserModel? user = provider.user;
                                 if(user != null){
                                   return Row(
                                     spacing: 10,
                                     children: [
                                       CircleAvatar(
                                         backgroundColor: AppColors.btnColor,
-                                        child: Center(child: Icon(Icons.person, color: Colors.white,),),
+                                        backgroundImage: user.profileImg != null ? CachedNetworkImageProvider(user.profileImg!) : null,
+                                        child:user.profileImg == null ? Center(child: Icon(Icons.person, color: Colors.white,),) : null,
                                       ),
                                       Text(localization.welcomeMessage(user.userName), style: AppTextStyles.regularTextStyle,)
                                     ],
@@ -55,6 +58,7 @@ class HomePage extends StatelessWidget{
                                 }
                                 return Text(localization.welcomeMessage(''), style: AppTextStyles.regularTextStyle,);
                               }),
+
                             ],
                           ),
                         ),
