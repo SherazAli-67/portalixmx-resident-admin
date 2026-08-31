@@ -56,7 +56,7 @@ class ProfileMenu extends StatelessWidget{
                 ProfileItemWidget(title: localizations.paymentToAdmin, icon: AppIcons.icPaymentsMenu, onTap: ()=> context.push(NamedRoutes.paymentsToAdmin.routeName)),
                 ProfileItemWidget(title: localizations.editCommunity, icon: AppIcons.icEdit, onTap: () => context.push(NamedRoutes.editCommunity.routeName)),
                 ProfileItemWidget(title: localizations.directory, icon: AppIcons.icDirectory, onTap: () => context.push(NamedRoutes.communityDirectory.routeName)),
-                ProfileItemWidget(title: localizations.emergencyCalls, icon: AppIcons.icEmergencyCalls, onTap: ()=> context.push(NamedRoutes.emergencyCall.routeName)),
+                // ProfileItemWidget(title: localizations.emergencyCalls, icon: AppIcons.icEmergencyCalls, onTap: ()=> context.push(NamedRoutes.emergencyCall.routeName)),
                 TextButton(onPressed: ()=> onPrivacyPolicyTap(localizations: localizations), child: Text(localizations.privacyPolicy, style: AppTextStyles.tileTitleTextStyle2, )),
                 TextButton(onPressed: ()=> onTermsConditionTap(localizations: localizations), child: Text(localizations.termsCondition, style: AppTextStyles.tileTitleTextStyle2,)),
                 TextButton(onPressed: ()=> _onLogoutTap(context), child: Text(localizations.logout, style: AppTextStyles.tileTitleTextStyle2,)),

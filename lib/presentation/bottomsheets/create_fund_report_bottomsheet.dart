@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../core/res/app_colors.dart';
@@ -30,8 +31,7 @@ class CreateFundReportBottomSheet extends StatefulWidget {
       _CreateFundReportBottomSheetState();
 }
 
-class _CreateFundReportBottomSheetState
-    extends State<CreateFundReportBottomSheet> {
+class _CreateFundReportBottomSheetState extends State<CreateFundReportBottomSheet> {
   final TextEditingController _titleController = .new();
   final TextEditingController _incomeController = .new();
   final TextEditingController _balanceController = .new();
@@ -42,7 +42,7 @@ class _CreateFundReportBottomSheetState
   late int _selectedYear;
   bool _balanceManuallyEdited = false;
   bool _updatingBalanceProgrammatically = false;
-
+  bool showReportToResidents = false;
   @override
   void initState() {
     super.initState();
@@ -223,6 +223,13 @@ class _CreateFundReportBottomSheetState
               child: Column(
                 spacing: 12,
                 children: [
+                  Row(
+                    mainAxisAlignment: .spaceBetween,
+                    children: [
+                      Text(l.showReportToResidents, style:  AppTextStyles.regularTextStyle.copyWith(color: AppColors.primaryColor),),
+                      CupertinoSwitch(value: showReportToResidents, onChanged: (val) => setState(() => showReportToResidents = val))
+                    ],
+                  ),
                   SizedBox(
                     height: 50,
                     width: double.infinity,
@@ -275,6 +282,7 @@ class _CreateFundReportBottomSheetState
       'balance': resolvedBalance,
       'note': _noteController.text.trim(),
       'publish': publish,
+      'showReportToResident' : showReportToResidents
     });
   }
 }

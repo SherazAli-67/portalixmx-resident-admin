@@ -79,6 +79,8 @@
   "delete" : "Delete",
   "from" : "From",
   "to" : "To",
+  "dateFrom" : "Date From",
+  "dateTo" : "Date To",
   "shareKey" : "Share Key",
   "qrCode"  : "QR CODE",
   "paymentsAndBilling"  :"Payments & Billing",
@@ -208,5 +210,6 @@
   "transferSuccess" : "Ownership transferred successfully",
   "noTransferCandidates" : "No other admins have signed up for this society yet",
   "notSocietyOwner" : "Only the society owner can transfer ownership",
-  "cancel" : "Cancel"
+  "cancel" : "Cancel",
+  "showReportToResidents" : "Show report to residents"
 }

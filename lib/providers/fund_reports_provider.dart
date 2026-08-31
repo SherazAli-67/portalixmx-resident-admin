@@ -68,6 +68,7 @@ class FundReportsProvider extends ChangeNotifier {
         .toList();
     final publish = result['publish'] as bool? ?? false;
     final now = DateTime.now().toUtc();
+    final showReportToResident = result['showReportToResident'] as bool? ?? false;
     final report = FundReportModel(
       id: now.millisecondsSinceEpoch.toString(),
       societyID: user.societyID,
@@ -83,6 +84,7 @@ class FundReportsProvider extends ChangeNotifier {
       note: result['note'] as String? ?? '',
       status: publish ? .published : .draft,
       publishedAt: publish ? now : null,
+      showToResidents: showReportToResident
     );
 
     try {

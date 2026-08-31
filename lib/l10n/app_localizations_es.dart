@@ -258,6 +258,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get to => 'A';
 
   @override
+  String get dateFrom => 'Fecha desde';
+
+  @override
+  String get dateTo => 'Fecha hasta';
+
+  @override
   String get shareKey => 'Compartir Clave';
 
   @override
@@ -639,4 +645,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cancel => 'Cancelar';
+
+  @override
+  String get showReportToResidents => 'Mostrar informe a los residentes';
 }

@@ -258,6 +258,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get to => 'To';
 
   @override
+  String get dateFrom => 'Date From';
+
+  @override
+  String get dateTo => 'Date To';
+
+  @override
   String get shareKey => 'Share Key';
 
   @override
@@ -633,4 +639,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get showReportToResidents => 'Show report to residents';
 }

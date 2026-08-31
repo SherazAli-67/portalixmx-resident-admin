@@ -58,6 +58,7 @@ class FundReportModel {
   final String note;
   final FundReportStatus status;
   final DateTime? publishedAt;
+  final bool showToResidents;
 
   FundReportModel({
     required this.id,
@@ -74,6 +75,7 @@ class FundReportModel {
     this.note = '',
     this.status = .draft,
     this.publishedAt,
+    this.showToResidents = false
   });
 
   double get totalExpenses =>
@@ -95,6 +97,7 @@ class FundReportModel {
       'note': note,
       'status': status.index,
       'publishedAt': publishedAt?.toIso8601String(),
+      'showToResidents': showToResidents
     };
   }
 
@@ -126,6 +129,7 @@ class FundReportModel {
       publishedAt: map['publishedAt'] != null
           ? DateTime.parse(map['publishedAt'])
           : null,
+        showToResidents: map['showToResidents'] ?? false
     );
   }
 
@@ -144,6 +148,7 @@ class FundReportModel {
     String? note,
     FundReportStatus? status,
     DateTime? publishedAt,
+    bool? showToResidents
   }) {
     return FundReportModel(
       id: id ?? this.id,
@@ -160,6 +165,7 @@ class FundReportModel {
       note: note ?? this.note,
       status: status ?? this.status,
       publishedAt: publishedAt ?? this.publishedAt,
+      showToResidents: showToResidents ?? this.showToResidents
     );
   }
 }

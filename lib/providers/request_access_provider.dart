@@ -8,6 +8,7 @@ import '../core/models/user_model.dart';
 import '../core/res/app_colors.dart';
 import '../services/access_requests_service/access_request_service.dart';
 import '../services/user_service/user_service.dart';
+import 'datetime_format_helpers.dart';
 
 class RequestAccessProvider extends ChangeNotifier {
   final _requestsService = AccessRequestService.instance;
@@ -23,10 +24,19 @@ class RequestAccessProvider extends ChangeNotifier {
 
   final List<String> _filters = ['Access Requests', 'Access',];
   String _selectedFilter = 'Access Requests';
+  DateTime? _dateFrom;
+  DateTime? _dateTo;
   List<AccessRequestModel> get allAccessRequests => _allAccessRequests;
+  List<AccessRequestModel> get filteredAccessRequests {
+    return _allAccessRequests.where((request) {
+      return DateTimeFormatHelpers.isInInclusiveDateRange(request.createdAt, _dateFrom, _dateTo);
+    }).toList();
+  }
   List<AccessModel> get allAccessItems => _allAccess;
   List<String> get filters => _filters;
   String get selectedFilter => _selectedFilter;
+  DateTime? get dateFrom => _dateFrom;
+  DateTime? get dateTo => _dateTo;
   RequestAccessProvider(){
     _initRequests();
     _initAccess();
@@ -80,41 +90,17 @@ class RequestAccessProvider extends ChangeNotifier {
   void onFilterUpdated(dynamic val){
     _selectedFilter = val;
     notifyListeners();
-    /*if(_selectedFilter == 'All'){
-      _filteredAccessRequests = _allAccessRequests;
-    }else if(_selectedFilter == 'Week'){
-      _filteredAccessRequests = _getComplaintsOfCurrentWeek();
-    }else{
-      _filteredAccessRequests = _getComplaintsOfCurrentMonth();
-    }
-    notifyListeners();*/
   }
 
- /* List<AccessRequestModel> _getComplaintsOfCurrentWeek() {
-    final now = DateTime.now();
-    final end = DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
-    final start = end.subtract(const Duration(days: 7));
-
-    return _allAccessRequests.where((complaint) {
-      return complaint.createdAt.isAfter(start) &&
-          complaint.createdAt.isBefore(end);
-    }).toList();
+  void onDateFromChanged(DateTime? date){
+    _dateFrom = date;
+    notifyListeners();
   }
 
-  List<AccessRequestModel> _getComplaintsOfCurrentMonth() {
-    final now = DateTime.now();
-
-    final start = DateTime(now.year, now.month, 1);
-
-    final end = (now.month < 12)
-        ? DateTime(now.year, now.month + 1, 1)
-        : DateTime(now.year + 1, 1, 1);
-
-    return _allAccessRequests.where((complaint) {
-      return complaint.createdAt.isAfter(start) &&
-          complaint.createdAt.isBefore(end);
-    }).toList();
-  }*/
+  void onDateToChanged(DateTime? date){
+    _dateTo = date;
+    notifyListeners();
+  }
 
   Future<UserModel?> getUserByID({required String userID}) async {
     try{

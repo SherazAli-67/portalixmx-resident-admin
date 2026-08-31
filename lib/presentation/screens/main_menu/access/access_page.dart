@@ -13,6 +13,7 @@ import '../../../../providers/datetime_format_helpers.dart';
 import '../../../../providers/request_access_provider.dart';
 import '../../../../router/app_router.dart';
 import '../../../widgets/bg_gradient_screen.dart';
+import '../../../widgets/date_range_filter_widget.dart';
 import '../../../widgets/loading_widget.dart';
 import '../../../widgets/popup_menu_item_widget.dart';
 
@@ -57,10 +58,16 @@ class AccessMenu extends StatelessWidget{
                                     onPressed: ()=> provider.onFilterUpdated(provider.filters[index]), child: Text(provider.filters[index], style: AppTextStyles.tabsTextStyle.copyWith(color: isSelected ? Colors.white : AppColors.primaryColor),));
                               })
                           ),
-
+                          if(provider.selectedFilter == provider.filters.first)
+                            DateRangeFilterWidget(
+                              dateFrom: provider.dateFrom,
+                              dateTo: provider.dateTo,
+                              onDateFromChanged: provider.onDateFromChanged,
+                              onDateToChanged: provider.onDateToChanged,
+                            ),
                             Expanded(
                               child: provider.selectedFilter == provider.filters.first
-                                  ? _buildAccessRequestWidget(context, localization: localization, accessRequests: provider.allAccessRequests, provider: provider)
+                                  ? _buildAccessRequestWidget(context, localization: localization, accessRequests: provider.filteredAccessRequests, provider: provider)
                                   : _buildAccessWidget(context, provider: provider, localizations: localization),
                           )
                         ],

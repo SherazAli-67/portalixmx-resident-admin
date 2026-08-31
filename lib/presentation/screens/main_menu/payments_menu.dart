@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/app_dropdown_widget.dart';
+import 'package:portalixmx_resident_admin/presentation/widgets/date_range_filter_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/full_page_loading_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/loading_widget.dart';
 import 'package:portalixmx_resident_admin/providers/datetime_format_helpers.dart';
@@ -48,14 +49,13 @@ class PaymentsMenu extends StatelessWidget{
                         )
                       ],
                     ),
-                    Row(
-                      spacing: 20,
-                      children: [
-                        Expanded(child: AppDropdownWidget<String>(list: provider.getFilterList(localization), title: 'Date', value: provider.selectedFilter, onChanged: (val)=> provider.onChangeFilterTap(val), getTitle: (item) => item)),
-                        Expanded(child: AppDropdownWidget<String>(list: provider.getStatusList(localization), title: 'Status', value: provider.selectedPaymentStatusFilter, onChanged: (val)=> provider.onChangeStatusFilterTap(val), getTitle: (item) => item)),
-
-                      ],
+                    DateRangeFilterWidget(
+                      dateFrom: provider.dateFrom,
+                      dateTo: provider.dateTo,
+                      onDateFromChanged: provider.onDateFromChanged,
+                      onDateToChanged: provider.onDateToChanged,
                     ),
+                    // AppDropdownWidget<String>(list: provider.getStatusList(localization), title: 'Status', value: provider.selectedPaymentStatusFilter, onChanged: (val)=> provider.onChangeStatusFilterTap(val), getTitle: (item) => item),
                     Expanded(
                         child: provider.loadingPayments
                             ? LoadingWidget()

@@ -12,6 +12,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../providers/datetime_format_helpers.dart';
 import '../../../../providers/maintenance_provider.dart';
 import '../../../widgets/bg_gradient_screen.dart';
+import '../../../widgets/date_range_filter_widget.dart';
 import '../../../widgets/loading_widget.dart';
 
 class MaintenanceMenu extends StatelessWidget {
@@ -45,25 +46,11 @@ class MaintenanceMenu extends StatelessWidget {
                               localizations.maintenance, textAlign: .center,
                               style: AppTextStyles.headingTextStyle,),
                           )),
-                      Row(
-                          spacing: 20,
-                          children: List.generate(
-                              provider.filters.length, (index) {
-                            bool isSelected = provider.selectedFilter ==
-                                provider.filters[index];
-                            return ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: isSelected ? AppColors
-                                        .btnColor : Colors.white),
-                                onPressed: () =>
-                                    provider.onFilterUpdated(
-                                    provider.filters[index]),
-                                child: Text(provider.filters[index],
-                                  style: AppTextStyles.tabsTextStyle.copyWith(
-                                      color: isSelected
-                                          ? Colors.white
-                                          : AppColors.primaryColor),));
-                          })
+                      DateRangeFilterWidget(
+                        dateFrom: provider.dateFrom,
+                        dateTo: provider.dateTo,
+                        onDateFromChanged: provider.onDateFromChanged,
+                        onDateToChanged: provider.onDateToChanged,
                       ),
                       Expanded(
                         child: provider.loadingComplaints
@@ -161,7 +148,7 @@ class MaintenanceMenu extends StatelessWidget {
                           ],
                         ),
                       ),
-                      if(complaint.status == .pending)
+                      if(complaint.status != .resolved)
                         PopupMenuButton<ComplaintStatus>(
                         elevation: 0,
                         color: Colors.white,

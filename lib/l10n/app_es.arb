@@ -33,6 +33,8 @@
   "delete" : "Eliminar",
   "from" : "De",
   "to" : "A",
+  "dateFrom" : "Fecha desde",
+  "dateTo" : "Fecha hasta",
   "shareKey" : "Compartir Clave",
   "qrCode"  : "CÓDIGO QR",
   "paymentsAndBilling"  :"Pagos y Facturación",
@@ -149,5 +151,6 @@
   "noTransferCandidates" : "Ningún otro administrador se ha registrado para esta sociedad",
   "notSocietyOwner" : "Solo el propietario de la sociedad puede transferir la propiedad",
   "cancel" : "Cancelar",
-  "submitted" : "Enviado"
+  "submitted" : "Enviado",
+  "showReportToResidents" : "Mostrar informe a los residentes"
 }

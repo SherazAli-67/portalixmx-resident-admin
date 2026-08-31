@@ -572,6 +572,18 @@ abstract class AppLocalizations {
   /// **'To'**
   String get to;
 
+  /// No description provided for @dateFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Date From'**
+  String get dateFrom;
+
+  /// No description provided for @dateTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Date To'**
+  String get dateTo;
+
   /// No description provided for @shareKey.
   ///
   /// In en, this message translates to:
@@ -1285,6 +1297,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  /// No description provided for @showReportToResidents.
+  ///
+  /// In en, this message translates to:
+  /// **'Show report to residents'**
+  String get showReportToResidents;
 }
 
 class _AppLocalizationsDelegate

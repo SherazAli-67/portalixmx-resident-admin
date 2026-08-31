@@ -10,6 +10,7 @@ import '../presentation/screens/main_menu/main_menu.dart';
 import '../router/app_router.dart';
 import '../services/complaints_service/complaints_service.dart';
 import '../services/user_service/user_service.dart';
+import 'datetime_format_helpers.dart';
 
 class ComplaintDateGroup {
   final DateTime date;
@@ -24,14 +25,14 @@ class MaintenanceProvider extends ChangeNotifier {
   List<ComplaintModel> _allComplaints  = [];
   List<ComplaintModel> _filteredComplaints  = [];
 
-  final List<String> _filters = ['All', 'Week', 'Month',];
-  String _selectedFilter = 'All';
+  DateTime? _dateFrom;
+  DateTime? _dateTo;
   String? error;
   final _complaintService = ComplaintsService.instance;
   List<ComplaintModel> get allComplaints => _allComplaints;
   List<ComplaintModel> get filteredComplaints => _filteredComplaints;
-  List<String> get filters => _filters;
-  String get selectedFilter => _selectedFilter;
+  DateTime? get dateFrom => _dateFrom;
+  DateTime? get dateTo => _dateTo;
 
   List<ComplaintDateGroup> get complaintsGroupedByDate {
     final map = <DateTime, List<ComplaintModel>>{};
@@ -78,6 +79,7 @@ class MaintenanceProvider extends ChangeNotifier {
         ComplaintModel? complaint = await _complaintService.addComplaint(complaintText: complaintText,);
         if(complaint != null){
           _allComplaints.add(complaint);
+          _applyDateFilter();
         }
         addingComplaint = true;
         notifyListeners();
@@ -119,50 +121,28 @@ class MaintenanceProvider extends ChangeNotifier {
         return;
       }
       _allComplaints = await _complaintService.getAllComplaints(societyID: user.societyID);
-      onFilterUpdated(_selectedFilter);
-      notifyListeners();
+      _applyDateFilter();
     } catch (e) {
       debugPrint("Error while refreshing complaints: ${e.toString()}");
       notifyListeners();
     }
   }
 
-  void onFilterUpdated(dynamic val){
-    _selectedFilter = val;
-    if(_selectedFilter == 'All'){
-      _filteredComplaints = _allComplaints;
-    }else if(_selectedFilter == 'Week'){
-      _filteredComplaints = _getComplaintsOfCurrentWeek();
-    }else{
-      _filteredComplaints = _getComplaintsOfCurrentMonth();
-    }
+  void onDateFromChanged(DateTime? date){
+    _dateFrom = date;
+    _applyDateFilter();
+  }
+
+  void onDateToChanged(DateTime? date){
+    _dateTo = date;
+    _applyDateFilter();
+  }
+
+  void _applyDateFilter(){
+    _filteredComplaints = _allComplaints.where((complaint) {
+      return DateTimeFormatHelpers.isInInclusiveDateRange(complaint.createdAt, _dateFrom, _dateTo);
+    }).toList();
     notifyListeners();
-  }
-
-  List<ComplaintModel> _getComplaintsOfCurrentWeek() {
-    final now = DateTime.now();
-    final end = DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
-    final start = end.subtract(const Duration(days: 7));
-
-    return _allComplaints.where((complaint) {
-      return complaint.createdAt.isAfter(start) &&
-          complaint.createdAt.isBefore(end);
-    }).toList();
-  }
-
-  List<ComplaintModel> _getComplaintsOfCurrentMonth() {
-    final now = DateTime.now();
-
-    final start = DateTime(now.year, now.month, 1);
-
-    final end = (now.month < 12)
-        ? DateTime(now.year, now.month + 1, 1)
-        : DateTime(now.year + 1, 1, 1);
-
-    return _allComplaints.where((complaint) {
-      return complaint.createdAt.isAfter(start) &&
-          complaint.createdAt.isBefore(end);
-    }).toList();
   }
 
   Future<UserModel?> getUserByID({required String userID}) async {
@@ -180,8 +160,7 @@ class MaintenanceProvider extends ChangeNotifier {
       await _complaintService.updateComplaint(complaint);
       int index = _allComplaints.indexWhere((item)=> item.id == complaint.id);
       _allComplaints[index] = complaint;
-      onFilterUpdated(_selectedFilter);
-      notifyListeners();
+      _applyDateFilter();
     }catch(e){
       debugPrint("Exception: ${e.toString()}");
       return null;
