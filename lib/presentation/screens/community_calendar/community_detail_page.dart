@@ -33,15 +33,17 @@ class CommunityDetailPage extends StatelessWidget{
             shape: RoundedRectangleBorder(
                 borderRadius: .only(topLeft: .circular(30), topRight: .circular(30))
             ),
-            child: Padding(
+            child: Container(
+              width: .infinity,
                 padding: const .only(top: 36.0, left: 18, right: 18),
                 child: Column(
                   crossAxisAlignment: .start,
                   spacing: 15,
                   children: [
+                    if(event.imageUrl.isNotEmpty)
                     ClipRRect(
                         borderRadius: .circular(10),
-                        child: CachedNetworkImage(imageUrl: event.imageUrl)),
+                        child: CachedNetworkImage(imageUrl: event.imageUrl, height: 200, width: .infinity, fit: .cover,)),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

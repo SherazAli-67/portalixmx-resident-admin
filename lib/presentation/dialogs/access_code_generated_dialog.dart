@@ -5,8 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:screenshot/screenshot.dart';
-
 import '../../core/res/app_colors.dart' show AppColors;
 import '../../core/res/app_textstyles.dart';
 import '../widgets/primary_btn.dart';
@@ -83,7 +81,7 @@ class AccessCodeGeneratedDialog extends StatelessWidget{
   }
 
   Future<Uint8List?> _takeScreenshot(BuildContext context) async {
-    Uint8List? uint8List;
+  /*  Uint8List? uint8List;
     ScreenshotController screenshotController = ScreenshotController();
 
     try {
@@ -94,6 +92,7 @@ class AccessCodeGeneratedDialog extends StatelessWidget{
     } catch (e) {
       debugPrint('Error while taking screenshot: ${e.toString()}');
     }
-    return uint8List;
+    return uint8List;*/
+    return null;
   }
 }

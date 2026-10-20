@@ -6,7 +6,6 @@ import 'package:portalixmx_resident_admin/services/user_service/user_service.dar
 import '../../../../core/helpers/image_url_helper.dart';
 import '../../../../core/models/complaints_model.dart';
 import '../../../../core/res/app_colors.dart';
-import '../../../../core/res/app_constants.dart';
 import '../../../../core/res/app_textstyles.dart';
 import '../../../../providers/datetime_format_helpers.dart';
 import '../../../widgets/bg_gradient_screen.dart';
@@ -28,38 +27,53 @@ class ComplaintSummaryPage extends StatelessWidget{
             children: [
               BackButton(color: Colors.white,),
               Text(complaint.complaint, style: AppTextStyles.regularTextStyle,),
-              if(complaint.status == .pending)
-              PopupMenuButton<ComplaintStatus>(
-                elevation: 0,
-                color: Colors.white,
-                position: PopupMenuPosition.under,
-                padding: .zero,
-                iconColor: Colors.white,
-                icon: const Icon(Icons.more_vert_rounded),
-                onSelected: (status) => Navigator.pop(context, status),
-                itemBuilder: (ctx) =>
-                [
-                  PopupMenuItem(
-                    value: ComplaintStatus.resolved,
-                    child: PopupMenuItemWidget(
-                        title: localizations.markAsResolved,
-                        icon: Icons.check_box_outlined),
-                  ),
-                  PopupMenuItem(
-                    value: ComplaintStatus.inProgress,
-                    child: PopupMenuItemWidget(
-                        title: localizations.markAsInProgress,
-                        icon: Icons.hourglass_bottom_outlined),
-                  ),
-                  PopupMenuItem(
-                    value: ComplaintStatus.rejected,
-                    child: PopupMenuItemWidget(
-                        title: localizations.reject, icon: Icons.close),
-                  ),
-                ],
-              )
+              if (complaint.status != .resolved && complaint.status != .rejected)
+                PopupMenuButton<ComplaintStatus>(
+                  elevation: 0,
+                  color: Colors.white,
+                  position: PopupMenuPosition.under,
+                  padding: .zero,
+                  iconColor: Colors.white,
+                  icon: const Icon(Icons.more_vert_rounded),
+                  onSelected: (status) => Navigator.pop(context, status),
+                  itemBuilder: (ctx) {
+                    final items = <PopupMenuEntry<ComplaintStatus>>[];
+                    if (complaint.status == .pending) {
+                      items.add(
+                        PopupMenuItem(
+                          value: ComplaintStatus.inProgress,
+                          child: PopupMenuItemWidget(
+                            title: localizations.markAsInProgress,
+                            icon: Icons.hourglass_bottom_outlined,
+                          ),
+                        ),
+                      );
+                    }
+                    if (complaint.status == .pending || complaint.status == .inProgress) {
+                      items.add(
+                        PopupMenuItem(
+                          value: ComplaintStatus.resolved,
+                          child: PopupMenuItemWidget(
+                            title: localizations.markAsResolved,
+                            icon: Icons.check_box_outlined,
+                          ),
+                        ),
+                      );
+                      items.add(
+                        PopupMenuItem(
+                          value: ComplaintStatus.rejected,
+                          child: PopupMenuItemWidget(
+                            title: localizations.reject,
+                            icon: Icons.close,
+                          ),
+                        ),
+                      );
+                    }
+                    return items;
+                  },
+                )
               else
-                const SizedBox(width: 40,)
+                const SizedBox(width: 40)
             ],
           ),
         ),
@@ -95,11 +109,24 @@ class ComplaintSummaryPage extends StatelessWidget{
                                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
-                                    child: CachedNetworkImage(
-                                      imageUrl: complaintByUser?.profileImg ?? AppConstants.dummyImageUrl,
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    ),
+                                    child: (complaintByUser?.profileImg != null &&
+                                            complaintByUser!.profileImg!.isNotEmpty)
+                                        ? CachedNetworkImage(
+                                            imageUrl: complaintByUser.profileImg!,
+                                            height: 50,
+                                            width: 50,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Container(
+                                            height: 50,
+                                            width: 50,
+                                            color: Colors.grey.shade200,
+                                            alignment: Alignment.center,
+                                            child: Icon(
+                                              Icons.person,
+                                              color: Colors.grey.shade500,
+                                            ),
+                                          ),
                                   ),
                                 ),
                                 Expanded(

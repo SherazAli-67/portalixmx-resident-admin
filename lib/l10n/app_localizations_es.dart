@@ -28,22 +28,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get enterEmailToSendPasswordReset =>
-      'Enter email address, a password reset link will be sent to that';
+      'Ingresa tu correo electrónico; se enviará un enlace para restablecer la contraseña';
 
   @override
-  String get forgetPassLinkSent => 'Password reset link sent';
+  String get forgetPassLinkSent =>
+      'Enlace de restablecimiento de contraseña enviado';
 
   @override
   String get checkYourEmailAddress =>
-      'Please check your email address, a password reset link sent to it.';
+      'Por favor revisa tu correo electrónico; se envió un enlace para restablecer la contraseña.';
 
   @override
   String accountRequestPending(Object societyName) {
-    return 'Your admin request for $societyName is pending. You will be notified as the admin update your request';
+    return 'Tu solicitud de administrador para $societyName está pendiente. Serás notificado cuando el administrador actualice tu solicitud';
   }
 
   @override
-  String get uploadYourProfileImage => 'Please upload your profile image';
+  String get uploadYourProfileImage => 'Por favor sube tu imagen de perfil';
 
   @override
   String welcomeMessage(Object name) {
@@ -51,150 +52,150 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get dashboard => 'Dashboard';
+  String get dashboard => 'Panel';
 
   @override
   String get dashboardDescription =>
-      'Here’s an overview of residents, payments, and requests';
+      'Aquí tienes un resumen de residentes, pagos y solicitudes';
 
   @override
-  String get totalResidents => 'Total Residents';
+  String get totalResidents => 'Total de Residentes';
 
   @override
-  String get acceptedRequests => 'Accepted requests';
+  String get acceptedRequests => 'Solicitudes aceptadas';
 
   @override
-  String get totalPayments => 'Payments';
+  String get totalPayments => 'Pagos';
 
   @override
-  String get totalComplaints => 'Total Complaints';
+  String get totalComplaints => 'Total de Quejas';
 
   @override
-  String get totalAccess => 'Total Access Requests';
+  String get totalAccess => 'Total de Solicitudes de Acceso';
 
   @override
   String get accessRequests => 'Solicitudes de Acceso';
 
   @override
-  String get viewAll => 'View All';
+  String get viewAll => 'Ver Todo';
 
   @override
-  String get paymentDetail => 'Payment Details';
+  String get paymentDetail => 'Detalles del Pago';
 
   @override
   String residentsOfTheSociety(Object society) {
-    return 'Residents of the $society';
+    return 'Residentes de $society';
   }
 
   @override
   String get poolAccess => 'Acceso a la Piscina';
 
   @override
-  String get joinedOn => 'Joined On';
+  String get joinedOn => 'Se unió el';
 
   @override
-  String get residents => 'Residents';
+  String get residents => 'Residentes';
 
   @override
-  String get newRequests => 'New Requests';
+  String get newRequests => 'Nuevas Solicitudes';
 
   @override
   String get emptyResidentsMsg =>
-      'The residents of the society will appear here';
+      'Los residentes de la sociedad aparecerán aquí';
 
   @override
   String get emptyResidentRequestsMsg =>
-      'The new requests from the residents will appear here';
+      'Las nuevas solicitudes de los residentes aparecerán aquí';
 
   @override
-  String get approve => 'Approve';
+  String get approve => 'Aprobar';
 
   @override
-  String get paymentDetails => 'Payment Details';
+  String get paymentDetails => 'Detalles del Pago';
 
   @override
-  String get paymentFor => 'Payment for';
+  String get paymentFor => 'Pago por';
 
   @override
-  String get status => 'Status';
+  String get status => 'Estado';
 
   @override
-  String get description => 'Description';
+  String get description => 'Descripción';
 
   @override
   String get amount => 'Monto';
 
   @override
-  String get receipt => 'Payment Receipt';
+  String get receipt => 'Recibo de Pago';
 
   @override
   String get add => 'Agregar';
 
   @override
-  String get pending => 'Pending';
+  String get pending => 'Pendiente';
 
   @override
   String get approved => 'Aprobado';
 
   @override
-  String get received => 'Received';
+  String get received => 'Recibido';
 
   @override
   String get submitted => 'Enviado';
 
   @override
-  String get markAsResolved => 'Mark as resolved';
+  String get markAsResolved => 'Marcar como resuelto';
 
   @override
-  String get markAsInProgress => 'Mark as In-progress';
+  String get markAsInProgress => 'Marcar como En progreso';
 
   @override
-  String get markAsReceived => 'Mark as received';
+  String get markAsReceived => 'Marcar como recibido';
 
   @override
-  String get paymentHistory => 'Payment History';
+  String get paymentHistory => 'Historial de Pagos';
 
   @override
-  String get paymentToAdmin => 'Payment to Admin';
+  String get paymentToAdmin => 'Pago al Administrador';
 
   @override
-  String get reject => 'Reject';
+  String get reject => 'Rechazar';
 
   @override
-  String get aboutResident => 'About Resident';
+  String get aboutResident => 'Acerca del Residente';
 
   @override
-  String get houseNumber => 'House Number';
+  String get houseNumber => 'Número de Casa';
 
   @override
-  String get aboutComplaint => 'About Complaint';
+  String get aboutComplaint => 'Acerca de la Queja';
 
   @override
-  String get createNewAccess => 'Create new access';
+  String get createNewAccess => 'Crear nuevo acceso';
 
   @override
-  String get title => 'Title';
+  String get title => 'Título';
 
   @override
-  String get freeToUse => 'Free to use';
+  String get freeToUse => 'Uso libre';
 
   @override
-  String get setItFreeToUse => 'Set, Free to use';
+  String get setItFreeToUse => 'Establecer, Uso libre';
 
   @override
-  String get setItRequestToUse => 'Set, Request to use';
+  String get setItRequestToUse => 'Establecer, Solicitar uso';
 
   @override
-  String get createEvent => 'Create Event';
+  String get createEvent => 'Crear Evento';
 
   @override
-  String get eventTitle => 'Event Title';
+  String get eventTitle => 'Título del Evento';
 
   @override
-  String get eventDescription => 'Enter details about the event';
+  String get eventDescription => 'Ingresa los detalles del evento';
 
   @override
-  String get eventDateAndTime => 'Date & Time';
+  String get eventDateAndTime => 'Fecha y Hora';
 
   @override
   String get twoStepVerification => 'Verificación en 2 Pasos';
@@ -333,14 +334,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get privacyPolicy => 'Política de Privacidad';
 
   @override
-  String get termsCondition => 'Terms & Conditions';
+  String get termsCondition => 'Términos y Condiciones';
 
   @override
-  String get address => 'Address';
+  String get address => 'Dirección';
 
   @override
   String get societyInformationUpdated =>
-      'Society information updated successfully';
+      'Información de la sociedad actualizada exitosamente';
 
   @override
   String get logout => 'Cerrar sesión';
@@ -471,30 +472,37 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get createAccount => 'Create Account';
+  String get createAccount => 'Crear Cuenta';
 
   @override
   String get createAccountDescription =>
-      'Create Portalixmx resident admin account and get started with the society management';
+      'Crea una cuenta de administrador residente de Portalixmx y comienza con la gestión de la sociedad';
 
   @override
-  String get selectSociety => 'Select society';
+  String get selectSociety => 'Seleccionar sociedad';
 
   @override
-  String get alreadyHaveAnAccount => 'Already have an account? ';
+  String get failedToLoadSocieties =>
+      'No se pudieron cargar las sociedades. Inténtalo de nuevo.';
 
   @override
-  String get dontHaveAnAccount => 'Don\'t have an account? ';
+  String get retry => 'Reintentar';
 
   @override
-  String get completeProfile => 'Complete Profile';
+  String get alreadyHaveAnAccount => '¿Ya tienes una cuenta? ';
+
+  @override
+  String get dontHaveAnAccount => '¿No tienes una cuenta? ';
+
+  @override
+  String get completeProfile => 'Completar Perfil';
 
   @override
   String get completeProfileDescription =>
-      'Please provide the rest information to complete your profile';
+      'Proporciona el resto de la información para completar tu perfil';
 
   @override
-  String get additionalDetails => 'Additional Details';
+  String get additionalDetails => 'Detalles Adicionales';
 
   @override
   String get pleaseEnterName => 'Por favor ingrese el nombre';
@@ -540,13 +548,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get somethingWentWrong => 'Algo salió mal';
 
   @override
+  String get unableToLoadProfile =>
+      'No se pudo cargar tu perfil. Inicia sesión de nuevo.';
+
+  @override
   String get error => 'Error';
 
   @override
-  String get all => 'All';
+  String get all => 'Todos';
 
   @override
-  String get week => 'Week';
+  String get week => 'Semana';
 
   @override
   String get month => 'Mes';
@@ -555,16 +567,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get year => 'Año';
 
   @override
-  String get automaticVisitorCode => 'Visitor Code';
+  String get automaticVisitorCode => 'Código de Visitante';
 
   @override
-  String get generateAccessCode => 'Generate Access Code';
+  String get generateAccessCode => 'Generar Código de Acceso';
 
   @override
-  String get communityMembers => 'Community Members';
+  String get communityMembers => 'Miembros de la Comunidad';
 
   @override
-  String get editCommunity => 'Edit Community';
+  String get editCommunity => 'Editar Comunidad';
 
   @override
   String get fundManagement => 'Gestión de Fondos';
@@ -648,4 +660,111 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get showReportToResidents => 'Mostrar informe a los residentes';
+
+  @override
+  String get emergencyCall => 'LLAMADA DE EMERGENCIA';
+
+  @override
+  String get emergencyContact => 'Contacto de Emergencia';
+
+  @override
+  String get removeContact => 'Eliminar Contacto';
+
+  @override
+  String get selectEmergencyContacts => 'Seleccionar Contactos de Emergencia';
+
+  @override
+  String get emergencyAlertSent => 'Alerta de emergencia enviada correctamente';
+
+  @override
+  String get noEmergencyContacts =>
+      'No hay contactos de emergencia seleccionados';
+
+  @override
+  String get noReachableContacts => 'Ningún contacto es alcanzable';
+
+  @override
+  String get holdToSendAlert =>
+      'Mantén presionado 3 segundos para enviar una alerta';
+
+  @override
+  String get emptyEmergencyContactsMsg =>
+      'Tus contactos de emergencia aparecerán aquí';
+
+  @override
+  String get save => 'Guardar';
+
+  @override
+  String eventCreated(Object name) {
+    return '¡El evento \'$name\' ha sido creado!';
+  }
+
+  @override
+  String get failedToCreateEvent =>
+      '¡Error al crear el evento!, Inténtalo de nuevo';
+
+  @override
+  String eventDeleted(Object name) {
+    return '¡El evento \'$name\' ha sido eliminado!';
+  }
+
+  @override
+  String get failedToDeleteEvent => 'Error al eliminar el evento';
+
+  @override
+  String get pollCreated => '¡Encuesta comunitaria creada!';
+
+  @override
+  String get pollDeleted => '¡La encuesta ha sido eliminada!';
+
+  @override
+  String get failedToDeletePoll => 'Error al eliminar la encuesta';
+
+  @override
+  String get paymentCreated =>
+      'Nuevo pago creado y enviado a todos los residentes';
+
+  @override
+  String paymentDeleted(Object name) {
+    return '¡El pago \'$name\' ha sido eliminado!';
+  }
+
+  @override
+  String get failedToCreatePayment => 'Error al crear el pago';
+
+  @override
+  String get failedToDeletePayment => 'Error al eliminar el pago';
+
+  @override
+  String accessCreated(Object name) {
+    return '¡El acceso \'$name\' ha sido creado!';
+  }
+
+  @override
+  String get failedToCreateAccess => 'Error al crear el acceso';
+
+  @override
+  String fundReportCreated(Object name) {
+    return '¡El informe de fondos \'$name\' ha sido creado!';
+  }
+
+  @override
+  String get failedToCreateFundReport => 'Error al crear el informe de fondos';
+
+  @override
+  String get paymentToAdminSubmitted =>
+      'Pago enviado al administrador exitosamente';
+
+  @override
+  String get failedToSubmitPaymentToAdmin =>
+      'Error al enviar el pago al administrador';
+
+  @override
+  String get failedToCreatePoll => 'Error al crear la encuesta';
+
+  @override
+  String get regularVisitors => 'Visitantes Frecuentes';
+
+  @override
+  String get regularVisitor => 'Visitante Frecuente';
 }

@@ -1,1 +1,70 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"portalixmx-project","appId":"1:892365070783:android:5a6f73de0731c44fd3410a","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"portalixmx-project","appId":"1:892365070783:ios:653cd92e8952d039d3410a","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"portalixmx-project","configurations":{"android":"1:892365070783:android:5a6f73de0731c44fd3410a","ios":"1:892365070783:ios:653cd92e8952d039d3410a"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "portalixmx-project",
+          "appId": "1:892365070783:android:d68239c2ba411c06d3410a",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "portalixmx-project",
+          "appId": "1:892365070783:ios:653cd92e8952d039d3410a",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "portalixmx-project",
+          "configurations": {
+            "android": "1:892365070783:android:d68239c2ba411c06d3410a"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "functions": [
+    {
+      "source": "functions/getResidentQr",
+      "codebase": "getResidentQr",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    },
+    {
+      "source": "functions/sendEmergencyAlert",
+      "codebase": "sendEmergencyAlert",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    },
+    {
+      "source": "functions/listSocietiesForSignup",
+      "codebase": "listSocietiesForSignup",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}

@@ -42,6 +42,14 @@ class EditUpdateCommunityProvider extends ChangeNotifier {
         society = await _residentService.getSocietyByID(
           societyID: currentAdmin!.societyID,
         );
+        final owner = society?.residentAdmin;
+        if (society != null && (owner == null || owner.isEmpty)) {
+          await _residentService.claimSocietyAdminIfEmpty(
+            societyID: society!.id,
+            adminUid: currentAdmin!.userID,
+          );
+          society = society!.copyWith(residentAdmin: currentAdmin!.userID);
+        }
       }
     } catch (e) {
       error = e.toString();
@@ -59,7 +67,22 @@ class EditUpdateCommunityProvider extends ChangeNotifier {
     notifyListeners();
     try {
       if (currentAdmin == null) throw Exception('User not found');
-      if (society == null) throw Exception('Society not found');
+
+      final freshSociety = await _residentService.getSocietyByID(
+        societyID: currentAdmin!.societyID,
+      );
+      if (freshSociety == null) throw Exception('Society not found');
+      society = freshSociety;
+
+      final owner = society!.residentAdmin;
+      if (owner == null || owner.isEmpty) {
+        await _residentService.claimSocietyAdminIfEmpty(
+          societyID: society!.id,
+          adminUid: currentAdmin!.userID,
+        );
+        society = society!.copyWith(residentAdmin: currentAdmin!.userID);
+      }
+
       if (!isOwner) throw Exception('You are not the owner of this society');
 
       String? imageUrl = society?.imageUrl;

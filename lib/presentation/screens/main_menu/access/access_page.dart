@@ -1,12 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portalixmx_resident_admin/core/common_ui.dart';
 import 'package:portalixmx_resident_admin/core/models/access_model.dart';
+import 'package:portalixmx_resident_admin/presentation/widgets/full_page_loading_widget.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/models/access_request_model.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/res/app_colors.dart';
-import '../../../../core/res/app_constants.dart';
 import '../../../../core/res/app_textstyles.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../providers/datetime_format_helpers.dart';
@@ -26,12 +27,12 @@ class AccessMenu extends StatelessWidget{
     return ChangeNotifierProvider(
       create: (_) => RequestAccessProvider(),
       builder: (ctx, _){
-        return  Consumer<RequestAccessProvider>(
+        return Consumer<RequestAccessProvider>(
           builder: (ctx, provider, _){
             return BgGradientScreen(
                 floatingActionButton: provider.selectedFilter == provider.filters.last ? FloatingActionButton(
                   heroTag: 'AccessFAB',
-                    onPressed: ()=> provider.onAddAccessTap(),
+                    onPressed: () => _onAddAccessTap(ctx, provider: provider, localization: localization),
                     shape: RoundedRectangleBorder(borderRadius: .circular(100)),child: Icon(Icons.add_rounded, color: AppColors.primaryColor,)) : null,
                 child: Stack(
                   children: [
@@ -73,8 +74,8 @@ class AccessMenu extends StatelessWidget{
                         ],
                       ),
                     ),
-                    if(provider.addingRequestAccess || provider.updatingRequest)
-                      LoadingWidget(color: AppColors.primaryColor,)
+                    if(provider.addingRequestAccess || provider.updatingRequest || provider.addingAccess)
+                      FullPageLoadingWidget()
                   ],
                 ));
           },
@@ -110,11 +111,24 @@ class AccessMenu extends StatelessWidget{
                               ),
                               child: ClipRRect(
                                 borderRadius: .circular(10),
-                                child: CachedNetworkImage(
-                                  imageUrl: complaintByUser?.profileImg ??
-                                      AppConstants.dummyImageUrl,
-                                  height: 50,
-                                  fit: .cover,),
+                                child: (complaintByUser?.profileImg != null &&
+                                        complaintByUser!.profileImg!.isNotEmpty)
+                                    ? CachedNetworkImage(
+                                        imageUrl: complaintByUser.profileImg!,
+                                        height: 50,
+                                        width: 50,
+                                        fit: .cover,
+                                      )
+                                    : Container(
+                                        height: 50,
+                                        width: 50,
+                                        color: Colors.grey.shade200,
+                                        alignment: .center,
+                                        child: Icon(
+                                          Icons.person,
+                                          color: Colors.grey.shade500,
+                                        ),
+                                      ),
                               ),
                             ),
                             Expanded(
@@ -215,25 +229,37 @@ class AccessMenu extends StatelessWidget{
                     padding: .zero,
                     icon: const Icon(Icons.more_vert_rounded),
                     onSelected: (val) {
-                      if(val ==1){
+                      if (val == 1) {
                         provider.onDeleteAccessTap(access: access);
-                      }else{
+                      } else if (val == 2) {
                         provider.onToggleFreeToUseAccess(access);
+                      } else if (val == 3) {
+                        provider.onEditAccessTap(access);
                       }
                     },
-                    itemBuilder: (ctx) =>
-                    [
+                    itemBuilder: (ctx) => [
+                      PopupMenuItem(
+                        value: 3,
+                        child: PopupMenuItemWidget(
+                          title: localizations.update,
+                          icon: Icons.edit_outlined,
+                        ),
+                      ),
                       PopupMenuItem(
                         value: 1,
                         child: PopupMenuItemWidget(
-                            title: localizations.delete,
-                            icon: Icons.delete),
+                          title: localizations.delete,
+                          icon: Icons.delete,
+                        ),
                       ),
                       PopupMenuItem(
                         value: 2,
                         child: PopupMenuItemWidget(
-                            title: access.freeToUse ? localizations.setItRequestToUse : localizations.setItFreeToUse,
-                            icon: Icons.done),
+                          title: access.freeToUse
+                              ? localizations.setItRequestToUse
+                              : localizations.setItFreeToUse,
+                          icon: Icons.done,
+                        ),
                       ),
                     ],
                   ),
@@ -251,5 +277,15 @@ class AccessMenu extends StatelessWidget{
      RequestStatus status = result as RequestStatus;
      provider.updateRequestStatus(request: request.copyWith(status: status));
    }
+  }
+
+  Future<void> _onAddAccessTap(BuildContext context, {required RequestAccessProvider provider, required AppLocalizations localization}) async {
+    final access = await provider.onAddAccessTap();
+    if (!context.mounted) return;
+    if (access != null) {
+      CommonUI.showSnackBarMessage(context, message: localization.accessCreated(access.name), isSuccess: true);
+    } else if (provider.error != null) {
+      CommonUI.showSnackBarMessage(context, message: localization.failedToCreateAccess, isError: true);
+    }
   }
 }

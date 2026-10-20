@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portalixmx_resident_admin/core/common_ui.dart';
 import 'package:portalixmx_resident_admin/core/res/app_colors.dart';
-import 'package:portalixmx_resident_admin/core/res/app_constants.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/full_page_loading_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/loading_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/primary_btn.dart';
@@ -118,7 +117,27 @@ class _EditCommunityState extends State<EditCommunity> {
                                     children: [
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
-                                        child: provider.pickedImage != null ? Image.file(File(provider.pickedImage!.path)) : CachedNetworkImage(imageUrl: provider.society?.imageUrl ?? AppConstants.dummyImageUrl,),
+                                        child: provider.pickedImage != null
+                                            ? Image.file(File(provider.pickedImage!.path))
+                                            : (provider.society?.imageUrl != null &&
+                                                    provider.society!.imageUrl.isNotEmpty)
+                                                ? CachedNetworkImage(
+                                                    imageUrl: provider.society!.imageUrl,
+                                                    fit: BoxFit.cover,
+                                                    width: double.infinity,
+                                                    height: 180,
+                                                  )
+                                                : Container(
+                                                    width: double.infinity,
+                                                    height: 180,
+                                                    color: Colors.grey.shade200,
+                                                    alignment: Alignment.center,
+                                                    child: Icon(
+                                                      Icons.image_outlined,
+                                                      size: 48,
+                                                      color: Colors.grey.shade500,
+                                                    ),
+                                                  ),
                                       ),
                                       Positioned(
                                         right: 0,

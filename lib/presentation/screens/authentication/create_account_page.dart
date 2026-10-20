@@ -7,6 +7,7 @@ import 'package:portalixmx_resident_admin/core/validators/validators.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/app_dropdown_widget.dart';
 import 'package:provider/provider.dart';
 import '../../../core/common_ui.dart';
+import '../../../core/models/user_model.dart';
 import '../../../core/res/app_colors.dart';
 import '../../../core/res/app_constants.dart';
 import '../../../core/res/app_textstyles.dart';
@@ -34,10 +35,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   final _formKey = GlobalKey<FormState>();
   late AppLocalizations _localization;
+
   @override
   void initState() {
     super.initState();
   }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -103,7 +106,34 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       AppTextField(title: _localization.name, controller: _nameController, hintText: _localization.name, validator: Validators.validateFullName,),
                       AppTextField(title: _localization.email, controller: _emailController, hintText: _localization.email,textInputType: TextInputType.emailAddress, validator: Validators.validateEmail,),
                       AppTextField(title: _localization.password, controller: _passwordController, hintText: _localization.password, isPassword: true, validator: Validators.validatePassword,),
-                      AppDropdownWidget<SocietyModel>(title: _localization.selectSociety, list: _provider.societies, value: _provider.selectedSociety, onChanged: (val)=> _provider.onSelectSocietyTap(val), getTitle: (item) => item.name)
+                      if (_provider.loadingSocieties)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      else if (_provider.societiesError != null)
+                        Column(
+                          crossAxisAlignment: .start,
+                          spacing: 8,
+                          children: [
+                            Text(
+                              _localization.failedToLoadSocieties,
+                              style: AppTextStyles.regularTextStyle.copyWith(color: Colors.red),
+                            ),
+                            TextButton(
+                              onPressed: _provider.loadSocieties,
+                              child: Text(_localization.retry),
+                            ),
+                          ],
+                        )
+                      else
+                        AppDropdownWidget<SocietyModel>(
+                          title: _localization.selectSociety,
+                          list: _provider.societies,
+                          value: _provider.selectedSociety,
+                          onChanged: (val) => _provider.onSelectSocietyTap(val),
+                          getTitle: (item) => item.name,
+                        ),
                     ],
                   ),
                 ),
@@ -142,9 +172,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       if(isError != null){
         CommonUI.showSnackBarMessage(context, isError: true, message: isError, title: "Signup failed");
       }else{
-        await context.read<ProfileProvider>().reloadCurrentUser();
+        final profileProvider = context.read<ProfileProvider>();
+        await profileProvider.reloadCurrentUser();
         if (!mounted) return;
-        context.go(NamedRoutes.home.routeName);
+        if (profileProvider.user?.status == UserStatus.pending) {
+          context.go(NamedRoutes.pendingRequest.routeName);
+        } else {
+          context.go(NamedRoutes.home.routeName);
+        }
       }
     }
   }

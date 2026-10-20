@@ -28,10 +28,10 @@ class ProfileService {
   Future<String?> updateUser({required UserModel user}) async{
     try{
       String currentUID = _auth.currentUser!.uid;
-       await _firestore.collection(FirebaseConst.residentsCol).doc(currentUID).set(user.toMap());
+       await _firestore.collection(FirebaseConst.residentAdminCol).doc(currentUID).set(user.toMap(), SetOptions(merge: true));
        return null;
     } catch (e) {
-      throw 'Failed to get user: $e';
+      throw 'Failed to update user: $e';
     }
   }
 

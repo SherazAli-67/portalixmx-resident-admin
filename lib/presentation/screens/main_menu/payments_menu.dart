@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portalixmx_resident_admin/core/common_ui.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
-import 'package:portalixmx_resident_admin/presentation/widgets/app_dropdown_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/date_range_filter_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/full_page_loading_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/loading_widget.dart';
@@ -44,7 +44,7 @@ class PaymentsMenu extends StatelessWidget{
                             padding: const .only(top: 30.0),
                             child: IconButton(
                                 style: ElevatedButton.styleFrom(backgroundColor: AppColors.btnColor),
-                                onPressed: provider.onAddPaymentTap, icon: Icon(Icons.add, color: Colors.white,)),
+                                onPressed: () => _onAddPaymentTap(ctx, provider: provider, localization: localization), icon: Icon(Icons.add, color: Colors.white,)),
                           ),
                         )
                       ],
@@ -115,7 +115,11 @@ class PaymentsMenu extends StatelessWidget{
                                               )
                                             ],
                                           ),
-                                        )
+                                        ),
+                                        IconButton(
+                                          onPressed: () => _onDeletePaymentTap(ctx, payment: payment, provider: provider, localization: localization),
+                                          icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                                        ),
                                       ],
                                     )
                                 ),
@@ -140,5 +144,25 @@ class PaymentsMenu extends StatelessWidget{
   void _onPaymentItemTap(BuildContext context, {required PaymentModel payment, required PaymentProvider provider})async{
    await context.push(NamedRoutes.paymentDetail.routeName, extra: payment);
    await provider.refreshPayments();
+  }
+
+  Future<void> _onAddPaymentTap(BuildContext context, {required PaymentProvider provider, required AppLocalizations localization}) async {
+    final result = await provider.onAddPaymentTap();
+    if (!context.mounted || result == null) return;
+    if (result) {
+      CommonUI.showSnackBarMessage(context, message: localization.paymentCreated, isSuccess: true);
+    } else {
+      CommonUI.showSnackBarMessage(context, message: localization.failedToCreatePayment, isError: true);
+    }
+  }
+
+  Future<void> _onDeletePaymentTap(BuildContext context, {required PaymentModel payment, required PaymentProvider provider, required AppLocalizations localization}) async {
+    final error = await provider.deletePayment(payment);
+    if (!context.mounted) return;
+    if (error != null) {
+      CommonUI.showSnackBarMessage(context, message: localization.failedToDeletePayment, isError: true);
+    } else {
+      CommonUI.showSnackBarMessage(context, message: localization.paymentDeleted(payment.paymentForTitle), isSuccess: true);
+    }
   }
 }

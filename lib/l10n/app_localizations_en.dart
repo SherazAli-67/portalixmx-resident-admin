@@ -481,6 +481,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectSociety => 'Select society';
 
   @override
+  String get failedToLoadSocieties =>
+      'Unable to load societies. Please try again.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
   String get alreadyHaveAnAccount => 'Already have an account? ';
 
   @override
@@ -533,6 +540,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get somethingWentWrong => 'Something went wrong';
+
+  @override
+  String get unableToLoadProfile =>
+      'Unable to load your profile. Please sign in again.';
 
   @override
   String get error => 'Error';
@@ -642,4 +653,108 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get showReportToResidents => 'Show report to residents';
+
+  @override
+  String get emergencyCall => 'EMERGENCY CALL';
+
+  @override
+  String get emergencyContact => 'Emergency Contact';
+
+  @override
+  String get removeContact => 'Remove Contact';
+
+  @override
+  String get selectEmergencyContacts => 'Select Emergency Contacts';
+
+  @override
+  String get emergencyAlertSent => 'Emergency alert sent successfully';
+
+  @override
+  String get noEmergencyContacts => 'No emergency contacts selected';
+
+  @override
+  String get noReachableContacts => 'No reachable contacts';
+
+  @override
+  String get holdToSendAlert => 'Hold for 3 seconds to send an alert';
+
+  @override
+  String get emptyEmergencyContactsMsg =>
+      'Your emergency contacts will appear here';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String eventCreated(Object name) {
+    return 'Event \'$name\' has been created!';
+  }
+
+  @override
+  String get failedToCreateEvent => 'Failed to create event!, Try again';
+
+  @override
+  String eventDeleted(Object name) {
+    return 'Event \'$name\' is deleted!';
+  }
+
+  @override
+  String get failedToDeleteEvent => 'Failed to delete event';
+
+  @override
+  String get pollCreated => 'Community Poll created!';
+
+  @override
+  String get pollDeleted => 'Poll is deleted!';
+
+  @override
+  String get failedToDeletePoll => 'Failed to delete poll';
+
+  @override
+  String get paymentCreated =>
+      'New payment created and sent to all the residents';
+
+  @override
+  String paymentDeleted(Object name) {
+    return 'Payment \'$name\' is deleted!';
+  }
+
+  @override
+  String get failedToCreatePayment => 'Failed to create payment';
+
+  @override
+  String get failedToDeletePayment => 'Failed to delete payment';
+
+  @override
+  String accessCreated(Object name) {
+    return 'Access \'$name\' has been created!';
+  }
+
+  @override
+  String get failedToCreateAccess => 'Failed to create access';
+
+  @override
+  String fundReportCreated(Object name) {
+    return 'Fund report \'$name\' has been created!';
+  }
+
+  @override
+  String get failedToCreateFundReport => 'Failed to create fund report';
+
+  @override
+  String get paymentToAdminSubmitted =>
+      'Payment submitted to admin successfully';
+
+  @override
+  String get failedToSubmitPaymentToAdmin =>
+      'Failed to submit payment to admin';
+
+  @override
+  String get failedToCreatePoll => 'Failed to create poll';
+
+  @override
+  String get regularVisitors => 'Regular Visitors';
+
+  @override
+  String get regularVisitor => 'Regular Visitor';
 }

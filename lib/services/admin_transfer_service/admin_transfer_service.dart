@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:portalixmx_resident_admin/core/models/society_model.dart';
 import 'package:portalixmx_resident_admin/core/models/user_model.dart';
 import 'package:portalixmx_resident_admin/core/res/firebase_constant.dart';
@@ -13,7 +12,7 @@ class AdminTransferService {
   bool canManageSociety({required String callerUid, required SocietyModel society,}) {
     final owner = society.residentAdmin;
     // debugPrint("OwnerID: $owner, and callerUID: $callerUid, SocietyID: ${society.id}");
-    if (owner == null || owner.isEmpty) return true;
+    if (owner == null || owner.isEmpty) return false;
     return owner == callerUid;
   }
 

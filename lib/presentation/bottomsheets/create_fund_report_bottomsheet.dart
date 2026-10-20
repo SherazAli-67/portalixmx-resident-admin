@@ -107,7 +107,7 @@ class _CreateFundReportBottomSheetState extends State<CreateFundReportBottomShee
     return Material(
       color: Colors.white,
       child: Padding(
-        padding: const .symmetric(horizontal: 16.0, vertical: 25),
+        padding: const .symmetric(horizontal: 16.0, vertical: 8),
         child: Column(
           mainAxisSize: .min,
           spacing: 15,

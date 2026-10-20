@@ -11,14 +11,15 @@ class AuthenticationProvider extends ChangeNotifier{
 
   bool _isSigningUp = false;
   bool isSigningIn = false;
-  bool loadingSocieties =false;
+  bool loadingSocieties = false;
+  String? societiesError;
 
   bool get isSigningUp => _isSigningUp;
   List<SocietyModel> societies = [];
   SocietyModel? selectedSociety;
 
   AuthenticationProvider(){
-    _initSocieties();
+    loadSocieties();
   }
   void onPickImageTap()async{
     ImagePicker imagPicked = ImagePicker();
@@ -29,15 +30,17 @@ class AuthenticationProvider extends ChangeNotifier{
   }
 
   Future<String?> onCreateAccountTap({required AppLocalizations localization,  required String email, required String name, required String password})async{
+    if (selectedSociety == null) {
+      return localization.selectSociety;
+    }
     _isSigningUp = true;
     notifyListeners();
     try{
-      if(pickedImage == null) return localization.uploadYourProfileImage;
       await _authService.signup(name: name,
           email: email,
           password: password,
           societyID: selectedSociety!.id,
-        image: pickedImage!
+        image: pickedImage,
       );
       return null;
     }catch(e){
@@ -48,17 +51,20 @@ class AuthenticationProvider extends ChangeNotifier{
     }
   }
 
-  void _initSocieties() async{
+  Future<void> loadSocieties() async{
     try{
       loadingSocieties = true;
+      societiesError = null;
       notifyListeners();
      societies = await _authService.getSocieties();
       loadingSocieties = false;
       notifyListeners();
     }catch(e){
+      societies = [];
+      selectedSociety = null;
       loadingSocieties = false;
+      societiesError = e.toString();
       notifyListeners();
-      debugPrint("Exception while initializing societies:${e.toString()}");
     }
   }
 
@@ -78,6 +84,7 @@ class AuthenticationProvider extends ChangeNotifier{
       return null;
     }finally{
       _isSigningUp = false;
+      isSigningIn = false;
       notifyListeners();
     }
   }

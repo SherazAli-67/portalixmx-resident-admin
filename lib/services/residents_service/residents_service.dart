@@ -30,10 +30,18 @@ class ResidentsService {
 
   Future<String?> updateUser({required UserModel user}) async{
     try{
-       await _firestore.collection(FirebaseConst.residentsCol).doc(user.userID).set(user.toMap());
+       await _firestore.collection(FirebaseConst.residentsCol).doc(user.userID).set(user.toMap(), SetOptions(merge: true));
        return null;
     } catch (e) {
       throw 'Failed to update user: $e';
+    }
+  }
+
+  Future<void> deleteResident({required String userID}) async {
+    try {
+      await _firestore.collection(FirebaseConst.residentsCol).doc(userID).delete();
+    } catch (e) {
+      throw 'Failed to delete resident: $e';
     }
   }
 
@@ -51,11 +59,28 @@ class ResidentsService {
 
   Future<SocietyModel?> updateSociety({required SocietyModel society}) async {
     try{
-      await _firestore.collection(FirebaseConst.societiesCol).doc(society.id).set(society.toMap());
+      await _firestore.collection(FirebaseConst.societiesCol).doc(society.id).set(society.toMap(), SetOptions(merge: true));
       return null;
     } catch (e) {
-      throw 'Failed to update user: $e';
+      throw 'Failed to update society: $e';
     }
+  }
+
+  Future<void> claimSocietyAdminIfEmpty({
+    required String societyID,
+    required String adminUid,
+  }) async {
+    final societyRef =
+        _firestore.collection(FirebaseConst.societiesCol).doc(societyID);
+    await _firestore.runTransaction((transaction) async {
+      final snap = await transaction.get(societyRef);
+      if (!snap.exists) return;
+      final data = snap.data() as Map<String, dynamic>;
+      final currentAdmin = data['residentAdmin'] as String?;
+      if (currentAdmin == null || currentAdmin.isEmpty) {
+        transaction.update(societyRef, {'residentAdmin': adminUid});
+      }
+    });
   }
 
   Future<String?> uploadImage({required XFile selectedImageFile, required String societyID}) async{

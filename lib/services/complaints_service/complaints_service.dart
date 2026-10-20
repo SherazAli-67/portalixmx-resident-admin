@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import '../../core/models/complaints_model.dart';
 import '../../core/res/firebase_constant.dart';
+import '../user_service/user_service.dart';
 
 class ComplaintsService {
   static final ComplaintsService _instance = ComplaintsService._internal();
@@ -17,16 +18,20 @@ class ComplaintsService {
 
   Future<ComplaintModel?> addComplaint({required String complaintText, List<String>? images}) async {
     try {
-      DateTime now = DateTime.now().toUtc();
-      ComplaintModel complaint = ComplaintModel(id: now.toIso8601String(),
-          complaint: complaintText,
-          images: images ?? [],
-          complaintBy: _auth.currentUser!.uid,
-          residentAdminID: '1',
-          societyID: '1',
-          status: ComplaintStatus.pending,
-          createdAt: now,
-          updatedAt: now);
+      final user = await UserService.instance.getCurrentUser();
+      if (user == null) throw Exception('User not found');
+      final now = DateTime.now().toUtc();
+      final complaint = ComplaintModel(
+        id: now.toIso8601String(),
+        complaint: complaintText,
+        images: images ?? [],
+        complaintBy: _auth.currentUser!.uid,
+        residentAdminID: user.userID,
+        societyID: user.societyID,
+        status: ComplaintStatus.pending,
+        createdAt: now,
+        updatedAt: now,
+      );
       await _getComplaintsCollection.doc(complaint.id).set(complaint.toMap());
       return complaint;
     } catch (e) {

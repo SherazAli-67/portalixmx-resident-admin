@@ -22,7 +22,6 @@ class CommunityDirectoryProvider extends ChangeNotifier{
 
       UserModel? user = await _userService.getCurrentUser();
       if(user == null) throw Exception("No resident admin found");
-      debugPrint("SocietyID: ${user.societyID}");
       residents = await _residentsService.loadResidentsOfSociety(societyID: user.societyID);
       loadingResidents = false;
       notifyListeners();

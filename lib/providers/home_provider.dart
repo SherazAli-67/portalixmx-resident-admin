@@ -83,7 +83,6 @@ class HomeProvider extends ChangeNotifier {
 
       UserModel? user = await _userService.getCurrentUser();
       if(user == null) throw Exception("No resident admin found");
-      debugPrint("SocietyID: ${user.societyID}");
       _residents = await _residentsService.loadResidentsOfSociety(societyID: user.societyID);
       loadingResidents = false;
       notifyListeners();
@@ -108,20 +107,37 @@ class HomeProvider extends ChangeNotifier {
     ]);
   }
 
-  Future<void> updateResident(UserModel updatedUser)async{
+  Future<void> updateResident(UserModel updatedUser) async {
     updatingResidentStatus = true;
     notifyListeners();
     try {
-      
       await _residentsService.updateUser(user: updatedUser);
-      int index = _residents.indexWhere((resident)=> resident.userID == updatedUser.userID);
-      _residents[index] = updatedUser;
-      updatingResidentStatus = false;
-      notifyListeners();
+      final index = _residents.indexWhere((resident) => resident.userID == updatedUser.userID);
+      if (index >= 0) {
+        _residents[index] = updatedUser;
+      } else {
+        _residents.insert(0, updatedUser);
+      }
     } catch (e) {
+      debugPrint("Exception while updating resident: ${e.toString()}");
+    } finally {
       updatingResidentStatus = false;
       notifyListeners();
-      debugPrint("Exception while updating resident: ${e.toString()}");
+    }
+  }
+
+  Future<void> deleteResident(UserModel resident) async {
+    updatingResidentStatus = true;
+    notifyListeners();
+    try {
+      await _residentsService.deleteResident(userID: resident.userID);
+      _residents.removeWhere((r) => r.userID == resident.userID);
+    } catch (e) {
+      debugPrint("Exception while deleting resident: ${e.toString()}");
+      rethrow;
+    } finally {
+      updatingResidentStatus = false;
+      notifyListeners();
     }
   }
 }

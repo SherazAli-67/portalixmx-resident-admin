@@ -6,6 +6,7 @@ import '../../../../core/res/app_colors.dart';
 import '../../../../core/res/app_textstyles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers/profile_provider.dart';
+import '../../../router/app_router.dart';
 import '../../widgets/app_textfield_widget.dart';
 import '../../widgets/bg_gradient_screen.dart';
 import '../../widgets/primary_btn.dart';
@@ -129,11 +130,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
 
     String? isError = await provider.onUpdateTap(name: name, phoneNum: phone, );
+    if (!mounted) return;
     if(isError != null){
       Fluttertoast.showToast(msg: isError);
       return;
     }
-
-    context.pop();
+    context.go(NamedRoutes.profile.routeName);
   }
 }

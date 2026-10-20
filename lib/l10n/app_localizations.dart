@@ -992,6 +992,18 @@ abstract class AppLocalizations {
   /// **'Select society'**
   String get selectSociety;
 
+  /// No description provided for @failedToLoadSocieties.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load societies. Please try again.'**
+  String get failedToLoadSocieties;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
   /// No description provided for @alreadyHaveAnAccount.
   ///
   /// In en, this message translates to:
@@ -1093,6 +1105,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong'**
   String get somethingWentWrong;
+
+  /// No description provided for @unableToLoadProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load your profile. Please sign in again.'**
+  String get unableToLoadProfile;
 
   /// No description provided for @error.
   ///
@@ -1303,6 +1321,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show report to residents'**
   String get showReportToResidents;
+
+  /// No description provided for @emergencyCall.
+  ///
+  /// In en, this message translates to:
+  /// **'EMERGENCY CALL'**
+  String get emergencyCall;
+
+  /// No description provided for @emergencyContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency Contact'**
+  String get emergencyContact;
+
+  /// No description provided for @removeContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Contact'**
+  String get removeContact;
+
+  /// No description provided for @selectEmergencyContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Emergency Contacts'**
+  String get selectEmergencyContacts;
+
+  /// No description provided for @emergencyAlertSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency alert sent successfully'**
+  String get emergencyAlertSent;
+
+  /// No description provided for @noEmergencyContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'No emergency contacts selected'**
+  String get noEmergencyContacts;
+
+  /// No description provided for @noReachableContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'No reachable contacts'**
+  String get noReachableContacts;
+
+  /// No description provided for @holdToSendAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold for 3 seconds to send an alert'**
+  String get holdToSendAlert;
+
+  /// No description provided for @emptyEmergencyContactsMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Your emergency contacts will appear here'**
+  String get emptyEmergencyContactsMsg;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @eventCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Event \'{name}\' has been created!'**
+  String eventCreated(Object name);
+
+  /// No description provided for @failedToCreateEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create event!, Try again'**
+  String get failedToCreateEvent;
+
+  /// No description provided for @eventDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Event \'{name}\' is deleted!'**
+  String eventDeleted(Object name);
+
+  /// No description provided for @failedToDeleteEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete event'**
+  String get failedToDeleteEvent;
+
+  /// No description provided for @pollCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Community Poll created!'**
+  String get pollCreated;
+
+  /// No description provided for @pollDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll is deleted!'**
+  String get pollDeleted;
+
+  /// No description provided for @failedToDeletePoll.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete poll'**
+  String get failedToDeletePoll;
+
+  /// No description provided for @paymentCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'New payment created and sent to all the residents'**
+  String get paymentCreated;
+
+  /// No description provided for @paymentDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment \'{name}\' is deleted!'**
+  String paymentDeleted(Object name);
+
+  /// No description provided for @failedToCreatePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create payment'**
+  String get failedToCreatePayment;
+
+  /// No description provided for @failedToDeletePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete payment'**
+  String get failedToDeletePayment;
+
+  /// No description provided for @accessCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Access \'{name}\' has been created!'**
+  String accessCreated(Object name);
+
+  /// No description provided for @failedToCreateAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create access'**
+  String get failedToCreateAccess;
+
+  /// No description provided for @fundReportCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Fund report \'{name}\' has been created!'**
+  String fundReportCreated(Object name);
+
+  /// No description provided for @failedToCreateFundReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create fund report'**
+  String get failedToCreateFundReport;
+
+  /// No description provided for @paymentToAdminSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment submitted to admin successfully'**
+  String get paymentToAdminSubmitted;
+
+  /// No description provided for @failedToSubmitPaymentToAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit payment to admin'**
+  String get failedToSubmitPaymentToAdmin;
+
+  /// No description provided for @failedToCreatePoll.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create poll'**
+  String get failedToCreatePoll;
+
+  /// No description provided for @regularVisitors.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular Visitors'**
+  String get regularVisitors;
+
+  /// No description provided for @regularVisitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular Visitor'**
+  String get regularVisitor;
 }
 
 class _AppLocalizationsDelegate

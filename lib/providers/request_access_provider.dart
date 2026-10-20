@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:portalixmx_resident_admin/core/helpers/bottom_sheet_helper.dart';
 import 'package:portalixmx_resident_admin/presentation/bottomsheets/add_access_bottomsheet.dart';
 import 'package:portalixmx_resident_admin/presentation/screens/main_menu/main_menu.dart';
@@ -12,17 +13,17 @@ import 'datetime_format_helpers.dart';
 
 class RequestAccessProvider extends ChangeNotifier {
   final _requestsService = AccessRequestService.instance;
-  bool addingRequestAccess =  false;
+  bool addingRequestAccess = false;
   bool loadingRequests = false;
   bool loadingAccess = false;
   bool updatingRequest = false;
   bool addingAccess = false;
   String? error;
 
-  List<AccessRequestModel> _allAccessRequests  = [];
-  List<AccessModel> _allAccess  = [];
+  List<AccessRequestModel> _allAccessRequests = [];
+  List<AccessModel> _allAccess = [];
 
-  final List<String> _filters = ['Access Requests', 'Access',];
+  final List<String> _filters = ['Access Requests', 'Access'];
   String _selectedFilter = 'Access Requests';
   DateTime? _dateFrom;
   DateTime? _dateTo;
@@ -37,7 +38,8 @@ class RequestAccessProvider extends ChangeNotifier {
   String get selectedFilter => _selectedFilter;
   DateTime? get dateFrom => _dateFrom;
   DateTime? get dateTo => _dateTo;
-  RequestAccessProvider(){
+
+  RequestAccessProvider() {
     _initRequests();
     _initAccess();
   }
@@ -46,8 +48,8 @@ class RequestAccessProvider extends ChangeNotifier {
     try {
       loadingRequests = true;
       notifyListeners();
-      UserModel? user=  await UserService.instance.getCurrentUser();
-      if(user == null){
+      final user = await UserService.instance.getCurrentUser();
+      if (user == null) {
         error = "User not found";
         loadingRequests = false;
         notifyListeners();
@@ -66,12 +68,14 @@ class RequestAccessProvider extends ChangeNotifier {
     try {
       loadingAccess = true;
       notifyListeners();
-      UserModel? user=  await UserService.instance.getCurrentUser();
-      if(user == null){
+      final user = await UserService.instance.getCurrentUser();
+      if (user == null) {
         error = "User not found";
+        loadingAccess = false;
+        notifyListeners();
         return;
       }
-      _allAccess = await _requestsService.getAllAccessList();
+      _allAccess = await _requestsService.getAllAccessList(societyID: user.societyID);
     } catch (e) {
       debugPrint('RequestAccessProvider: failed to fetch access items: $e');
     }
@@ -83,52 +87,53 @@ class RequestAccessProvider extends ChangeNotifier {
     await Future.wait([_initRequests(), _initAccess()]);
   }
 
-  void onAddRequestTap() async{
+  void onAddRequestTap() async {}
 
-  }
-
-  void onFilterUpdated(dynamic val){
+  void onFilterUpdated(dynamic val) {
     _selectedFilter = val;
     notifyListeners();
   }
 
-  void onDateFromChanged(DateTime? date){
+  void onDateFromChanged(DateTime? date) {
     _dateFrom = date;
     notifyListeners();
   }
 
-  void onDateToChanged(DateTime? date){
+  void onDateToChanged(DateTime? date) {
     _dateTo = date;
     notifyListeners();
   }
 
   Future<UserModel?> getUserByID({required String userID}) async {
-    try{
+    try {
       return await UserService.instance.getUserByID(userID: userID);
-    }catch(e){
+    } catch (e) {
       return null;
     }
   }
 
-  void updateRequestStatus({required AccessRequestModel request})async {
-    try{
+  void updateRequestStatus({required AccessRequestModel request}) async {
+    try {
       updatingRequest = true;
       notifyListeners();
-      await _requestsService.updateRequest(request);
-      int index = _allAccessRequests.indexWhere((item)=> item.id == request.id);
-      _allAccessRequests[index] = request;
+      final updated = request.copyWith(updatedAt: DateTime.now().toUtc());
+      await _requestsService.updateRequest(updated);
+      final index = _allAccessRequests.indexWhere((item) => item.id == updated.id);
+      if (index >= 0) {
+        _allAccessRequests[index] = updated;
+      } else {
+        _allAccessRequests.insert(0, updated);
+      }
       onFilterUpdated(_selectedFilter);
-      notifyListeners();
-    }catch(e){
+    } catch (e) {
       debugPrint("Exception: ${e.toString()}");
-      return null;
     }
     updatingRequest = false;
     notifyListeners();
   }
 
   Color getColorByStatus(RequestStatus status) {
-    switch(status){
+    switch (status) {
       case .pending:
         return AppColors.btnColor;
       case .approved:
@@ -138,50 +143,84 @@ class RequestAccessProvider extends ChangeNotifier {
     }
   }
 
-  void onAddAccessTap() async{
-    final result = await BottomSheetHelper.showDraggableBottomSheet(scaffoldKey: scaffoldKey, child: AddAccessBottomSheet());
-    if(result != null){
-      String accessTitle = result['access'];
-      String imagePath = result['image'];
-      bool freeToUse = result['freeToUse'];
+  Future<AccessModel?> onAddAccessTap({AccessModel? existing}) async {
+    final result = await BottomSheetHelper.showDraggableBottomSheet(
+      scaffoldKey: scaffoldKey,
+      child: AddAccessBottomSheet(existingAccess: existing),
+      initialHeight: 0.6
+    );
+    if (result == null) return null;
 
-      DateTime now = DateTime.now().toUtc();
-      AccessModel accessModel = AccessModel(id: now.toIso8601String(), name: accessTitle, image: imagePath, freeToUse: freeToUse);
-      try{
-        _allAccess.add(accessModel);
-        notifyListeners();
-        addingAccess = true;
-        notifyListeners();
-       await _requestsService.addUpdateAccess(access: accessModel);
-      }catch(e){
-        debugPrint("Error while creating access: ${e.toString()}");
+    final accessTitle = result['access'] as String;
+    final imageFile = result['image'] as XFile?;
+    final existingImageUrl = result['existingImageUrl'] as String?;
+    final freeToUse = result['freeToUse'] as bool? ?? false;
+
+    error = null;
+    addingAccess = true;
+    notifyListeners();
+    try {
+      final user = await UserService.instance.getCurrentUser();
+      if (user == null) throw Exception('User not found');
+
+      final accessId = existing?.id ?? DateTime.now().toUtc().toIso8601String();
+      String imageUrl = existingImageUrl ?? existing?.image ?? '';
+      if (imageFile != null) {
+        imageUrl = await _requestsService.uploadAccessImage(image: imageFile, accessId: accessId);
       }
-      addingAccess = true;
+
+      final accessModel = AccessModel(
+        id: accessId,
+        name: accessTitle,
+        image: imageUrl,
+        freeToUse: freeToUse,
+        societyID: user.societyID,
+      );
+
+      if (existing != null) {
+        await _requestsService.updateAccess(accessModel);
+        final index = _allAccess.indexWhere((item) => item.id == accessId);
+        if (index >= 0) {
+          _allAccess[index] = accessModel;
+        } else {
+          _allAccess.add(accessModel);
+        }
+      } else {
+        await _requestsService.addUpdateAccess(access: accessModel);
+        _allAccess.add(accessModel);
+      }
+      return accessModel;
+    } catch (e) {
+      debugPrint("Error while creating access: ${e.toString()}");
+      error = e.toString();
+      return null;
+    } finally {
+      addingAccess = false;
       notifyListeners();
     }
   }
 
-  void onDeleteAccessTap({required AccessModel access}) async{
-    try{
+  void onDeleteAccessTap({required AccessModel access}) async {
+    try {
       _allAccess.remove(access);
       notifyListeners();
       await _requestsService.deleteAccess(accessID: access.id);
-    }catch(e){
+    } catch (e) {
       debugPrint("Error while deleting access: ${e.toString()}");
     }
-    addingAccess = true;
-    notifyListeners();
   }
 
-  void onToggleFreeToUseAccess(AccessModel access) async{
-    try{
-      int index = _allAccess.indexWhere((item) => item.id == access.id);
-      _allAccess[index] = access.copyWith(freeToUse:  !access.freeToUse);
-      await _requestsService.updateAccess(access.copyWith(freeToUse: !access.freeToUse));
-    }catch(e){
-      debugPrint("Error while deleting access: ${e.toString()}");
+  void onToggleFreeToUseAccess(AccessModel access) async {
+    try {
+      final updated = access.copyWith(freeToUse: !access.freeToUse);
+      final index = _allAccess.indexWhere((item) => item.id == access.id);
+      if (index >= 0) _allAccess[index] = updated;
+      notifyListeners();
+      await _requestsService.updateAccess(updated);
+    } catch (e) {
+      debugPrint("Error while updating access: ${e.toString()}");
     }
-    addingAccess = true;
-    notifyListeners();
   }
+
+  void onEditAccessTap(AccessModel access) => onAddAccessTap(existing: access);
 }

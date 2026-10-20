@@ -164,25 +164,63 @@ class PaymentProvider extends ChangeNotifier{
     selectedPaymentStatusFilter = val;
     notifyListeners();
   }
-  void onAddPaymentTap()async {
-    final result = await BottomSheetHelper.showDraggableBottomSheet(scaffoldKey: scaffoldKey, child: AddPaymentSheet(), initialHeight: 0.7);
-    if(result != null){
-      String paymentFor = result['paymentFor'] ?? '';
-      String description = result['description'] ?? '';
-      String amount = result['amount'] ?? '0';
-      List<XFile> receipts = result['receipts'] ?? [];
-      try{
-        addingPayment = true;
-        notifyListeners();
-        PaymentModel? payment = await _paymentsService.addPayment(paymentFor: paymentFor, description: description, amount: amount, receipts: receipts);
-        if(payment != null){
-          _payments.add(payment);
-          _submissionsByPayment[payment.paymentID] = [];
-        }
-      }catch(e){
-        error = e.toString();
+  Future<bool?> onAddPaymentTap() async {
+    final result = await BottomSheetHelper.showDraggableBottomSheet(
+      scaffoldKey: scaffoldKey,
+      child: const AddPaymentSheet(),
+      initialHeight: 0.5,
+    );
+    if (result == null) return null;
+    final paymentFor = result['paymentFor'] ?? '';
+    final description = result['description'] ?? '';
+    final amount = result['amount'] ?? '0';
+    final receipts = (result['receipts'] as List<XFile>?) ?? <XFile>[];
+    try {
+      addingPayment = true;
+      notifyListeners();
+      final payment = await _paymentsService.addPayment(
+        paymentFor: paymentFor,
+        description: description,
+        amount: amount,
+        receipts: receipts,
+      );
+      if (payment != null) {
+        _payments.add(payment);
+        _submissionsByPayment[payment.paymentID] = [];
+        return true;
       }
+      return false;
+    } catch (e) {
+      error = e.toString().replaceFirst('Exception: ', '');
+      return false;
+    } finally {
       addingPayment = false;
+      notifyListeners();
+    }
+  }
+
+  Future<String?> deletePayment(PaymentModel payment) async {
+    try {
+      await _paymentsService.deletePayment(paymentID: payment.paymentID);
+      _payments.removeWhere((p) => p.paymentID == payment.paymentID);
+      _submissionsByPayment.remove(payment.paymentID);
+      notifyListeners();
+      return null;
+    } catch (e) {
+      error = e.toString().replaceFirst('Exception: ', '');
+      notifyListeners();
+      return error;
+    }
+  }
+
+  Future<void> updateCharge(PaymentModel payment) async {
+    try {
+      await _paymentsService.updatePayment(payment: payment);
+      final index = _payments.indexWhere((p) => p.paymentID == payment.paymentID);
+      if (index >= 0) _payments[index] = payment;
+      notifyListeners();
+    } catch (e) {
+      error = e.toString().replaceFirst('Exception: ', '');
       notifyListeners();
     }
   }

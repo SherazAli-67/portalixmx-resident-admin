@@ -119,15 +119,16 @@ class _PaymentsToAdminPageState extends State<PaymentsToAdminPage> {
     );
   }
 
-  void _onItemTap(PaymentModel payment, BuildContext context, PaymentsToAdminProvider provider)async {
-   PaymentModel? updatedPayment =  await context.push(NamedRoutes.paymentsToAdminDetail.routeName, extra: payment);
-   if(updatedPayment != null){
-     String? error = await provider.updatePayment(updatedPayment);
-     if(error != null){
-       CommonUI.showSnackBarMessage(context, isError: true, message: error);
-     }else{
-       CommonUI.showSnackBarMessage(context, isSuccess: true, message: "Your receipt is submitted to the admin");
-     }
-   }
+  void _onItemTap(PaymentModel payment, BuildContext context, PaymentsToAdminProvider provider) async {
+    final localization = AppLocalizations.of(context)!;
+    final result = await context.push(NamedRoutes.paymentsToAdminDetail.routeName, extra: payment);
+    await provider.refresh();
+    if (result != null && context.mounted) {
+      CommonUI.showSnackBarMessage(
+        context,
+        message: localization.paymentToAdminSubmitted,
+        isSuccess: true,
+      );
+    }
   }
 }

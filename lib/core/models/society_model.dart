@@ -22,7 +22,7 @@ class SocietyModel {
       location: map['location'],
       residentAdmin: map['residentAdmin'],
       status: map['status'] ?? '',
-      imageUrl: map['imageUrl']
+      imageUrl: map['imageUrl'] ?? '',
     );
   }
 

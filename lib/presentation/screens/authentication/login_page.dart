@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = .new();
 
   final bool _isLogging = false;
+  bool _profileErrorShown = false;
 
   @override
   void dispose() {
@@ -35,9 +36,27 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  void _maybeShowProfileLoadError(AppLocalizations localization) {
+    if (_profileErrorShown) return;
+    final profile = context.read<ProfileProvider>();
+    if (profile.profileLoadError == null) return;
+    _profileErrorShown = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      CommonUI.showSnackBarMessage(
+        context,
+        isError: true,
+        title: localization.error,
+        message: localization.unableToLoadProfile,
+      );
+      context.read<ProfileProvider>().clearProfileLoadError();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
+    _maybeShowProfileLoadError(localization);
     return ScreenWithBgLogo(
       child: Padding(
         padding: .symmetric(horizontal: 16, vertical: 10.0),

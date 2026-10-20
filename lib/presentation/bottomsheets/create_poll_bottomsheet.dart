@@ -38,7 +38,7 @@ class _CreatePollBottomSheetState extends State<CreatePollBottomSheet> {
     return Material(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 25),
+        padding: const .symmetric(horizontal: 16.0, vertical: 8),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,

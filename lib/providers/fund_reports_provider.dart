@@ -48,19 +48,34 @@ class FundReportsProvider extends ChangeNotifier {
 
   Future<void> refresh() => _initFundReports();
 
-  Future<void> onCreateReportTap(BuildContext context) async {
+  Future<void> publishReport(FundReportModel report) async {
+    final now = DateTime.now().toUtc();
+    final published = report.copyWith(
+      status: .published,
+      publishedAt: now,
+      showToResidents: true,
+    );
+    await _fundReportsService.updateReport(published);
+    final index = _fundReports.indexWhere((r) => r.id == report.id);
+    if (index >= 0) {
+      _fundReports[index] = published;
+    }
+    notifyListeners();
+  }
+
+  Future<bool?> onCreateReportTap(BuildContext context) async {
     final result =
         await BottomSheetHelper.showAdjustableModalBottomSheet<Map<String, dynamic>>(
       context: context,
-      initialChildSize: 0.85,
+      initialChildSize: 0.9,
       child: const CreateFundReportBottomSheet(),
     );
-    if (result == null) return;
+    if (result == null) return null;
     final user = await getCurrentUser();
-    if (user == null) return;
+    if (user == null) return false;
 
     final title = result['title'] as String? ?? '';
-    if (title.isEmpty) return;
+    if (title.isEmpty) return false;
 
     final expensesRaw = result['expenses'] as List<dynamic>? ?? [];
     final expenses = expensesRaw
@@ -91,8 +106,12 @@ class FundReportsProvider extends ChangeNotifier {
       _fundReports.insert(0, report);
       notifyListeners();
       await _fundReportsService.createReport(report);
+      return true;
     } catch (e) {
       debugPrint(e.toString());
+      _fundReports.removeWhere((r) => r.id == report.id);
+      notifyListeners();
+      return false;
     }
   }
 }

@@ -46,7 +46,7 @@ import '../presentation/screens/transfer_ownership/transfer_ownership_page.dart'
 GoRouter createAppRouter(ProfileProvider profileProvider) {
   return GoRouter(
     initialLocation: NamedRoutes.home.routeName,
-    refreshListenable: profileProvider,
+    refreshListenable: profileProvider.routerRefresh,
     routes: [
       GoRoute(
         path: NamedRoutes.splash.routeName,
@@ -65,11 +65,7 @@ GoRouter createAppRouter(ProfileProvider profileProvider) {
           path: NamedRoutes.pendingRequest.routeName,
           builder: (ctx, state) => PendingRequestPage()),
       StatefulShellRoute.indexedStack(
-        builder: (ctx, state, navigationShell) {
-          return MainMenuPage(
-            navigationShell: navigationShell,
-          );
-        },
+        builder: (ctx, state, navigationShell) => MainMenuPage(navigationShell: navigationShell,),
         branches: [
           StatefulShellBranch(routes: [
             GoRoute(
@@ -103,7 +99,7 @@ GoRouter createAppRouter(ProfileProvider profileProvider) {
           builder: (ctx, state) =>ResidentsPage()),
       GoRoute(
           path: NamedRoutes.paymentDetail.routeName,
-          builder: (ctx, state) =>PaymentDetailPage(payment: state.extra as PaymentModel)),
+          builder: (ctx, state) => PaymentDetailPage(payment: state.extra as PaymentModel)),
       GoRoute(
           path: NamedRoutes.residentPaymentHistory.routeName,
           builder: (ctx, state) =>ResidentPaymentHistoryPage(userID: state.extra as String)),
@@ -125,8 +121,7 @@ GoRouter createAppRouter(ProfileProvider profileProvider) {
           builder: (ctx, state) => VerifyOTPPage()),
       GoRoute(
           path: NamedRoutes.residentDetail.routeName,
-          builder: (ctx, state) =>
-              ProfileDetailPage(resident: state.extra as UserModel)),
+          builder: (ctx, state) => ProfileDetailPage(resident: state.extra as UserModel)),
       GoRoute(
           path: NamedRoutes.editProfile.routeName,
           builder: (ctx, state) => EditProfilePage()),
@@ -194,6 +189,12 @@ GoRouter createAppRouter(ProfileProvider profileProvider) {
           isPrivacy;
 
       if (!isAuthenticated) {
+        if (profileProvider.profileLoadError != null) {
+          if (isOnLoginPage) {
+            return null;
+          }
+          return NamedRoutes.login.routeName;
+        }
         if (isOnSplash) {
           return NamedRoutes.createAccount.routeName;
         }
@@ -204,21 +205,21 @@ GoRouter createAppRouter(ProfileProvider profileProvider) {
       }
 
       if (isAuthenticated && loading) {
-        if (isOnSplash) {
+        if (isOnSplash || isOnSignupPage || isOnLoginPage) {
           return null;
         }
         return NamedRoutes.splash.routeName;
       }
 
       if (isAuthenticated && !loading && user == null) {
-        if (isOnSplash) {
+        if (isOnSplash || isOnSignupPage) {
           return null;
         }
         return NamedRoutes.splash.routeName;
       }
 
       if (user!.status == UserStatus.pending) {
-        if (isOnPending) {
+        if (isOnPending || isOnSignupPage) {
           return null;
         }
         return NamedRoutes.pendingRequest.routeName;

@@ -1,4 +1,4 @@
-package com.example.portalixmx_resident
+package com.portalixmx.residentadmin
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

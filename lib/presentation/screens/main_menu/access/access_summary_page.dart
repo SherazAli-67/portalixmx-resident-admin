@@ -91,7 +91,11 @@ class AccessSummaryPage extends StatelessWidget{
                         ),
                         Expanded(
                             child: VisitorInfoItemWidget(
-                              title: 'Access Approved Date', subTitle: '',)
+                              title: 'Access Approved Date',
+                              subTitle: access.status == .approved
+                                  ? DateTimeFormatHelpers.formatDateTime(access.updatedAt)
+                                  : '—',
+                            ),
                         ),
                       ],
                     ),

@@ -1,0 +1,76 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function adminDoc() {
+      return firestore.get(
+        /databases/(default)/documents/resident-admins/$(request.auth.uid)
+      );
+    }
+
+    function isApprovedAdmin() {
+  return isSignedIn()
+    && adminDoc().data.status == 1;
+}
+match /access/{accessId}/{allPaths=**} {
+  allow read: if isSignedIn();
+  allow create, update: if isApprovedAdmin()
+    && request.resource.size < 5 * 1024 * 1024
+    && request.resource.contentType.matches('image/.*');
+  allow delete: if isApprovedAdmin();
+}
+
+    match /resident-admin/profile_pictures/{userId}/{allPaths=**} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+      match /residents/profile_pictures/{userId}/{allPaths=**} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+      match /payments_by_residents/{userId}/{allPaths=**} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    match /complaints_by_residents/{userId}/{allPaths=**} {
+    allow read: if isSignedIn();
+    allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+   match /society_coverImage/{societyID}/{fileName} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*')
+        && firestore.get(
+             /databases/(default)/documents/resident-admins/$(request.auth.uid)
+           ).data.societyID == societyID;
+    }
+
+    match /{societyID}/community_polls/{pollID}/{fileName} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*')
+        && firestore.get(
+             /databases/(default)/documents/resident-admins/$(request.auth.uid)
+           ).data.societyID == societyID;
+    }
+
+    match /community_events/{eventId}/{allPaths=**} {
+      allow read: if isSignedIn();
+      allow create, update: if isApprovedAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow delete: if isApprovedAdmin();
+    }
+  }
+}

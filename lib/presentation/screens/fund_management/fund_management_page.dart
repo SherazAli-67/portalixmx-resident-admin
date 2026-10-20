@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:portalixmx_resident_admin/core/common_ui.dart';
 import 'package:provider/provider.dart';
 import '../../../core/res/app_colors.dart';
 import '../../../core/res/app_textstyles.dart';
@@ -40,8 +41,10 @@ class FundManagementPage extends StatelessWidget {
                           child: IconButton(
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.btnColor),
-                            onPressed: () =>
-                                provider.onCreateReportTap(context),
+                            onPressed: () => _onCreateReportTap(
+                                context,
+                                provider: provider,
+                                localization: localization),
                             icon: const Icon(Icons.add, color: Colors.white),
                           ),
                         ),
@@ -193,5 +196,30 @@ class FundManagementPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _onCreateReportTap(
+    BuildContext context, {
+    required FundReportsProvider provider,
+    required AppLocalizations localization,
+  }) async {
+    final result = await provider.onCreateReportTap(context);
+    if (!context.mounted || result == null) return;
+    if (result) {
+      final title = provider.fundReports.isNotEmpty
+          ? provider.fundReports.first.title
+          : '';
+      CommonUI.showSnackBarMessage(
+        context,
+        message: localization.fundReportCreated(title),
+        isSuccess: true,
+      );
+    } else {
+      CommonUI.showSnackBarMessage(
+        context,
+        message: localization.failedToCreateFundReport,
+        isError: true,
+      );
+    }
   }
 }

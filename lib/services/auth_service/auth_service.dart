@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:portalixmx_resident_admin/core/models/society_model.dart';
@@ -13,17 +16,31 @@ class AuthService {
   AuthService._();
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
+  final _functions = FirebaseFunctions.instanceFor(region: 'us-central1');
 
-  Future<User?> signup({required String name, required String email, required String password, required String societyID, required XFile image})async{
+  Future<User?> signup({required String name, required String email, required String password, required String societyID, XFile? image}) async {
     try{
      final userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
      if(userCredential.user != null){
-       //Upload image and get the url
        User authUser = userCredential.user!;
-       String? profilePicture = await updateProfilePicture(image);
-       UserModel user = UserModel(userID: authUser.uid, userName: name, email: email, createdAt: DateTime.now().toUtc(), societyID: societyID, profileImg: profilePicture);
-       await _firestore.collection(FirebaseConst.residentAdminCol).doc(user.userID).set(user.toMap());
+       UserModel user = UserModel(userID: authUser.uid, userName: name, email: email, createdAt: DateTime.now().toUtc(), societyID: societyID);
+       final userMap = user.toMap();
+       try {
+         final fcmToken = await FirebaseMessaging.instance.getToken();
+         if (fcmToken != null) {
+           userMap['token'] = fcmToken;
+         }
+       } catch (_) {}
+       await _firestore.collection(FirebaseConst.residentAdminCol).doc(user.userID).set(userMap);
        await _claimSocietyAdminIfEmpty(societyID: societyID, adminUid: user.userID);
+       if (image != null) {
+         final profilePicture = await updateProfilePicture(image);
+         if (profilePicture != null) {
+           await _firestore.collection(FirebaseConst.residentAdminCol).doc(user.userID).update({
+             'profileImg': profilePicture,
+           });
+         }
+       }
        return authUser;
      }
      return null;
@@ -143,12 +160,23 @@ class AuthService {
     }
   }
 
-  Future<List<SocietyModel>> getSocieties()async {
-    try{
-      final querySnap = await _firestore.collection(FirebaseConst.societiesCol).get();
-      return querySnap.docs.map((doc)=> SocietyModel.fromMap( doc.data())).toList();
+  Future<List<SocietyModel>> getSocieties() async {
+    try {
+      final callable = _functions.httpsCallable('listSocietiesForSignup');
+      final result = await callable.call();
+      final data = result.data;
+      final rawList = data is Map ? data['societies'] : null;
+      if (rawList is! List) {
+        return [];
+      }
+      return rawList.map((item) {
+        final map = Map<String, dynamic>.from(item as Map);
+        return SocietyModel.fromMap(map);
+      }).toList();
+    } on FirebaseFunctionsException catch (e) {
+      throw e.message ?? 'Failed to load societies';
     } catch (e) {
-      throw 'Failed to get user: $e';
+      throw 'Failed to load societies: $e';
     }
   }
   Future<SocietyModel?> getSociety() async {
@@ -163,16 +191,44 @@ class AuthService {
   }
 
   Future<String?> updateProfilePicture(XFile image) async {
-    try{
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('No authenticated user for profile image upload');
+      }
+      await user.getIdToken(true);
+      try {
+        final appCheckToken = await FirebaseAppCheck.instance.getToken(true);
+        if (appCheckToken == null || appCheckToken.isEmpty) {
+          throw Exception('App Check token unavailable');
+        }
+      } catch (e) {
+        throw Exception(
+          'App Check token unavailable. Register this device debug token in Firebase Console → App Check → Manage debug tokens. $e',
+        );
+      }
+      final contentType = _imageContentType(image.name);
       final storageRef = FirebaseStorage.instance
           .ref()
-          .child("resident-admin/profile_pictures/${_auth.currentUser!.uid}/${image.name}");
-      TaskSnapshot task = await storageRef.putFile(File(image.path));
+          .child("resident-admin/profile_pictures/${user.uid}/${image.name}");
+      TaskSnapshot task = await storageRef.putFile(
+        File(image.path),
+        SettableMetadata(contentType: contentType),
+      );
       String imageUrl = await task.ref.getDownloadURL();
       return imageUrl;
-    }catch(e){
+    } catch (e) {
       throw Exception("Failed to upload image: ${e.toString()}");
     }
+  }
+
+  String _imageContentType(String fileName) {
+    final lower = fileName.toLowerCase();
+    if (lower.endsWith('.png')) return 'image/png';
+    if (lower.endsWith('.webp')) return 'image/webp';
+    if (lower.endsWith('.gif')) return 'image/gif';
+    if (lower.endsWith('.heic')) return 'image/heic';
+    return 'image/jpeg';
   }
 
   Future<void> _claimSocietyAdminIfEmpty({

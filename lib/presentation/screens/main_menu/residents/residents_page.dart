@@ -23,35 +23,50 @@ class ResidentsPage extends StatelessWidget{
             builder: (_, provider, _){
               final filteredResidents = provider.getFilteredResidents(localization);
               return Padding(
-                padding: .symmetric(horizontal: 16, vertical: 10.0),
+                padding: .symmetric(horizontal: 10, vertical: 10),
                 child: Column(
                   spacing: 16,
                   children: [
-                    provider.loadingSociety ? LoadingWidget() : Text(provider.society?.name ?? '', style: AppTextStyles.headingTextStyle),
+
                     Row(
-                      spacing: 20,
+                      mainAxisAlignment: .spaceBetween,
                       children: [
-                        Expanded(child: AppDropdownWidget<String>(list: provider.getFilterList(localization), title: 'Date', value: provider.selectedFilter, onChanged: (val)=> provider.onChangeFilterTap(val), getTitle: (item) => item)),
-                        Expanded(child: AppDropdownWidget<String>(list: provider.getStatusList(localization), title: 'Status', value: provider.selectedPaymentStatusFilter, onChanged: (val)=> provider.onChangeStatusFilterTap(val), getTitle: (item) => item)),
+                        BackButton(color: Colors.white,),
+                        provider.loadingSociety ? LoadingWidget() : Text(provider.society?.name ?? '', style: AppTextStyles.regularTextStyle),
+                        const SizedBox(width: 40,),
                       ],
                     ),
                     Expanded(
-                      child: provider.loadingResident
-                          ? LoadingWidget()
-                          : filteredResidents.isEmpty
-                              ? Center(
-                                  child: Text(
-                                    localization.emptyResidentsMsg,
-                                    style: AppTextStyles.regularTextStyle,
-                                  ),
-                                )
-                              : ListView.separated(
-                                  itemBuilder: (ctx, index){
-                                    return ResidentItemWidget(resident: filteredResidents[index]);
-                                  },
-                                  separatorBuilder: (ctx, index) => const SizedBox(height: 10,),
-                                  itemCount: filteredResidents.length,
-                                ),
+                      child: Padding(padding: .symmetric(horizontal: 10), child: Column(
+                        spacing: 24,
+                        children: [
+                          Row(
+                            spacing: 20,
+                            children: [
+                              Expanded(child: AppDropdownWidget<String>(list: provider.getFilterList(localization), title: 'Date', value: provider.selectedFilter, onChanged: (val)=> provider.onChangeFilterTap(val), getTitle: (item) => item)),
+                              Expanded(child: AppDropdownWidget<String>(list: provider.getStatusList(localization), title: 'Status', value: provider.selectedPaymentStatusFilter, onChanged: (val)=> provider.onChangeStatusFilterTap(val), getTitle: (item) => item)),
+                            ],
+                          ),
+                          Expanded(
+                            child: provider.loadingResident
+                                ? LoadingWidget()
+                                : filteredResidents.isEmpty
+                                ? Center(
+                              child: Text(
+                                localization.emptyResidentsMsg,
+                                style: AppTextStyles.regularTextStyle,
+                              ),
+                            )
+                                : ListView.separated(
+                              itemBuilder: (ctx, index){
+                                return ResidentItemWidget(resident: filteredResidents[index]);
+                              },
+                              separatorBuilder: (ctx, index) => const SizedBox(height: 10,),
+                              itemCount: filteredResidents.length,
+                            ),
+                          )
+                        ],
+                      ),),
                     )
                   ],
                 ),

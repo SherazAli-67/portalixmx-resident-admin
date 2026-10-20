@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:portalixmx_resident_admin/core/res/app_constants.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/full_page_loading_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/complaint_status_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/popup_menu_item_widget.dart';
@@ -26,10 +25,6 @@ class MaintenanceMenu extends StatelessWidget {
       builder: (ctx, _) {
         return Consumer<MaintenanceProvider>(builder: (ctx, provider, _) {
           return BgGradientScreen(
-            floatingActionButton: FloatingActionButton(
-                onPressed: () => provider.onAddComplaintTap(),
-                shape: RoundedRectangleBorder(borderRadius: .circular(100)),
-                child: Icon(Icons.add_rounded, color: AppColors.primaryColor,)),
             child: Stack(
               children: [
                 Padding(
@@ -129,12 +124,24 @@ class MaintenanceMenu extends StatelessWidget {
                             .circular(10)),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: CachedNetworkImage(
-                            imageUrl: complaintByUser?.profileImg ??
-                                AppConstants.dummyImageUrl,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          ),
+                          child: (complaintByUser?.profileImg != null &&
+                                  complaintByUser!.profileImg!.isNotEmpty)
+                              ? CachedNetworkImage(
+                                  imageUrl: complaintByUser.profileImg!,
+                                  height: 50,
+                                  width: 50,
+                                  fit: BoxFit.cover,
+                                )
+                              : Container(
+                                  height: 50,
+                                  width: 50,
+                                  color: Colors.grey.shade200,
+                                  alignment: Alignment.center,
+                                  child: Icon(
+                                    Icons.person,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                ),
                         ),
                       ),
                       Expanded(

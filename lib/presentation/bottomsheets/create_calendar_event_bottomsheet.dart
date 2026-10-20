@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../core/common_ui.dart';
 import '../../core/res/app_colors.dart';
 import '../../core/res/app_icons.dart';
 import '../../core/res/app_textstyles.dart';
@@ -37,9 +38,10 @@ class _CreateCalendarEventBottomSheetState extends State<CreateCalendarEventBott
     return Material(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 25),
+        padding: const .symmetric(horizontal: 16.0, vertical: 8),
         child: Column(
           spacing: 15,
+          mainAxisSize: .min,
           children: [
             Text(localization.createEvent, style: AppTextStyles.bottomSheetHeadingTextStyle,),
             const SizedBox(height: 10,),
@@ -67,10 +69,10 @@ class _CreateCalendarEventBottomSheetState extends State<CreateCalendarEventBott
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 18.0),
+              padding: const .symmetric(vertical: 18.0),
               child: SizedBox(
                 height: 50,
-                width: double.infinity,
+                width: .infinity,
                 child: PrimaryBtn(onTap: _onSubmitTap, btnText: localization.submit,),
               ),
             )
@@ -134,14 +136,25 @@ class _CreateCalendarEventBottomSheetState extends State<CreateCalendarEventBott
     }
   }
 
-  void _onSubmitTap()async{
-    String title = _eventTitleTextEditingController.text.trim();
-    String description = _eventTitleTextEditingController.text.trim();
+  void _onSubmitTap() {
+    final title = _eventTitleTextEditingController.text.trim();
+    final description = _eventDescriptionTextEditingController.text.trim();
 
-    if(title.isEmpty && description.isEmpty && image == null){
-      Navigator.pop(context);
-    }else{
-      Navigator.pop(context, {'eventTitle' : title, 'eventDescription' : description, 'image' : image, 'eventDate'  : _eventDate, 'eventTime' : _eventTime});
+    if (title.isEmpty) {
+      CommonUI.showSnackBarMessage(context, isError: true, message: 'Please enter an event title');
+      return;
     }
+    if (_eventDate == null || _eventTime == null) {
+      CommonUI.showSnackBarMessage(context, isError: true, message: 'Please select event date and time');
+      return;
+    }
+
+    Navigator.pop(context, {
+      'eventTitle': title,
+      'eventDescription': description,
+      'image': image,
+      'eventDate': _eventDate,
+      'eventTime': _eventTime,
+    });
   }
 }

@@ -8,7 +8,6 @@ import 'package:portalixmx_resident_admin/presentation/widgets/primary_btn.dart'
 import 'package:portalixmx_resident_admin/services/payments_service/payments_service.dart';
 import '../../core/models/payment_model.dart';
 import '../../core/res/app_colors.dart';
-import '../../core/res/app_constants.dart';
 import '../../core/res/app_textstyles.dart';
 
 class ResidentPaymentReceiptSheet extends StatefulWidget {
@@ -28,7 +27,7 @@ class ResidentPaymentReceiptSheet extends StatefulWidget {
 }
 
 class _ResidentPaymentReceiptSheetState extends State<ResidentPaymentReceiptSheet> {
-  bool _markingReceived = false;
+  bool _busy = false;
 
   PaymentStatus get _status =>
       widget.submission.approvedOnDate != null ? .received : .submitted;
@@ -36,6 +35,7 @@ class _ResidentPaymentReceiptSheetState extends State<ResidentPaymentReceiptShee
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final receiptUrl = widget.submission.receipt;
     return Padding(
       padding: const .symmetric(horizontal: 16.0, vertical: 10),
       child: Column(
@@ -56,26 +56,43 @@ class _ResidentPaymentReceiptSheetState extends State<ResidentPaymentReceiptShee
             ],
           ),
           Text(localizations.receipt, style: AppTextStyles.regularTextStyle.copyWith(color: AppColors.primaryColor)),
-          ClipRRect(
-            borderRadius: .circular(15),
-            child: CachedNetworkImage(
-              imageUrl: widget.submission.receipt ?? AppConstants.dummyImageUrl,
-              height: 220,
-              width: .infinity,
-              fit: .cover,
-            ),
-          ),
-          if (_status == .submitted)
-            Padding(
-              padding: const .symmetric(vertical: 8.0),
-              child: SizedBox(
-                height: 50,
+          if (receiptUrl != null && receiptUrl.startsWith('http'))
+            ClipRRect(
+              borderRadius: .circular(15),
+              child: CachedNetworkImage(
+                imageUrl: receiptUrl,
+                height: 220,
                 width: .infinity,
-                child: PrimaryBtn(
-                  onTap: _onMarkReceivedTap,
-                  btnText: localizations.markAsReceived,
-                  isLoading: _markingReceived,
-                ),
+                fit: .cover,
+              ),
+            )
+          else
+            Text('No receipt available', style: AppTextStyles.tileSubtitleTextStyle),
+          if (_status == .submitted)
+            SafeArea(
+              child: Column(
+                spacing: 10,
+                children: [
+                  SizedBox(
+                    height: 50,
+                    width: .infinity,
+                    child: PrimaryBtn(
+                      onTap: _onMarkReceivedTap,
+                      btnText: localizations.markAsReceived,
+                      isLoading: _busy,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                    width: .infinity,
+                    child: PrimaryBtn(
+                      onTap: _onRejectTap,
+                      btnText: localizations.reject,
+                      bgColor: Colors.red,
+                      isLoading: _busy,
+                    ),
+                  ),
+                ],
               ),
             ),
         ],
@@ -84,8 +101,8 @@ class _ResidentPaymentReceiptSheetState extends State<ResidentPaymentReceiptShee
   }
 
   void _onMarkReceivedTap() async {
-    if (_markingReceived) return;
-    setState(() => _markingReceived = true);
+    if (_busy) return;
+    setState(() => _busy = true);
     try {
       await PaymentsService.instance.markResidentPaymentReceived(
         paymentID: widget.payment.paymentID,
@@ -93,7 +110,21 @@ class _ResidentPaymentReceiptSheetState extends State<ResidentPaymentReceiptShee
       );
       if (mounted) Navigator.pop(context, true);
     } catch (_) {
-      if (mounted) setState(() => _markingReceived = false);
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  void _onRejectTap() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await PaymentsService.instance.rejectResidentPaymentSubmission(
+        paymentID: widget.payment.paymentID,
+        residentUid: widget.resident.userID,
+      );
+      if (mounted) Navigator.pop(context, true);
+    } catch (_) {
+      if (mounted) setState(() => _busy = false);
     }
   }
 }

@@ -1,0 +1,323 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+    function residentDoc(uid) {
+      return get(/databases/$(database)/documents/residents/$(uid)).data;
+    }
+    function adminDoc(uid) {
+      return get(/databases/$(database)/documents/resident-admins/$(uid)).data;
+    }
+    function isResident() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/residents/$(request.auth.uid));
+    }
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/resident-admins/$(request.auth.uid));
+    }
+    function isApprovedResident() {
+      return isResident() && residentDoc(request.auth.uid).status == 1;
+    }
+    function isApprovedAdmin() {
+      return isAdmin() && adminDoc(request.auth.uid).status == 1;
+    }
+    function mySocietyId() {
+      return isAdmin()
+        ? adminDoc(request.auth.uid).societyID
+        : residentDoc(request.auth.uid).societyID;
+    }
+    function sameSocietyResource() {
+      return resource.data.societyID == mySocietyId();
+    }
+    function sameSocietyRequest() {
+      return request.resource.data.societyID == mySocietyId();
+    }
+    function isSocietyOwner() {
+      return isApprovedAdmin()
+        && get(/databases/$(database)/documents/societies/$(mySocietyId()))
+             .data.residentAdmin == request.auth.uid;
+    }
+    function residentSelfUpdateSafe() {
+      return request.resource.data.userID == resource.data.userID
+        && request.resource.data.status == resource.data.status
+        && request.resource.data.get('zkPin', null)
+             == resource.data.get('zkPin', null)
+        && request.resource.data.get('zkProvisionedAt', null)
+             == resource.data.get('zkProvisionedAt', null)
+        && request.resource.data.get('zkAccLevelIds', [])
+             == resource.data.get('zkAccLevelIds', []);
+    }
+    function adminResidentUpdateSafe() {
+      return request.resource.data.userID == resource.data.userID
+        && request.resource.data.societyID == resource.data.societyID
+        && request.resource.data.get('zkPin', null)
+             == resource.data.get('zkPin', null)
+        && request.resource.data.get('zkProvisionedAt', null)
+             == resource.data.get('zkProvisionedAt', null)
+        && request.resource.data.get('zkAccLevelIds', [])
+             == resource.data.get('zkAccLevelIds', []);
+    }
+
+    // -------- societies --------
+    match /societies/{societyId} {
+      allow read: if isSignedIn();
+
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['residentAdmin'])
+        && resource.data.get('residentAdmin', '') in ['', null]
+        && request.resource.data.residentAdmin == request.auth.uid;
+
+      allow update: if isSocietyOwner()
+        && request.resource.data.residentAdmin == resource.data.residentAdmin
+        && request.resource.data.id == resource.data.id;
+
+      allow update: if isSocietyOwner()
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['residentAdmin'])
+        && request.resource.data.residentAdmin is string
+        && request.resource.data.residentAdmin != request.auth.uid;
+
+      allow create, delete: if false;
+    }
+
+    // -------- resident-admins --------
+    match /resident-admins/{uid} {
+      allow get: if isOwner(uid)
+        || (isApprovedAdmin() && resource.data.societyID == mySocietyId());
+      allow list: if isApprovedAdmin()
+        && resource.data.societyID == mySocietyId();
+
+      allow create: if isOwner(uid)
+        && request.resource.data.userID == uid
+        && request.resource.data.status == 0;
+
+      // Own profile / token / personal alert contact UIDs; no self-approve
+      allow update: if isOwner(uid)
+        && request.resource.data.userID == uid
+        && request.resource.data.societyID == resource.data.societyID
+        && (
+          request.resource.data.status == resource.data.status
+          || (isSocietyOwner() && request.resource.data.status in [0, 1])
+        );
+
+      allow update: if isSocietyOwner()
+        && resource.data.societyID == mySocietyId()
+        && request.resource.data.societyID == resource.data.societyID
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status'])
+        && request.resource.data.status in [0, 1];
+
+      allow delete: if isOwner(uid);
+    }
+
+    // -------- residents --------
+    match /residents/{uid} {
+      allow get: if isOwner(uid)
+        || (isSignedIn() && resource.data.societyID == mySocietyId());
+      allow list: if isSignedIn()
+        && resource.data.societyID == mySocietyId();
+
+      allow create: if isOwner(uid)
+        && request.resource.data.userID == uid
+        && request.resource.data.status == 0
+        && request.resource.data.get('zkAccLevelIds', []).size() == 0
+        && !('zkPin' in request.resource.data
+             && request.resource.data.zkPin != null);
+
+      // Resident: profile + personal emergencyContacts; cannot change status / ZKBio
+      allow update: if isOwner(uid) && residentSelfUpdateSafe();
+
+      // Approved Admin of society: approve / reject / edit (no ZKBio forge)
+      allow update: if isApprovedAdmin()
+        && resource.data.societyID == mySocietyId()
+        && adminResidentUpdateSafe();
+
+      allow delete: if isOwner(uid)
+        || (isApprovedAdmin() && resource.data.societyID == mySocietyId());
+
+      match /visitors/{visitorId} {
+        allow read, write: if isOwner(uid);
+      }
+      match /guests_directory/{guestId} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    // -------- society emergency directory (Admin-created services) --------
+    match /emergency_contacts/{contactId} {
+      allow read: if isSignedIn() && sameSocietyResource();
+
+      allow create: if isApprovedAdmin()
+        && sameSocietyRequest()
+        && request.resource.data.keys()
+             .hasAll(['societyID', 'name', 'phoneNumber'])
+        && request.resource.data.name is string
+        && request.resource.data.phoneNumber is string;
+
+      allow update: if isApprovedAdmin()
+        && sameSocietyResource()
+        && sameSocietyRequest();
+
+      allow delete: if isApprovedAdmin() && sameSocietyResource();
+    }
+
+    // -------- complaints --------
+    match /complaints/{complaintId} {
+      allow read: if isSignedIn() && (
+        resource.data.complaintBy == request.auth.uid
+        || (isApprovedAdmin() && sameSocietyResource())
+      );
+
+      allow create: if isSignedIn()
+        && request.resource.data.complaintBy == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && sameSocietyRequest();
+
+      allow update: if isApprovedAdmin()
+        && sameSocietyResource()
+        && sameSocietyRequest()
+        && request.resource.data.complaintBy == resource.data.complaintBy;
+
+      allow delete: if (
+          isSignedIn() && resource.data.complaintBy == request.auth.uid
+        ) || (
+          isApprovedAdmin() && sameSocietyResource()
+        );
+    }
+
+    // -------- access_requests --------
+    match /access_requests/{requestId} {
+      allow read: if isSignedIn() && (
+        resource.data.requestByUID == request.auth.uid
+        || (isApprovedAdmin() && sameSocietyResource())
+      );
+
+      allow create: if isSignedIn()
+        && request.resource.data.requestByUID == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && sameSocietyRequest()
+        && !('zkAccessGrantedAt' in request.resource.data
+             && request.resource.data.zkAccessGrantedAt != null);
+
+      allow update: if isApprovedAdmin()
+        && sameSocietyResource()
+        && sameSocietyRequest()
+        && request.resource.data.requestByUID == resource.data.requestByUID
+        && request.resource.data.status in ['pending', 'approved', 'rejected'];
+
+      allow delete: if false;
+    }
+
+    // -------- access (amenities) --------
+    match /access/{accessId} {
+      allow read: if isSignedIn() && sameSocietyResource();
+      allow create: if isApprovedAdmin() && sameSocietyRequest();
+      allow update: if isApprovedAdmin()
+        && sameSocietyResource() && sameSocietyRequest();
+      allow delete: if isApprovedAdmin() && sameSocietyResource();
+    }
+
+    // -------- payments --------
+    match /payments/{paymentId} {
+      allow read: if isSignedIn() && (
+        sameSocietyResource()
+        || resource.data.paymentByUID == request.auth.uid
+      );
+
+      allow create: if isApprovedAdmin() && sameSocietyRequest();
+      allow update: if isApprovedAdmin()
+        && sameSocietyResource() && sameSocietyRequest();
+      allow delete: if isApprovedAdmin() && sameSocietyResource();
+
+      match /payments_submitted/{submitterUid} {
+        allow read: if isOwner(submitterUid)
+          || (isApprovedAdmin()
+              && get(/databases/$(database)/documents/payments/$(paymentId))
+                   .data.societyID == mySocietyId());
+
+        allow create, update: if isOwner(submitterUid)
+          && request.resource.data.paymentByUID == request.auth.uid
+          && request.resource.data.approvedOnDate == null;
+
+        allow update: if isApprovedAdmin()
+          && get(/databases/$(database)/documents/payments/$(paymentId))
+               .data.societyID == mySocietyId();
+
+        allow delete: if false;
+      }
+    }
+
+    // -------- payments_to_admin --------
+    match /payments_to_admin/{paymentId} {
+      allow read: if isApprovedAdmin() && sameSocietyResource();
+      allow update: if isApprovedAdmin()
+        && sameSocietyResource() && sameSocietyRequest();
+      allow create, delete: if false;
+    }
+
+    // -------- fund_reports --------
+    match /fund_reports/{reportId} {
+      allow read: if (
+          isApprovedResident()
+          && resource.data.showToResidents == true
+          && sameSocietyResource()
+        ) || (
+          isApprovedAdmin() && sameSocietyResource()
+        );
+
+      allow create: if isApprovedAdmin() && sameSocietyRequest();
+      allow update: if isApprovedAdmin()
+        && sameSocietyResource() && sameSocietyRequest();
+      allow delete: if false;
+    }
+
+    // -------- community_calendar_events --------
+    match /community_calendar_events/{eventId} {
+      allow read: if isSignedIn() && sameSocietyResource();
+      allow create: if isApprovedAdmin() && sameSocietyRequest();
+      allow update: if isApprovedAdmin()
+        && sameSocietyResource() && sameSocietyRequest();
+      allow delete: if isApprovedAdmin() && sameSocietyResource();
+    }
+
+    // -------- community_polls --------
+    match /community_polls/{pollId} {
+      allow read: if isSignedIn() && sameSocietyResource();
+      allow create: if isApprovedAdmin() && sameSocietyRequest();
+      allow delete: if isApprovedAdmin() && sameSocietyResource();
+
+      allow update: if isApprovedResident()
+        && sameSocietyResource()
+        && request.resource.data.diff(resource.data)
+             .affectedKeys().hasOnly(['options']);
+
+      allow update: if isApprovedAdmin()
+        && sameSocietyResource() && sameSocietyRequest();
+
+      match /votes/{voterUid} {
+        allow read: if isOwner(voterUid)
+          || (isApprovedAdmin()
+              && get(/databases/$(database)/documents/community_polls/$(pollId))
+                   .data.societyID == mySocietyId());
+        allow create: if isOwner(voterUid)
+          && isApprovedResident()
+          && get(/databases/$(database)/documents/community_polls/$(pollId))
+               .data.societyID == mySocietyId()
+          && request.resource.data.keys().hasOnly(['optionId', 'votedAt']);
+        allow update, delete: if false;
+      }
+    }
+
+    match /guard_logs/{logId} {
+      allow read, write: if false;
+    }
+  }
+}

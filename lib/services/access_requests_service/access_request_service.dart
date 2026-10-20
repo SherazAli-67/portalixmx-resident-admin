@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../core/models/access_model.dart';
 import '../../core/models/access_request_model.dart';
 import '../../core/res/firebase_constant.dart';
+import '../user_service/user_service.dart';
 
 class AccessRequestService {
   static final AccessRequestService _instance = AccessRequestService._internal();
@@ -19,20 +24,29 @@ class AccessRequestService {
 
   CollectionReference get _getAccessCollection =>
       _firestore.collection(FirebaseConst.accessCol);
-  Future<AccessRequestModel> createRequest({required DateTime date, required TimeOfDay time, required AccessModel access}) async {
+
+  Future<AccessRequestModel> createRequest({
+    required DateTime date,
+    required TimeOfDay time,
+    required AccessModel access,
+  }) async {
     try {
-      DateTime now = DateTime.now().toUtc();
-      AccessRequestModel accessRequestModel = AccessRequestModel(id: now.toIso8601String(),
-          requestByUID: _auth.currentUser!.uid,
-          requestedAccessTitle: access.name,
-          requestedAccessImage: access.image,
-          residentAdminID: '1',
-          societyID: '1',
-          requestedForDate: date,
-          requestedForTime: time,
-          status: .pending,
-          createdAt: now,
-          updatedAt: now);
+      final user = await UserService.instance.getCurrentUser();
+      if (user == null) throw Exception('User not found');
+      final now = DateTime.now().toUtc();
+      final accessRequestModel = AccessRequestModel(
+        id: now.toIso8601String(),
+        requestByUID: _auth.currentUser!.uid,
+        requestedAccessTitle: access.name,
+        requestedAccessImage: access.image,
+        residentAdminID: user.userID,
+        societyID: user.societyID,
+        requestedForDate: date,
+        requestedForTime: time,
+        status: .pending,
+        createdAt: now,
+        updatedAt: now,
+      );
       await _getAccessRequestsCollection.doc(accessRequestModel.id).set(accessRequestModel.toMap());
       return accessRequestModel;
     } catch (e) {
@@ -43,7 +57,6 @@ class AccessRequestService {
   Future<List<AccessRequestModel>> getAllRequests({required String societyID}) async {
     try {
       final snapshot = await _getAccessRequestsCollection.where('societyID', isEqualTo: societyID).get();
-
       return snapshot.docs
           .map((doc) => AccessRequestModel.fromMap(doc.data()! as Map<String, dynamic>))
           .toList();
@@ -51,41 +64,25 @@ class AccessRequestService {
       throw Exception('Failed to get requests: $e');
     }
   }
-  Future<List<AccessModel>> getAllAccessList() async {
+
+  Future<List<AccessModel>> getAllAccessList({String? societyID}) async {
     try {
-      final snapshot = await _firestore.collection(FirebaseConst.accessCol).get();
-      return snapshot.docs.map((doc) => AccessModel.fromJson(doc.data())).toList();
+      Query query = _firestore.collection(FirebaseConst.accessCol);
+      if (societyID != null && societyID.isNotEmpty) {
+        query = query.where('societyID', isEqualTo: societyID);
+      }
+      final snapshot = await query.get();
+      return snapshot.docs
+          .map((doc) => AccessModel.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
     } catch (e) {
-      throw Exception('Failed to get requests: $e');
+      throw Exception('Failed to get access list: $e');
     }
   }
-/*
-  Future<void> deleteComplaintByID(String complaintID) async{
+
+  Future<List<AccessModel>> fetchAllAccess({String? societyID}) async {
     try {
-      await _getAccessRequestsCollection.doc(complaintID).delete();
-    } catch (e) {
-      throw Exception('Failed to add visitor: $e');
-    }
-  }*/
-
- /* Future<void> initAccess()async{
-    List<AccessModel> accessList = [
-      AccessModel(id: '1', name: 'Pool', image: 'https://cdn-icons-png.flaticon.com/512/1041/1041007.png'),
-      AccessModel(id: '2', name: 'Gym', image: 'https://cdn-icons-png.flaticon.com/512/4471/4471883.png'),
-      AccessModel(id: '3', name: 'Game', image: 'https://static.vecteezy.com/system/resources/thumbnails/045/493/238/small_2x/retro-yellow-pickleball-round-ball-sport-accessory-png.png'),
-    ];
-
-    for (var access in accessList) {
-      await _firestore.collection(FirebaseConst.accessCol).doc(access.id).set(access.toJson());
-    }
-  }*/
-
-  Future<List<AccessModel>> fetchAllAccess() async {
-    try {
-      final snapshot = await _firestore.collection(FirebaseConst.accessCol).get();
-      return snapshot.docs
-          .map((doc) => AccessModel.fromJson(doc.data()))
-          .toList();
+      return await getAllAccessList(societyID: societyID);
     } catch (e) {
       debugPrint("Failed to load access: ${e.toString()}");
     }
@@ -113,7 +110,27 @@ class AccessRequestService {
     }
   }
 
-  Future<void> addUpdateAccess({required AccessModel access}) async{
+  Future<String> uploadAccessImage({required XFile image, required String accessId}) async {
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child('access/$accessId/${image.name}');
+    final task = await storageRef.putFile(
+      File(image.path),
+      SettableMetadata(contentType: _imageContentType(image.name)),
+    );
+    return task.ref.getDownloadURL();
+  }
+
+  String _imageContentType(String fileName) {
+    final lower = fileName.toLowerCase();
+    if (lower.endsWith('.png')) return 'image/png';
+    if (lower.endsWith('.webp')) return 'image/webp';
+    if (lower.endsWith('.gif')) return 'image/gif';
+    if (lower.endsWith('.heic')) return 'image/heic';
+    return 'image/jpeg';
+  }
+
+  Future<void> addUpdateAccess({required AccessModel access}) async {
     try {
       await _getAccessCollection.doc(access.id).set(access.toJson());
     } catch (e) {
@@ -131,7 +148,7 @@ class AccessRequestService {
 
   Future<void> updateAccess(AccessModel access) async {
     try {
-      await _getAccessCollection.doc(access.id).set(access);
+      await _getAccessCollection.doc(access.id).set(access.toJson(), SetOptions(merge: true));
     } catch (e) {
       throw Exception(e.toString());
     }

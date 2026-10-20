@@ -5,11 +5,27 @@ import '../../../core/res/app_colors.dart';
 import '../../../core/res/app_textstyles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers/datetime_format_helpers.dart';
+import '../../../services/fund_reports_service/fund_reports_service.dart';
 import '../../widgets/bg_gradient_screen.dart';
+import '../../widgets/primary_btn.dart';
 
-class FundReportDetailPage extends StatelessWidget {
+class FundReportDetailPage extends StatefulWidget {
   const FundReportDetailPage({super.key, required this.report});
   final FundReportModel report;
+
+  @override
+  State<FundReportDetailPage> createState() => _FundReportDetailPageState();
+}
+
+class _FundReportDetailPageState extends State<FundReportDetailPage> {
+  late FundReportModel report;
+  bool _publishing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    report = widget.report;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +180,35 @@ class FundReportDetailPage extends StatelessWidget {
                           style: AppTextStyles.emergencyContactTitleTextStyle,
                         ),
                       ],
+                      if (report.status == .draft)
+                        SafeArea(
+                          child: SizedBox(
+                            width: .infinity,
+                            child: PrimaryBtn(
+                              btnText: localization.publishReport,
+                              isLoading: _publishing,
+                              onTap: () async {
+                                setState(() => _publishing = true);
+                                try {
+                                  final now = DateTime.now().toUtc();
+                                  final published = report.copyWith(
+                                    status: .published,
+                                    publishedAt: now,
+                                    showToResidents: true,
+                                  );
+                                  await FundReportsService.instance.updateReport(published);
+                                  if (mounted) {
+                                    setState(() => report = published);
+                                    Navigator.pop(context, published);
+                                  }
+                                } catch (_) {
+                                } finally {
+                                  if (mounted) setState(() => _publishing = false);
+                                }
+                              },
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),

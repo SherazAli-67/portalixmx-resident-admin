@@ -1,6 +1,7 @@
 enum UserStatus {
   pending,
   approved,
+  rejected,
 }
 
 UserStatus _userStatusFromMap(dynamic raw) {
