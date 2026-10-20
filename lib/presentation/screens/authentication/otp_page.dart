@@ -15,7 +15,7 @@ class _VerifyOTPPageState extends State<VerifyOTPPage> {
 
   final TextEditingController _otpController = TextEditingController();
   // final _authRepo = AuthRepository();
-  bool _isVerifyingOtp = false;
+  final bool _isVerifyingOtp = false;
   @override
   Widget build(BuildContext context) {
     return ScreenWithBgLogo(

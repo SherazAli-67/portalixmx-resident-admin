@@ -43,8 +43,9 @@ class PaymentsToAdminProvider extends ChangeNotifier {
       }
     }
     PaymentStatus? statusFilter;
-    if (selectedPaymentStatusFilter == l10n.pending) statusFilter = PaymentStatus.pending;
-    else if (selectedPaymentStatusFilter == l10n.received) statusFilter = PaymentStatus.received;
+    if (selectedPaymentStatusFilter == l10n.pending) {
+      statusFilter = PaymentStatus.pending;
+    } else if (selectedPaymentStatusFilter == l10n.received) statusFilter = PaymentStatus.received;
     return _payments.where((p) {
       if (dateCutoff != null && p.dateTime.isBefore(dateCutoff)) return false;
       if (statusFilter != null && p.paymentStatus != statusFilter) return false;

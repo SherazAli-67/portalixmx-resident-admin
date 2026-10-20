@@ -1,12 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
-import '../core/helpers/bottom_sheet_helper.dart';
 import '../core/models/complaints_model.dart';
 import '../core/models/user_model.dart';
-import '../presentation/bottomsheets/add_complaint_bottomsheet.dart';
-import '../presentation/screens/main_menu/main_menu.dart';
 import '../router/app_router.dart';
 import '../services/complaints_service/complaints_service.dart';
 import '../services/user_service/user_service.dart';

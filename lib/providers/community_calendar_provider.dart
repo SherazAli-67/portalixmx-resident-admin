@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:portalixmx_resident_admin/core/common_ui.dart';
 import 'package:portalixmx_resident_admin/core/helpers/bottom_sheet_helper.dart';
 import 'package:portalixmx_resident_admin/presentation/bottomsheets/create_calendar_event_bottomsheet.dart';
 import 'package:portalixmx_resident_admin/presentation/screens/main_menu/main_menu.dart';
