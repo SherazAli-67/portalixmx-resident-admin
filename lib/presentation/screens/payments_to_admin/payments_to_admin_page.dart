@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portalixmx_resident_admin/core/common_ui.dart';
+import 'package:portalixmx_resident_admin/core/helpers/formating_helper.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/app_dropdown_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/bg_gradient_screen.dart';
@@ -89,7 +90,7 @@ class _PaymentsToAdminPageState extends State<PaymentsToAdminPage> {
                                                       mainAxisAlignment: .spaceBetween,
                                                       children: [
                                                         Text(payment.paymentForTitle, style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor),),
-                                                        Text("\$${payment.amount}", style: TextStyle(fontSize: 12, fontWeight: .w700, color: AppColors.btnColor),)
+                                                        Text(FormatingHelper.formatCurrency(payment.amount), style: TextStyle(fontSize: 12, fontWeight: .w700, color: AppColors.btnColor),)
                                                       ],
                                                     ),
                                                     Text(DateTimeFormatHelpers.formatDateTime(payment.dateTime), style: TextStyle(fontSize: 10, fontWeight: .w500, color: AppColors.serviceSubTitleGreyColor),),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:portalixmx_resident_admin/core/common_ui.dart';
 import 'package:portalixmx_resident_admin/core/helpers/bottom_sheet_helper.dart';
+import 'package:portalixmx_resident_admin/core/helpers/formating_helper.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/l10n/app_localizations.dart';
 import 'package:portalixmx_resident_admin/presentation/bottomsheets/submit_payment_to_admin_bottomsheet.dart';
@@ -92,7 +93,7 @@ class _PaymentToAdminDetailPageState extends State<PaymentToAdminDetailPage> {
                                 Expanded(
                                   child: VisitorInfoItemWidget(
                                     title: localizations.amount,
-                                    subTitle: '${payment.amount}',
+                                    subTitle: FormatingHelper.formatCurrency(payment.amount),
                                   ),
                                 ),
                               ],

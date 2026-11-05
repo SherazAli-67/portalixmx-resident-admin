@@ -51,6 +51,23 @@ class ComplaintsService {
     }
   }
 
+  Stream<List<ComplaintModel>> watchComplaints({required String societyID}) {
+    return _getComplaintsCollection
+        .where('societyID', isEqualTo: societyID)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => ComplaintModel.fromMap(doc.data()! as Map<String, dynamic>))
+            .toList());
+  }
+
+  Stream<int> watchCountBySociety(String societyID) {
+    return _getComplaintsCollection
+        .where('societyID', isEqualTo: societyID)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
   Future<void> deleteComplaintByID(String complaintID) async{
     try {
       await _getComplaintsCollection.doc(complaintID).delete();

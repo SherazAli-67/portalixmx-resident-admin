@@ -154,8 +154,14 @@ class _EmergencyCallsView extends StatelessWidget {
     AppLocalizations localization,
     String userID,
   ) async {
+    final confirmed = await CommonUI.confirmDelete(
+      context,
+      title: localization.removeContact,
+    );
+    if (!confirmed || !context.mounted) return;
     final saved = await provider.removeContact(userID);
-    if (!saved && context.mounted) {
+    if (!context.mounted) return;
+    if (!saved) {
       CommonUI.showSnackBarMessage(
         context,
         isError: true,

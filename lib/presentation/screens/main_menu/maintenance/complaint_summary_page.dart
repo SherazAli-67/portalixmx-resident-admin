@@ -168,7 +168,13 @@ class ComplaintSummaryPage extends StatelessWidget{
                             padding: const .only(top: 15.0),
                             child: VisitorInfoItemWidget(title: localizations.email, subTitle: complaintByUser?.email ?? 'Unknown'),
                           ),
-                          VisitorInfoItemWidget(title: localizations.houseNumber, subTitle: '#${complaintByUser?.houseNumber ?? '706'}', showDivider: true,)
+                          VisitorInfoItemWidget(
+                            title: localizations.houseNumber,
+                            subTitle: (complaintByUser?.houseNumber != null && complaintByUser!.houseNumber!.trim().isNotEmpty)
+                                ? '#${complaintByUser.houseNumber}'
+                                : localizations.unknown,
+                            showDivider: true,
+                          )
                         ],
                       );
                     },
@@ -177,33 +183,53 @@ class ComplaintSummaryPage extends StatelessWidget{
                   Expanded(
                     child: Padding(
                       padding: const .only(bottom: 16.0),
-                      child: Column(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Row(
-                            spacing: 20,
-                            children: [
-                              Expanded(
-                                child: VisitorInfoItemWidget(
-                                  title: 'Date', subTitle: DateTimeFormatHelpers.formatDateTime(complaint.createdAt), ),
-                              ),
-                              Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            Row(
+                              spacing: 20,
+                              children: [
+                                Expanded(
                                   child: VisitorInfoItemWidget(
-                                    title: 'Status', subTitle: complaint.status.name.toUpperCase(),)
-                              ),
-                            ],
-                          ),
-                          VisitorInfoItemWidget(title: 'Complaint', subTitle: complaint.complaint, showDivider: true),
-                          Text("Photos", style: AppTextStyles.visitorDetailTitleTextStyle,),
-                          Expanded(child: GridView.builder(
+                                    title: 'Date', subTitle: DateTimeFormatHelpers.formatDateTime(complaint.createdAt), ),
+                                ),
+                                Expanded(
+                                    child: VisitorInfoItemWidget(
+                                      title: 'Status', subTitle: complaint.status.name.toUpperCase(),)
+                                ),
+                              ],
+                            ),
+                            VisitorInfoItemWidget(title: 'Complaint', subTitle: complaint.complaint, showDivider: true),
+                            Text("Photos", style: AppTextStyles.visitorDetailTitleTextStyle,),
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: complaint.images.length,
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3,   mainAxisSpacing: 10, crossAxisSpacing: 10), itemBuilder: (ctx, index){
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: CachedNetworkImage(imageUrl: ImageUrlHelper.getImageUrl(complaint.images[index]), height: 75, fit: BoxFit.cover,),
-                            );
-                          }))
-                        ],
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                childAspectRatio: 1,
+                              ),
+                              itemBuilder: (ctx, index) {
+                                final imageUrl = ImageUrlHelper.getImageUrl(complaint.images[index]);
+                                return GestureDetector(
+                                  onTap: () => _openPhotoViewer(context, imageUrl),
+                                  child: ClipRRect(
+                                    borderRadius: .circular(15),
+                                    child: CachedNetworkImage(
+                                      imageUrl: imageUrl,
+                                      width: .infinity,
+                                      height: .infinity,
+                                      fit: .cover,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   )
@@ -216,5 +242,35 @@ class ComplaintSummaryPage extends StatelessWidget{
     ),);
   }
 
-
+  void _openPhotoViewer(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.black,
+        insetPadding: .zero,
+        child: Stack(
+          children: [
+            Center(
+              child: InteractiveViewer(
+                minScale: 1,
+                maxScale: 4,
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: .contain,
+                ),
+              ),
+            ),
+            Positioned(
+              top: 40,
+              right: 16,
+              child: IconButton(
+                onPressed: () => Navigator.pop(ctx),
+                icon: const Icon(Icons.close, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

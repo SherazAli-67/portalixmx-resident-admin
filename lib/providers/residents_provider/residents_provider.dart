@@ -97,7 +97,7 @@ class ResidentsProvider extends ChangeNotifier{
     }
 
     return residents.where((resident) {
-      if (dateCutoff != null && resident.createdAt.isBefore(dateCutoff)) {
+      if (dateCutoff != null && resident.createdAt.toLocal().isBefore(dateCutoff)) {
         return false;
       }
       if (statusFilter != null && resident.status != statusFilter) {

@@ -161,6 +161,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reject => 'Reject';
 
   @override
+  String get rejected => 'Rejected';
+
+  @override
   String get aboutResident => 'About Resident';
 
   @override
@@ -757,4 +760,113 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get regularVisitor => 'Regular Visitor';
+
+  @override
+  String get pleaseEnterPaymentFor => 'Please enter what this payment is for';
+
+  @override
+  String get pleaseEnterValidAmount => 'Please enter a valid amount';
+
+  @override
+  String get amountMustBeGreaterThanZero => 'Amount must be greater than zero';
+
+  @override
+  String get amountExceedsMaximum => 'Amount exceeds the allowed maximum';
+
+  @override
+  String get amountMaxTwoDecimalPlaces =>
+      'Amount can have at most 2 decimal places';
+
+  @override
+  String get pleaseEnterHouseNumber => 'Please enter house number';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String get pleaseEnterTitle => 'Please enter a title';
+
+  @override
+  String get pleaseSelectImage => 'Please select an image';
+
+  @override
+  String get pleaseEnterEventTitle => 'Please enter an event title';
+
+  @override
+  String get pleaseSelectEventDateTime => 'Please select event date and time';
+
+  @override
+  String get pleaseEnterPollQuestion => 'Please enter a poll question';
+
+  @override
+  String get pleaseEnterAtLeastTwoOptions =>
+      'Please enter at least two options';
+
+  @override
+  String get duplicatePollOptions => 'Poll options must be unique';
+
+  @override
+  String get pleaseEnterReportTitle => 'Please enter a report title';
+
+  @override
+  String get pleaseEnterValidIncome => 'Please enter a valid income amount';
+
+  @override
+  String get pleaseEnterExpenseLabel => 'Please enter an expense description';
+
+  @override
+  String get expenseAmountMustBePositive =>
+      'Expense amount must be greater than zero';
+
+  @override
+  String get enterEmailAddress => 'Enter email address';
+
+  @override
+  String get pleaseEnterValidEmail => 'Please enter a valid email address';
+
+  @override
+  String get failedToSendResetLink => 'Failed to send reset password link';
+
+  @override
+  String get deleteConfirmationMessage =>
+      'Are you sure you want to delete this?';
+
+  @override
+  String get fundReportDeleted => 'Fund report deleted';
+
+  @override
+  String get failedToDeleteFundReport => 'Failed to delete fund report';
+
+  @override
+  String get failedToPublishFundReport => 'Failed to publish fund report';
+
+  @override
+  String get failedToUpdateFundReport => 'Failed to update fund report';
+
+  @override
+  String get editFundReport => 'Edit Fund Report';
+
+  @override
+  String get appCheckErrorTitle => 'Unable to verify this device';
+
+  @override
+  String get appCheckErrorMessage =>
+      'App Check failed. Check your connection or App Check configuration, then try again.';
+
+  @override
+  String get profileLoadTimeoutMessage =>
+      'Loading your profile is taking too long. Please try again.';
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get pleaseEnterValidPhone =>
+      'Please enter a valid 10-digit phone number';
+
+  @override
+  String get confirmRejectReceipt => 'Reject this payment receipt?';
+
+  @override
+  String get failedToUpdatePaymentStatus => 'Failed to update payment status';
 }

@@ -147,7 +147,8 @@ class RequestAccessProvider extends ChangeNotifier {
     final result = await BottomSheetHelper.showDraggableBottomSheet(
       scaffoldKey: scaffoldKey,
       child: AddAccessBottomSheet(existingAccess: existing),
-      initialHeight: 0.6
+      initialHeight: 0.6,
+      scrollChild: false,
     );
     if (result == null) return null;
 
@@ -200,13 +201,15 @@ class RequestAccessProvider extends ChangeNotifier {
     }
   }
 
-  void onDeleteAccessTap({required AccessModel access}) async {
+  Future<String?> onDeleteAccessTap({required AccessModel access}) async {
     try {
       _allAccess.remove(access);
       notifyListeners();
       await _requestsService.deleteAccess(accessID: access.id);
+      return null;
     } catch (e) {
       debugPrint("Error while deleting access: ${e.toString()}");
+      return e.toString();
     }
   }
 

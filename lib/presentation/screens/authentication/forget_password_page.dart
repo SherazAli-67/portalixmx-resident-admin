@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:portalixmx_resident_admin/core/common_ui.dart';
+import 'package:portalixmx_resident_admin/core/helpers/formating_helper.dart';
+import 'package:portalixmx_resident_admin/services/auth_service/auth_service.dart';
 import '../../../core/res/app_textstyles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../widgets/app_textfield_widget.dart';
@@ -16,17 +16,21 @@ class ForgetPasswordPage extends StatefulWidget {
 
 class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   final TextEditingController _emailController = .new();
+  bool _busy = false;
+  String? _emailError;
+
   @override
   void dispose() {
     _emailController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
     return ScreenWithBgLogo(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10.0),
+        padding: const .symmetric(horizontal: 16, vertical: 10.0),
         child: Column(
           spacing: 16,
           children: [
@@ -39,11 +43,23 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
             ),
             const SizedBox(height: 16,),
             AppTextField(controller: _emailController, hintText: localization.email, textInputType: .emailAddress,),
+            if (_emailError != null)
+              Align(
+                alignment: .centerLeft,
+                child: Text(
+                  _emailError!,
+                  style: AppTextStyles.tileSubtitleTextStyle.copyWith(color: Colors.red),
+                ),
+              ),
             const Spacer(),
             SizedBox(
               height: 50,
-              width: double.infinity,
-              child: PrimaryBtn(onTap: ()=> onForgetPasswordTap(localization), btnText: localization.submit,),
+              width: .infinity,
+              child: PrimaryBtn(
+                onTap: () => onForgetPasswordTap(localization),
+                btnText: localization.submit,
+                isLoading: _busy,
+              ),
             ),
           ],
         ),
@@ -51,18 +67,41 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
     );
   }
 
-  void onForgetPasswordTap(AppLocalizations localization)async{
-    String email = _emailController.text.trim();
-    if(email.isEmpty){
-      Fluttertoast.showToast(msg: "Enter email address");
+  void onForgetPasswordTap(AppLocalizations localization) async {
+    if (_busy) return;
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      setState(() => _emailError = localization.enterEmailAddress);
       return;
     }
-    try{
-     await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-     CommonUI.showSnackBarMessage(context, isSuccess: true, title: localization.forgetPassLinkSent, message: localization.checkYourEmailAddress);
-     Navigator.pop(context);
-    }catch(e){
-      CommonUI.showSnackBarMessage(context, message: e.toString(), isError: true, title: 'Failed to send reset password link');
+    if (!FormatingHelper.isValidEmail(email)) {
+      setState(() => _emailError = localization.pleaseEnterValidEmail);
+      return;
+    }
+    setState(() {
+      _emailError = null;
+      _busy = true;
+    });
+    try {
+      await AuthService.instance.sendPasswordResetEmail(email: email);
+      if (!mounted) return;
+      CommonUI.showSnackBarMessage(
+        context,
+        isSuccess: true,
+        title: localization.forgetPassLinkSent,
+        message: localization.checkYourEmailAddress,
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+      CommonUI.showSnackBarMessage(
+        context,
+        message: e.toString(),
+        isError: true,
+        title: localization.failedToSendResetLink,
+      );
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 }

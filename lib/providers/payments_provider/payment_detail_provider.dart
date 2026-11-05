@@ -24,7 +24,7 @@ class PaymentDetailProvider extends ChangeNotifier {
   PaymentStatus statusFor(String residentUid) {
     final submission = _submissionsByUid[residentUid];
     if (submission == null) return .pending;
-    return submission.approvedOnDate != null ? .received : .submitted;
+    return submission.paymentStatus;
   }
 
   Future<void> _init() async {

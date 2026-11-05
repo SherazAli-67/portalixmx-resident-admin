@@ -380,6 +380,12 @@ abstract class AppLocalizations {
   /// **'Reject'**
   String get reject;
 
+  /// No description provided for @rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get rejected;
+
   /// No description provided for @aboutResident.
   ///
   /// In en, this message translates to:
@@ -1501,6 +1507,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Regular Visitor'**
   String get regularVisitor;
+
+  /// No description provided for @pleaseEnterPaymentFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter what this payment is for'**
+  String get pleaseEnterPaymentFor;
+
+  /// No description provided for @pleaseEnterValidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid amount'**
+  String get pleaseEnterValidAmount;
+
+  /// No description provided for @amountMustBeGreaterThanZero.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount must be greater than zero'**
+  String get amountMustBeGreaterThanZero;
+
+  /// No description provided for @amountExceedsMaximum.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount exceeds the allowed maximum'**
+  String get amountExceedsMaximum;
+
+  /// No description provided for @amountMaxTwoDecimalPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount can have at most 2 decimal places'**
+  String get amountMaxTwoDecimalPlaces;
+
+  /// No description provided for @pleaseEnterHouseNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter house number'**
+  String get pleaseEnterHouseNumber;
+
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
+  /// No description provided for @pleaseEnterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a title'**
+  String get pleaseEnterTitle;
+
+  /// No description provided for @pleaseSelectImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select an image'**
+  String get pleaseSelectImage;
+
+  /// No description provided for @pleaseEnterEventTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an event title'**
+  String get pleaseEnterEventTitle;
+
+  /// No description provided for @pleaseSelectEventDateTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select event date and time'**
+  String get pleaseSelectEventDateTime;
+
+  /// No description provided for @pleaseEnterPollQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a poll question'**
+  String get pleaseEnterPollQuestion;
+
+  /// No description provided for @pleaseEnterAtLeastTwoOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter at least two options'**
+  String get pleaseEnterAtLeastTwoOptions;
+
+  /// No description provided for @duplicatePollOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll options must be unique'**
+  String get duplicatePollOptions;
+
+  /// No description provided for @pleaseEnterReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a report title'**
+  String get pleaseEnterReportTitle;
+
+  /// No description provided for @pleaseEnterValidIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid income amount'**
+  String get pleaseEnterValidIncome;
+
+  /// No description provided for @pleaseEnterExpenseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an expense description'**
+  String get pleaseEnterExpenseLabel;
+
+  /// No description provided for @expenseAmountMustBePositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense amount must be greater than zero'**
+  String get expenseAmountMustBePositive;
+
+  /// No description provided for @enterEmailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter email address'**
+  String get enterEmailAddress;
+
+  /// No description provided for @pleaseEnterValidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get pleaseEnterValidEmail;
+
+  /// No description provided for @failedToSendResetLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send reset password link'**
+  String get failedToSendResetLink;
+
+  /// No description provided for @deleteConfirmationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this?'**
+  String get deleteConfirmationMessage;
+
+  /// No description provided for @fundReportDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Fund report deleted'**
+  String get fundReportDeleted;
+
+  /// No description provided for @failedToDeleteFundReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete fund report'**
+  String get failedToDeleteFundReport;
+
+  /// No description provided for @failedToPublishFundReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to publish fund report'**
+  String get failedToPublishFundReport;
+
+  /// No description provided for @failedToUpdateFundReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update fund report'**
+  String get failedToUpdateFundReport;
+
+  /// No description provided for @editFundReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Fund Report'**
+  String get editFundReport;
+
+  /// No description provided for @appCheckErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to verify this device'**
+  String get appCheckErrorTitle;
+
+  /// No description provided for @appCheckErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'App Check failed. Check your connection or App Check configuration, then try again.'**
+  String get appCheckErrorMessage;
+
+  /// No description provided for @profileLoadTimeoutMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading your profile is taking too long. Please try again.'**
+  String get profileLoadTimeoutMessage;
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get signOut;
+
+  /// No description provided for @pleaseEnterValidPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid 10-digit phone number'**
+  String get pleaseEnterValidPhone;
+
+  /// No description provided for @confirmRejectReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject this payment receipt?'**
+  String get confirmRejectReceipt;
+
+  /// No description provided for @failedToUpdatePaymentStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update payment status'**
+  String get failedToUpdatePaymentStatus;
 }
 
 class _AppLocalizationsDelegate

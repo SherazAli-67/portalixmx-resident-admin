@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:portalixmx_resident_admin/core/helpers/formating_helper.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_submitted_model.dart';
 import 'package:portalixmx_resident_admin/services/user_service/user_service.dart';
@@ -41,6 +42,23 @@ class PaymentsService {
     }
   }
 
+  Stream<List<PaymentModel>> watchPayments(String societyID) {
+    return _firestore
+        .collection(FirebaseConst.paymentsCol)
+        .where('societyID', isEqualTo: societyID)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => PaymentModel.fromMap(doc.data())).toList());
+  }
+
+  Stream<int> watchCountBySociety(String societyID) {
+    return _firestore
+        .collection(FirebaseConst.paymentsCol)
+        .where('societyID', isEqualTo: societyID)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
   Future<List<PaymentModel>> getAdminPayments(String societyID) async {
     try {
       final snapshot = await _firestore
@@ -62,13 +80,18 @@ class PaymentsService {
     try {
       final user = await UserService.instance.getCurrentUser();
       if (user == null) throw Exception("User not found!");
+      if (FormatingHelper.validatePaymentAmount(amount) != null) {
+        throw Exception("Invalid payment amount");
+      }
+      final parsedAmount = FormatingHelper.tryParseAmount(amount);
+      if (parsedAmount == null) throw Exception("Invalid payment amount");
 
       final now = DateTime.now().toUtc();
       final payment = PaymentModel(
         paymentID: now.toIso8601String(),
         paymentForTitle: paymentFor,
         description: description,
-        amount: amount.isNotEmpty ? double.parse(amount) : 0,
+        amount: parsedAmount,
         societyID: user.societyID,
         paymentByUID: user.userID,
         paymentType: .paymentToAdmin,
@@ -108,43 +131,46 @@ class PaymentsService {
           .doc(paymentID)
           .collection(FirebaseConst.paymentsSubmittedCol)
           .get();
-      return snapshot.docs.map((doc) => PaymentSubmittedModel.fromMap(doc.data())).toList();
+      return snapshot.docs.map((doc) {
+        final data = Map<String, dynamic>.from(doc.data());
+        data['paymentByUID'] = doc.id;
+        return PaymentSubmittedModel.fromMap(data);
+      }).toList();
     } catch (e) {
       throw Exception(e.toString());
     }
   }
 
   Future<void> markResidentPaymentReceived({
-    required String paymentID,
+    required PaymentModel payment,
     required String residentUid,
   }) async {
     try {
       await _firestore
           .collection(FirebaseConst.paymentsCol)
-          .doc(paymentID)
+          .doc(payment.paymentID)
           .collection(FirebaseConst.paymentsSubmittedCol)
           .doc(residentUid)
-          .update({'approvedOnDate': DateTime.now().toUtc().toIso8601String()});
+          .update({
+            'paymentStatus': PaymentStatus.received.index,
+            'approvedOnDate': DateTime.now().toUtc().toIso8601String(),
+          });
     } catch (e) {
       throw Exception(e.toString());
     }
   }
 
   Future<void> rejectResidentPaymentSubmission({
-    required String paymentID,
+    required PaymentModel payment,
     required String residentUid,
   }) async {
     try {
       await _firestore
           .collection(FirebaseConst.paymentsCol)
-          .doc(paymentID)
+          .doc(payment.paymentID)
           .collection(FirebaseConst.paymentsSubmittedCol)
           .doc(residentUid)
-          .update({
-        'approvedOnDate': FieldValue.delete(),
-        'rejected': true,
-        'rejectedAt': DateTime.now().toUtc().toIso8601String(),
-      });
+          .update({'paymentStatus': PaymentStatus.rejected.index});
     } catch (e) {
       throw Exception(e.toString());
     }

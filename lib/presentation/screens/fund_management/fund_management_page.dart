@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:portalixmx_resident_admin/core/common_ui.dart';
+import 'package:portalixmx_resident_admin/core/models/fund_report_model.dart';
 import 'package:provider/provider.dart';
 import '../../../core/res/app_colors.dart';
 import '../../../core/res/app_textstyles.dart';
@@ -80,11 +81,26 @@ class FundManagementPage extends StatelessWidget {
                                       final report =
                                           provider.fundReports[index];
                                       return GestureDetector(
-                                        onTap: () => context.push(
-                                          NamedRoutes
-                                              .fundReportDetail.routeName,
-                                          extra: report,
-                                        ),
+                                        onTap: () async {
+                                          final result = await context.push(
+                                            NamedRoutes
+                                                .fundReportDetail.routeName,
+                                            extra: report,
+                                          );
+                                          if (!context.mounted) return;
+                                          if (result is Map && result['deleted'] == true) {
+                                            provider.removeReport(result['id'] as String);
+                                            CommonUI.showSnackBarMessage(
+                                              context,
+                                              message: localization.fundReportDeleted,
+                                              isSuccess: true,
+                                            );
+                                          } else if (result is FundReportModel) {
+                                            provider.upsertReport(result);
+                                          } else {
+                                            await provider.refresh();
+                                          }
+                                        },
                                         child: Column(
                                           crossAxisAlignment: .start,
                                           spacing: 12,

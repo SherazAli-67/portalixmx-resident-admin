@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:portalixmx_resident_admin/core/helpers/formating_helper.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import '../../core/res/app_colors.dart';
 import '../../core/res/app_icons.dart';
@@ -45,7 +46,7 @@ class _SubmitPaymentToAdminBottomSheetState extends State<SubmitPaymentToAdminBo
                     ),
                     Expanded(
                         child: VisitorInfoItemWidget(
-                            title: localizations.amount, subTitle: '${ widget.payment.amount}')
+                            title: localizations.amount, subTitle: FormatingHelper.formatCurrency(widget.payment.amount))
                     ),
                   ],
                 ),

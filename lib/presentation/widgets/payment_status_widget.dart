@@ -32,6 +32,9 @@ class PaymentStatusWidget extends StatelessWidget {
         return AppColors.primaryColor;
       case .received:
         return Colors.green;
+      case .rejected:
+        return Colors.red;
+
     }
   }
 }

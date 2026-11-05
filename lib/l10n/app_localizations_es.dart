@@ -162,6 +162,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reject => 'Rechazar';
 
   @override
+  String get rejected => 'Rechazado';
+
+  @override
   String get aboutResident => 'Acerca del Residente';
 
   @override
@@ -767,4 +770,125 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get regularVisitor => 'Visitante Frecuente';
+
+  @override
+  String get pleaseEnterPaymentFor => 'Por favor indique para qué es este pago';
+
+  @override
+  String get pleaseEnterValidAmount => 'Por favor ingrese un monto válido';
+
+  @override
+  String get amountMustBeGreaterThanZero => 'El monto debe ser mayor que cero';
+
+  @override
+  String get amountExceedsMaximum => 'El monto excede el máximo permitido';
+
+  @override
+  String get amountMaxTwoDecimalPlaces =>
+      'El monto puede tener como máximo 2 decimales';
+
+  @override
+  String get pleaseEnterHouseNumber => 'Por favor ingrese el número de casa';
+
+  @override
+  String get unknown => 'Desconocido';
+
+  @override
+  String get pleaseEnterTitle => 'Por favor ingrese un título';
+
+  @override
+  String get pleaseSelectImage => 'Por favor seleccione una imagen';
+
+  @override
+  String get pleaseEnterEventTitle => 'Por favor ingrese el título del evento';
+
+  @override
+  String get pleaseSelectEventDateTime =>
+      'Por favor seleccione la fecha y hora del evento';
+
+  @override
+  String get pleaseEnterPollQuestion =>
+      'Por favor ingrese una pregunta para la encuesta';
+
+  @override
+  String get pleaseEnterAtLeastTwoOptions =>
+      'Por favor ingrese al menos dos opciones';
+
+  @override
+  String get duplicatePollOptions =>
+      'Las opciones de la encuesta deben ser únicas';
+
+  @override
+  String get pleaseEnterReportTitle =>
+      'Por favor ingrese el título del informe';
+
+  @override
+  String get pleaseEnterValidIncome =>
+      'Por favor ingrese un monto de ingreso válido';
+
+  @override
+  String get pleaseEnterExpenseLabel =>
+      'Por favor ingrese la descripción del gasto';
+
+  @override
+  String get expenseAmountMustBePositive =>
+      'El monto del gasto debe ser mayor que cero';
+
+  @override
+  String get enterEmailAddress => 'Ingrese el correo electrónico';
+
+  @override
+  String get pleaseEnterValidEmail =>
+      'Por favor ingrese un correo electrónico válido';
+
+  @override
+  String get failedToSendResetLink =>
+      'Error al enviar el enlace de restablecimiento';
+
+  @override
+  String get deleteConfirmationMessage =>
+      '¿Está seguro de que desea eliminar esto?';
+
+  @override
+  String get fundReportDeleted => 'Informe de fondos eliminado';
+
+  @override
+  String get failedToDeleteFundReport =>
+      'Error al eliminar el informe de fondos';
+
+  @override
+  String get failedToPublishFundReport =>
+      'Error al publicar el informe de fondos';
+
+  @override
+  String get failedToUpdateFundReport =>
+      'Error al actualizar el informe de fondos';
+
+  @override
+  String get editFundReport => 'Editar informe de fondos';
+
+  @override
+  String get appCheckErrorTitle => 'No se pudo verificar este dispositivo';
+
+  @override
+  String get appCheckErrorMessage =>
+      'App Check falló. Revise su conexión o la configuración de App Check e intente de nuevo.';
+
+  @override
+  String get profileLoadTimeoutMessage =>
+      'La carga del perfil está tardando demasiado. Intente de nuevo.';
+
+  @override
+  String get signOut => 'Cerrar sesión';
+
+  @override
+  String get pleaseEnterValidPhone =>
+      'Por favor ingrese un número de teléfono válido de 10 dígitos';
+
+  @override
+  String get confirmRejectReceipt => '¿Rechazar este comprobante de pago?';
+
+  @override
+  String get failedToUpdatePaymentStatus =>
+      'Error al actualizar el estado del pago';
 }

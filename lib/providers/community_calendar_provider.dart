@@ -54,7 +54,8 @@ class CommunityCalendarProvider extends ChangeNotifier {
     final result = await BottomSheetHelper.showDraggableBottomSheet(
       scaffoldKey: scaffoldKey,
       child: const CreateCalendarEventBottomSheet(),
-      initialHeight: 0.8
+      initialHeight: 0.8,
+      scrollChild: false,
     );
     if (result == null) return null;
 

@@ -43,4 +43,12 @@ class FundReportsService {
       throw Exception('Failed to update fund report: $e');
     }
   }
+
+  Future<void> deleteReport({required String reportId}) async {
+    try {
+      await _getReportsCollection().doc(reportId).delete();
+    } catch (e) {
+      throw Exception('Failed to delete fund report: $e');
+    }
+  }
 }

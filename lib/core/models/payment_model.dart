@@ -7,6 +7,7 @@ enum PaymentStatus {
   pending,   // 0
   received,      // 1
   submitted,    // 2
+  rejected, //3
 }
 
 class PaymentModel {

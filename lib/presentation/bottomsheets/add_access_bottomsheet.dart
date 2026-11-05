@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../core/common_ui.dart';
 import '../../core/models/access_model.dart';
 import '../../core/res/app_colors.dart';
 import '../../core/res/app_textstyles.dart';
@@ -24,6 +23,7 @@ class _AddAccessBottomSheetState extends State<AddAccessBottomSheet> {
   XFile? _selectedAccessImage;
   String? _existingImageUrl;
   bool _freeToUse = false;
+  String? _formError;
 
   @override
   void initState() {
@@ -50,65 +50,82 @@ class _AddAccessBottomSheetState extends State<AddAccessBottomSheet> {
     final isEditing = widget.existingAccess != null;
     return Material(
       color: Colors.white,
-      child: Padding(
-        padding: const .symmetric(horizontal: 16.0, vertical: 8),
-        child: Column(
-          spacing: 15,
-          mainAxisSize: .min,
-          children: [
-            Text(localization.access, style: AppTextStyles.bottomSheetHeadingTextStyle),
-            GestureDetector(
-              onTap: _onPickImageTap,
-              child: CircleAvatar(
-                radius: 45,
-                backgroundImage: _selectedAccessImage != null
-                    ? FileImage(File(_selectedAccessImage!.path)) as ImageProvider
-                    : (_existingImageUrl != null ? NetworkImage(_existingImageUrl!) : null),
-                backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
-                child: _selectedAccessImage == null && _existingImageUrl == null
-                    ? Icon(Icons.add_a_photo_outlined, color: AppColors.primaryColor)
-                    : null,
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const .symmetric(horizontal: 16.0, vertical: 8),
+              child: Column(
+                spacing: 15,
+                children: [
+                  Text(localization.access, style: AppTextStyles.bottomSheetHeadingTextStyle),
+                  GestureDetector(
+                    onTap: _onPickImageTap,
+                    child: CircleAvatar(
+                      radius: 45,
+                      backgroundImage: _selectedAccessImage != null
+                          ? FileImage(File(_selectedAccessImage!.path)) as ImageProvider
+                          : (_existingImageUrl != null ? NetworkImage(_existingImageUrl!) : null),
+                      backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
+                      child: _selectedAccessImage == null && _existingImageUrl == null
+                          ? Icon(Icons.add_a_photo_outlined, color: AppColors.primaryColor)
+                          : null,
+                    ),
+                  ),
+                  AppTextField(
+                    controller: _titleTextEditingController,
+                    hintText: localization.title,
+                    fillColor: AppColors.fillColorGrey,
+                    maxLines: 5,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(child: Text(localization.freeToUse, style: AppTextStyles.tileTitleTextStyle)),
+                      CupertinoSwitch(value: _freeToUse, onChanged: (_) => toggleFreeToUse()),
+                    ],
+                  ),
+                  if (_formError != null)
+                    Align(
+                      alignment: .centerLeft,
+                      child: Text(
+                        _formError!,
+                        style: AppTextStyles.tileSubtitleTextStyle.copyWith(color: Colors.red),
+                      ),
+                    ),
+                ],
               ),
             ),
-            AppTextField(
-              controller: _titleTextEditingController,
-              hintText: localization.title,
-              fillColor: AppColors.fillColorGrey,
-              maxLines: 5,
-            ),
-            Row(
-              children: [
-                Expanded(child: Text(localization.freeToUse, style: AppTextStyles.tileTitleTextStyle)),
-                CupertinoSwitch(value: _freeToUse, onChanged: (_) => toggleFreeToUse()),
-              ],
-            ),
-            Padding(
-              padding: const .symmetric(vertical: 18.0),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const .symmetric(horizontal: 16.0, vertical: 18.0),
               child: SizedBox(
                 height: 50,
-                width: double.infinity,
+                width: .infinity,
                 child: PrimaryBtn(
                   onTap: _onAddAccessTap,
                   btnText: isEditing ? localization.update : localization.submit,
                 ),
               ),
             ),
-          ],
-        ),
-      )
+          ),
+        ],
+      ),
     );
   }
 
   void _onAddAccessTap() {
+    final localization = AppLocalizations.of(context)!;
     final access = _titleTextEditingController.text.trim();
     if (access.isEmpty) {
-      CommonUI.showSnackBarMessage(context, isError: true, message: 'Please enter a title');
+      setState(() => _formError = localization.pleaseEnterTitle);
       return;
     }
     if (_selectedAccessImage == null && _existingImageUrl == null) {
-      CommonUI.showSnackBarMessage(context, isError: true, message: 'Please select an image');
+      setState(() => _formError = localization.pleaseSelectImage);
       return;
     }
+    setState(() => _formError = null);
     Navigator.pop(context, {
       'access': access,
       'image': _selectedAccessImage,

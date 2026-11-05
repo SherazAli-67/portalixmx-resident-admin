@@ -228,9 +228,19 @@ class AccessMenu extends StatelessWidget{
                     position: PopupMenuPosition.under,
                     padding: .zero,
                     icon: const Icon(Icons.more_vert_rounded),
-                    onSelected: (val) {
+                    onSelected: (val) async {
                       if (val == 1) {
-                        provider.onDeleteAccessTap(access: access);
+                        final confirmed = await CommonUI.confirmDelete(context);
+                        if (!confirmed || !context.mounted) return;
+                        final error = await provider.onDeleteAccessTap(access: access);
+                        if (!context.mounted) return;
+                        if (error != null) {
+                          CommonUI.showSnackBarMessage(
+                            context,
+                            message: localizations.somethingWentWrong,
+                            isError: true,
+                          );
+                        }
                       } else if (val == 2) {
                         provider.onToggleFreeToUseAccess(access);
                       } else if (val == 3) {

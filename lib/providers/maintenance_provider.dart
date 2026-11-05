@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -25,6 +27,7 @@ class MaintenanceProvider extends ChangeNotifier {
   DateTime? _dateTo;
   String? error;
   final _complaintService = ComplaintsService.instance;
+  StreamSubscription<List<ComplaintModel>>? _complaintsSub;
   List<ComplaintModel> get allComplaints => _allComplaints;
   List<ComplaintModel> get filteredComplaints => _filteredComplaints;
   DateTime? get dateFrom => _dateFrom;
@@ -33,7 +36,8 @@ class MaintenanceProvider extends ChangeNotifier {
   List<ComplaintDateGroup> get complaintsGroupedByDate {
     final map = <DateTime, List<ComplaintModel>>{};
     for (final c in _filteredComplaints) {
-      final date = DateTime(c.createdAt.year, c.createdAt.month, c.createdAt.day);
+      final local = c.createdAt.toLocal();
+      final date = DateTime(local.year, local.month, local.day);
       map.putIfAbsent(date, () => []).add(c);
     }
     for (final list in map.values) {
@@ -59,34 +63,6 @@ class MaintenanceProvider extends ChangeNotifier {
     _initComplaints();
   }
 
-/*  Future<String?> onAddComplaintTap()async{
-    final result = await BottomSheetHelper.showDraggableBottomSheet(scaffoldKey: scaffoldKey, child: AddComplaintBottomSheet(),);
-    if(result != null){
-      addingComplaint = true;
-      notifyListeners();
-
-      String complaintText = result['complaint'];
-      List<XFile> complaintFiles = result['files'];
-
-      if(complaintFiles.isNotEmpty){
-      }
-
-      try{
-        ComplaintModel? complaint = await _complaintService.addComplaint(complaintText: complaintText,);
-        if(complaint != null){
-          _allComplaints.add(complaint);
-          _applyDateFilter();
-        }
-        addingComplaint = true;
-        notifyListeners();
-      }catch(e){
-        return e.toString();
-      }
-    }
-
-    return null;
-  }*/
-
   Future<void> _initComplaints() async {
     try{
       loadingComplaints = true;
@@ -94,18 +70,28 @@ class MaintenanceProvider extends ChangeNotifier {
       UserModel? user=  await UserService.instance.getCurrentUser();
       if(user == null){
         error = "User not found";
+        loadingComplaints = false;
+        notifyListeners();
         return;
       }
-      _allComplaints = await _complaintService.getAllComplaints(societyID: user.societyID);
-      _filteredComplaints.addAll(_allComplaints);
-      notifyListeners();
+      _complaintsSub?.cancel();
+      _complaintsSub = _complaintService.watchComplaints(societyID: user.societyID).listen(
+        (list) {
+          _allComplaints = list;
+          _applyDateFilter();
+          loadingComplaints = false;
+        },
+        onError: (e) {
+          debugPrint("Error while watching complaints: ${e.toString()}");
+          loadingComplaints = false;
+          notifyListeners();
+        },
+      );
     }catch(e){
       debugPrint("Error while fetching complaints: ${e.toString()}");
+      loadingComplaints = false;
+      notifyListeners();
     }
-
-    loadingComplaints = false;
-    notifyListeners();
-
   }
 
   Future<void> refreshComplaints() async {
@@ -155,7 +141,9 @@ class MaintenanceProvider extends ChangeNotifier {
       notifyListeners();
       await _complaintService.updateComplaint(complaint);
       int index = _allComplaints.indexWhere((item)=> item.id == complaint.id);
-      _allComplaints[index] = complaint;
+      if (index >= 0) {
+        _allComplaints[index] = complaint;
+      }
       _applyDateFilter();
     }catch(e){
       debugPrint("Exception: ${e.toString()}");
@@ -171,5 +159,11 @@ class MaintenanceProvider extends ChangeNotifier {
       ComplaintStatus status = result as ComplaintStatus;
       updateComplaintStatus(complaint: complaint.copyWith(status: status));
     }
+  }
+
+  @override
+  void dispose() {
+    _complaintsSub?.cancel();
+    super.dispose();
   }
 }

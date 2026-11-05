@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../core/common_ui.dart';
 import '../../core/res/app_colors.dart';
 import '../../core/res/app_icons.dart';
 import '../../core/res/app_textstyles.dart';
@@ -23,8 +22,8 @@ class _CreateCalendarEventBottomSheetState extends State<CreateCalendarEventBott
 
   XFile? image;
   DateTime? _eventDate;
-
   TimeOfDay? _eventTime;
+  String? _formError;
   @override
   void dispose() {
     _eventTitleTextEditingController.dispose();
@@ -37,47 +36,59 @@ class _CreateCalendarEventBottomSheetState extends State<CreateCalendarEventBott
     final localization = AppLocalizations.of(context)!;
     return Material(
       color: Colors.white,
-      child: Padding(
-        padding: const .symmetric(horizontal: 16.0, vertical: 8),
-        child: Column(
-          spacing: 15,
-          mainAxisSize: .min,
-          children: [
-            Text(localization.createEvent, style: AppTextStyles.bottomSheetHeadingTextStyle,),
-            const SizedBox(height: 10,),
-            AppTextField(controller: _eventTitleTextEditingController, hintText: localization.eventTitle, fillColor: AppColors.fillColorGrey,),
-            AppTextField(controller: _eventDescriptionTextEditingController, hintText: localization.eventDescription, fillColor: AppColors.fillColorGrey, maxLines: 5,),
-
-            FromDateAndTimeWidget(title: localization.eventDateAndTime,onDateTap: _onFromDateTap, onTimeTap: _onFromTimeTap, selectedDate: _eventDate, selectedTime: _eventTime),
-            // FromDateAndTimeWidget(title: localization.to,onDateTap: _onToDateTap, onTimeTap: _onToTimeTap, selectedDate: _selectedToDateTime, selectedTime: _selectedToTime),
-            Row(
-              spacing: 20,
-              children: [
-                Expanded(child: _buildUploadPicturesWidget(title: localization.uploadPhotos, icon: AppIcons.icUploadPhotos, onTap: _onUploadPhotosTap)),
-                Expanded(child: _buildUploadPicturesWidget(title: localization.openCamera, icon: AppIcons.icCamera, onTap: _onOpenCameraTap)),
-              ],
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const .symmetric(horizontal: 16.0, vertical: 8),
+              child: Column(
+                spacing: 15,
+                children: [
+                  Text(localization.createEvent, style: AppTextStyles.bottomSheetHeadingTextStyle,),
+                  const SizedBox(height: 10,),
+                  AppTextField(controller: _eventTitleTextEditingController, hintText: localization.eventTitle, fillColor: AppColors.fillColorGrey,),
+                  AppTextField(controller: _eventDescriptionTextEditingController, hintText: localization.eventDescription, fillColor: AppColors.fillColorGrey, maxLines: 5,),
+                  FromDateAndTimeWidget(title: localization.eventDateAndTime,onDateTap: _onFromDateTap, onTimeTap: _onFromTimeTap, selectedDate: _eventDate, selectedTime: _eventTime),
+                  Row(
+                    spacing: 20,
+                    children: [
+                      Expanded(child: _buildUploadPicturesWidget(title: localization.uploadPhotos, icon: AppIcons.icUploadPhotos, onTap: _onUploadPhotosTap)),
+                      Expanded(child: _buildUploadPicturesWidget(title: localization.openCamera, icon: AppIcons.icCamera, onTap: _onOpenCameraTap)),
+                    ],
+                  ),
+                  if(image != null)
+                    Row(
+                    children: [
+                      Expanded(child: Text(image!.path.split('/').last, style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor),)),
+                      IconButton(onPressed: (){
+                        image = null;
+                        setState(() {});
+                      }, icon: Icon(Icons.delete))
+                    ],
+                  ),
+                  if (_formError != null)
+                    Align(
+                      alignment: .centerLeft,
+                      child: Text(
+                        _formError!,
+                        style: AppTextStyles.tileSubtitleTextStyle.copyWith(color: Colors.red),
+                      ),
+                    ),
+                ],
+              ),
             ),
-            if(image != null)
-              Row(
-              children: [
-                Expanded(child: Text(image!.path.split('/').last, style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor),)),
-                IconButton(onPressed: (){
-                  image = null;
-                  setState(() {});
-                }, icon: Icon(Icons.delete))
-              ],
-            ),
-
-            Padding(
-              padding: const .symmetric(vertical: 18.0),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const .symmetric(horizontal: 16.0, vertical: 18.0),
               child: SizedBox(
                 height: 50,
                 width: .infinity,
                 child: PrimaryBtn(onTap: _onSubmitTap, btnText: localization.submit,),
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -87,9 +98,9 @@ class _CreateCalendarEventBottomSheetState extends State<CreateCalendarEventBott
         style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.fillColorGrey,
             elevation: 0,
-            padding: EdgeInsets.all(20),
+            padding: const .all(20),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: .circular(10),
             )
         ),
         onPressed: onTap, child: Column(
@@ -97,7 +108,7 @@ class _CreateCalendarEventBottomSheetState extends State<CreateCalendarEventBott
       children: [
         SvgPicture.asset(icon),
         Text(title, style: AppTextStyles.hintTextStyle.copyWith(
-            fontWeight: FontWeight.w400, color: Color(0xff777777)),)
+            fontWeight: .w400, color: const Color(0xff777777)),)
       ],
     ));
   }
@@ -105,7 +116,7 @@ class _CreateCalendarEventBottomSheetState extends State<CreateCalendarEventBott
   void _onFromDateTap() async {
     _eventDate = await showDatePicker(context: context,
         firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(Duration(days: 365)));
+        lastDate: DateTime.now().add(const Duration(days: 365)));
     if (_eventDate != null) {
       setState(() {});
     }
@@ -137,18 +148,20 @@ class _CreateCalendarEventBottomSheetState extends State<CreateCalendarEventBott
   }
 
   void _onSubmitTap() {
+    final localization = AppLocalizations.of(context)!;
     final title = _eventTitleTextEditingController.text.trim();
     final description = _eventDescriptionTextEditingController.text.trim();
 
     if (title.isEmpty) {
-      CommonUI.showSnackBarMessage(context, isError: true, message: 'Please enter an event title');
+      setState(() => _formError = localization.pleaseEnterEventTitle);
       return;
     }
     if (_eventDate == null || _eventTime == null) {
-      CommonUI.showSnackBarMessage(context, isError: true, message: 'Please select event date and time');
+      setState(() => _formError = localization.pleaseSelectEventDateTime);
       return;
     }
 
+    setState(() => _formError = null);
     Navigator.pop(context, {
       'eventTitle': title,
       'eventDescription': description,

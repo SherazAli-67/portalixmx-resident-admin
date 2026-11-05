@@ -101,6 +101,13 @@ class AccessRequestService {
     }
   }
 
+  Stream<int> watchCountBySociety(String societyID) {
+    return _getAccessRequestsCollection
+        .where('societyID', isEqualTo: societyID)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
   Future<void> updateRequest(AccessRequestModel request) async {
     try {
       await _getAccessRequestsCollection.doc(request.id).set(request.toMap());

@@ -4,18 +4,13 @@ import '../core/models/day_time_model.dart';
 
 class DateTimeFormatHelpers{
   static String formatDateTime(DateTime dateTime){
-    String formattedDateTime = '';
-    DateFormat dateFormat = DateFormat('MMM d, yyyy');
-    formattedDateTime = dateFormat.format(dateTime);
-    return formattedDateTime;
+    final local = dateTime.toLocal();
+    final dateFormat = DateFormat('MMM d, yyyy');
+    return dateFormat.format(local);
   }
 
   static String formatTime(TimeOfDay time){
-    String formattedTime = '';
-    // DateFormat timeFormat = DateFormat('hh:mm aa');
-    // formattedTime = timeFormat.format(DateTime.)
-    formattedTime = '${time.hour > 12 ? time.hour - 12 : time.hour}:${time.minute} ${time.period.name.toUpperCase()}';
-    return formattedTime;
+    return '${time.hour > 12 ? time.hour - 12 : time.hour}:${time.minute} ${time.period.name.toUpperCase()}';
   }
 
   static String formatGuestTime(DayTimeModel time){
@@ -39,14 +34,22 @@ class DateTimeFormatHelpers{
   }
 
   static String getCommunityDateTime(DateTime createdAt, TimeOfDay eventTime) {
+    final local = createdAt.toLocal();
     DateFormat dateFormat = DateFormat("MMM dd");
-    return '${dateFormat.format(createdAt)}, ${formatTime(eventTime)}';
+    return '${dateFormat.format(local)}, ${formatTime(eventTime)}';
   }
 
   static bool isInInclusiveDateRange(DateTime date, DateTime? from, DateTime? to) {
-    final d = DateTime(date.year, date.month, date.day);
-    if (from != null && d.isBefore(DateTime(from.year, from.month, from.day))) return false;
-    if (to != null && d.isAfter(DateTime(to.year, to.month, to.day))) return false;
+    final local = date.toLocal();
+    final d = DateTime(local.year, local.month, local.day);
+    if (from != null) {
+      final localFrom = from.toLocal();
+      if (d.isBefore(DateTime(localFrom.year, localFrom.month, localFrom.day))) return false;
+    }
+    if (to != null) {
+      final localTo = to.toLocal();
+      if (d.isAfter(DateTime(localTo.year, localTo.month, localTo.day))) return false;
+    }
     return true;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:portalixmx_resident_admin/core/models/society_model.dart';
 import 'package:portalixmx_resident_admin/services/access_requests_service/access_request_service.dart';
@@ -33,6 +35,11 @@ class HomeProvider extends ChangeNotifier {
   int get totalComplaints => _totalComplaints;
   int get totalAccessRequests => _totalAccessRequests;
 
+  StreamSubscription<List<UserModel>>? _residentsSub;
+  StreamSubscription<int>? _paymentsCountSub;
+  StreamSubscription<int>? _complaintsCountSub;
+  StreamSubscription<int>? _accessCountSub;
+  String? _listeningSocietyID;
 
   Future<UserModel?> getCurrentUser() async {
     try {
@@ -44,9 +51,73 @@ class HomeProvider extends ChangeNotifier {
   }
 
   HomeProvider(){
-    initSociety();
-    loadResidentsOfTheSociety();
-    loadOverviewCounts();
+    _bootstrap();
+  }
+
+  Future<void> _bootstrap() async {
+    await initSociety();
+    final user = await getCurrentUser();
+    if (user == null) return;
+    _startRealtimeListeners(user.societyID);
+  }
+
+  void _startRealtimeListeners(String societyID) {
+    if (_listeningSocietyID == societyID && _residentsSub != null) return;
+    _cancelListeners();
+    _listeningSocietyID = societyID;
+
+    loadingResidents = true;
+    loadingOverview = true;
+    notifyListeners();
+
+    _residentsSub = _residentsService.watchResidentsOfSociety(societyID: societyID).listen(
+      (list) {
+        _residents = list;
+        loadingResidents = false;
+        notifyListeners();
+      },
+      onError: (e) {
+        debugPrint("Exception while watching residents: ${e.toString()}");
+        loadingResidents = false;
+        notifyListeners();
+      },
+    );
+
+    _paymentsCountSub = _paymentsService.watchCountBySociety(societyID).listen(
+      (count) {
+        _totalPayments = count;
+        loadingOverview = false;
+        notifyListeners();
+      },
+      onError: (e) => debugPrint("Exception while watching payments count: $e"),
+    );
+
+    _complaintsCountSub = _complaintsService.watchCountBySociety(societyID).listen(
+      (count) {
+        _totalComplaints = count;
+        notifyListeners();
+      },
+      onError: (e) => debugPrint("Exception while watching complaints count: $e"),
+    );
+
+    _accessCountSub = _accessRequestService.watchCountBySociety(societyID).listen(
+      (count) {
+        _totalAccessRequests = count;
+        notifyListeners();
+      },
+      onError: (e) => debugPrint("Exception while watching access count: $e"),
+    );
+  }
+
+  void _cancelListeners() {
+    _residentsSub?.cancel();
+    _paymentsCountSub?.cancel();
+    _complaintsCountSub?.cancel();
+    _accessCountSub?.cancel();
+    _residentsSub = null;
+    _paymentsCountSub = null;
+    _complaintsCountSub = null;
+    _accessCountSub = null;
   }
 
   Future<void> loadOverviewCounts() async {
@@ -105,6 +176,10 @@ class HomeProvider extends ChangeNotifier {
       loadResidentsOfTheSociety(),
       loadOverviewCounts(),
     ]);
+    final user = await getCurrentUser();
+    if (user != null) {
+      _startRealtimeListeners(user.societyID);
+    }
   }
 
   Future<void> updateResident(UserModel updatedUser) async {
@@ -139,5 +214,11 @@ class HomeProvider extends ChangeNotifier {
       updatingResidentStatus = false;
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    _cancelListeners();
+    super.dispose();
   }
 }

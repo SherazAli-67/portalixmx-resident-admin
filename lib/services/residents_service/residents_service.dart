@@ -28,6 +28,16 @@ class ResidentsService {
     }
   }
 
+  Stream<List<UserModel>> watchResidentsOfSociety({required String societyID}) {
+    return _firestore
+        .collection(FirebaseConst.residentsCol)
+        .where('societyID', isEqualTo: societyID)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => UserModel.fromMap(doc.data())).toList());
+  }
+
   Future<String?> updateUser({required UserModel user}) async{
     try{
        await _firestore.collection(FirebaseConst.residentsCol).doc(user.userID).set(user.toMap(), SetOptions(merge: true));

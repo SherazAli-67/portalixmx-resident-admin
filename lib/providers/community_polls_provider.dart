@@ -49,6 +49,7 @@ class CommunityPollsProvider extends ChangeNotifier {
 
   Future<bool?> onCreatePollTap(BuildContext context) async {
     final result = await BottomSheetHelper.showAdjustableModalBottomSheet<Map<String, dynamic>>(
+      wrapChildInScrollView: false,
       context: context,
       child: const CreatePollBottomSheet(),
       initialChildSize: 0.8

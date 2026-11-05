@@ -48,6 +48,22 @@ class FundReportsProvider extends ChangeNotifier {
 
   Future<void> refresh() => _initFundReports();
 
+  void upsertReport(FundReportModel report) {
+    final index = _fundReports.indexWhere((r) => r.id == report.id);
+    if (index >= 0) {
+      _fundReports[index] = report;
+    } else {
+      _fundReports.insert(0, report);
+    }
+    _fundReports.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    notifyListeners();
+  }
+
+  void removeReport(String reportId) {
+    _fundReports.removeWhere((r) => r.id == reportId);
+    notifyListeners();
+  }
+
   Future<void> publishReport(FundReportModel report) async {
     final now = DateTime.now().toUtc();
     final published = report.copyWith(
@@ -56,11 +72,39 @@ class FundReportsProvider extends ChangeNotifier {
       showToResidents: true,
     );
     await _fundReportsService.updateReport(published);
-    final index = _fundReports.indexWhere((r) => r.id == report.id);
-    if (index >= 0) {
-      _fundReports[index] = published;
-    }
-    notifyListeners();
+    upsertReport(published);
+  }
+
+  Future<void> deleteReport(FundReportModel report) async {
+    await _fundReportsService.deleteReport(reportId: report.id);
+    removeReport(report.id);
+  }
+
+  Future<FundReportModel?> updateExistingReport({
+    required FundReportModel existing,
+    required Map<String, dynamic> result,
+  }) async {
+    final expensesRaw = result['expenses'] as List<dynamic>? ?? [];
+    final expenses = expensesRaw
+        .map((e) => FundExpenseItem.fromMap(Map<String, dynamic>.from(e as Map)))
+        .toList();
+    final publish = result['publish'] as bool? ?? existing.status == .published;
+    final now = DateTime.now().toUtc();
+    final updated = existing.copyWith(
+      periodMonth: result['periodMonth'] as int? ?? existing.periodMonth,
+      periodYear: result['periodYear'] as int? ?? existing.periodYear,
+      title: result['title'] as String? ?? existing.title,
+      income: (result['income'] as num?)?.toDouble() ?? existing.income,
+      expenses: expenses,
+      balance: (result['balance'] as num?)?.toDouble() ?? existing.balance,
+      note: result['note'] as String? ?? existing.note,
+      status: publish ? .published : .draft,
+      publishedAt: publish ? (existing.publishedAt ?? now) : existing.publishedAt,
+      showToResidents: result['showReportToResident'] as bool? ?? existing.showToResidents,
+    );
+    await _fundReportsService.updateReport(updated);
+    upsertReport(updated);
+    return updated;
   }
 
   Future<bool?> onCreateReportTap(BuildContext context) async {
@@ -68,6 +112,7 @@ class FundReportsProvider extends ChangeNotifier {
         await BottomSheetHelper.showAdjustableModalBottomSheet<Map<String, dynamic>>(
       context: context,
       initialChildSize: 0.9,
+      wrapChildInScrollView: false,
       child: const CreateFundReportBottomSheet(),
     );
     if (result == null) return null;
@@ -99,7 +144,7 @@ class FundReportsProvider extends ChangeNotifier {
       note: result['note'] as String? ?? '',
       status: publish ? .published : .draft,
       publishedAt: publish ? now : null,
-      showToResidents: showReportToResident
+      showToResidents: showReportToResident,
     );
 
     try {

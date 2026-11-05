@@ -22,14 +22,16 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseAppCheck.instance.activate(
     providerAndroid: kDebugMode
-        ? AndroidDebugProvider()
+        ? AndroidDebugProvider(debugToken: AppConstants.debugTokenAndroid)
         : AndroidPlayIntegrityProvider(),
     providerApple: kDebugMode
-        ? AppleDebugProvider()
+        ? AppleDebugProvider(debugToken: AppConstants.debugTokenIOS)
         : AppleDeviceCheckProvider(),
   );
   try {
-    final token = await FirebaseAppCheck.instance.getToken(true);
+    final token = await FirebaseAppCheck.instance
+        .getToken(true)
+        .timeout(const Duration(seconds: 8));
     if (token == null || token.isEmpty) {
       throw StateError('App Check returned an empty token');
     }
@@ -42,9 +44,6 @@ void main() async {
       'App Check → Apps → your iOS/Android app → Manage debug tokens. '
       'Also check the Xcode/Logcat line that prints the Firebase App Check Debug Token. Error: $e',
     );
-    if (kDebugMode) {
-      rethrow;
-    }
   }
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   final profileProvider = ProfileProvider();

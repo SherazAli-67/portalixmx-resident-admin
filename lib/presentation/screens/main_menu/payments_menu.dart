@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portalixmx_resident_admin/core/common_ui.dart';
+import 'package:portalixmx_resident_admin/core/helpers/formating_helper.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/date_range_filter_widget.dart';
 import 'package:portalixmx_resident_admin/presentation/widgets/full_page_loading_widget.dart';
@@ -105,12 +106,12 @@ class PaymentsMenu extends StatelessWidget{
                                                 mainAxisAlignment: .spaceBetween,
                                                 children: [
                                                   Text(payment.description, style: AppTextStyles.emergencyContactTitleTextStyle,),
-                                                  Text("\$${payment.amount}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.btnColor),)
+                                                  Text(FormatingHelper.formatCurrency(payment.amount), style: TextStyle(fontSize: 12, fontWeight: .w700, color: AppColors.btnColor),)
                                                 ],
                                               ),
                                               const SizedBox(height: 4,),
                                               Text(
-                                                '${counts.pending} ${localization.pending} · ${counts.submitted} ${localization.submitted} · ${counts.received} ${localization.received}',
+                                                '${counts.pending} ${localization.pending} · ${counts.submitted} ${localization.submitted} · ${counts.received} ${localization.received} · ${counts.rejected} ${localization.rejected}',
                                                 style: TextStyle(fontSize: 10, fontWeight: .w500, color: AppColors.serviceSubTitleGreyColor),
                                               )
                                             ],
@@ -157,6 +158,8 @@ class PaymentsMenu extends StatelessWidget{
   }
 
   Future<void> _onDeletePaymentTap(BuildContext context, {required PaymentModel payment, required PaymentProvider provider, required AppLocalizations localization}) async {
+    final confirmed = await CommonUI.confirmDelete(context);
+    if (!confirmed || !context.mounted) return;
     final error = await provider.deletePayment(payment);
     if (!context.mounted) return;
     if (error != null) {

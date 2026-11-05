@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portalixmx_resident_admin/core/helpers/bottom_sheet_helper.dart';
+import 'package:portalixmx_resident_admin/core/helpers/formating_helper.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/core/models/user_model.dart';
 import 'package:portalixmx_resident_admin/l10n/app_localizations.dart';
@@ -64,7 +65,7 @@ class PaymentDetailPage extends StatelessWidget{
                                 ),
                                 Expanded(
                                     child: VisitorInfoItemWidget(
-                                      title: localizations.amount, subTitle: '\$${payment.amount}',)
+                                      title: localizations.amount, subTitle: FormatingHelper.formatCurrency(payment.amount),)
                                 ),
                               ],
                             ),
@@ -111,6 +112,7 @@ class PaymentDetailPage extends StatelessWidget{
     final marked = await BottomSheetHelper.showAdjustableModalBottomSheet<bool>(
       context: context,
       initialChildSize: 0.7,
+      wrapChildInScrollView: false,
       child: ResidentPaymentReceiptSheet(
         payment: payment,
         resident: resident,

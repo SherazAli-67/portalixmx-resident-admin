@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../core/helpers/responsive_helper.dart';
 import '../../../core/res/app_colors.dart';
 import '../../../core/res/app_icons.dart';
 import '../../../l10n/app_localizations.dart';
@@ -12,12 +13,13 @@ class MainMenuPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final isTablet = ResponsiveHelper.isTablet(context);
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: true,
       body: Scaffold(
         bottomNavigationBar: SizedBox(
-          height: 110,
+          height: isTablet ? 96 : 110,
           child: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               onTap: (index)=> navigationShell.goBranch(index),
@@ -39,15 +41,15 @@ class MainMenuPage extends StatelessWidget{
         body: Stack(
           children: [
             Align(
-              alignment: Alignment.bottomCenter,
+              alignment: .bottomCenter,
               child: Container(
                 height: size.height*0.7,
-                width: double.infinity,
-                alignment: Alignment.bottomCenter,
+                width: .infinity,
+                alignment: .bottomCenter,
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
+                        begin: .bottomCenter,
+                        end: .topCenter,
                         colors: [
                           AppColors.btnColor,
                           AppColors.btnColor.withValues(alpha: 0.0)
@@ -60,7 +62,12 @@ class MainMenuPage extends StatelessWidget{
               top: 50,
               child: Image.asset(AppIcons.icScreenBg, height: 150,),
             ),
-            SafeArea(child: navigationShell),
+            SafeArea(
+              child: ResponsiveHelper.constrainContent(
+                context: context,
+                child: navigationShell,
+              ),
+            ),
           ],
         ),
       ),

@@ -81,7 +81,8 @@ class ProfileProvider extends ChangeNotifier {
         if (generation != _loadGeneration) return;
         _user = null;
       } else {
-        final fetched = await _fetchCurrentUserWithRetry();
+        final fetched = await _fetchCurrentUserWithRetry()
+            .timeout(const Duration(seconds: 15));
         debugPrint("Fetched: ${fetched?.userID}");
         if (generation != _loadGeneration) return;
         _user = fetched;
@@ -91,6 +92,12 @@ class ProfileProvider extends ChangeNotifier {
         } else {
           _profileLoadError = 'unableToLoadProfile';
         }
+      }
+    } on TimeoutException {
+      if (generation != _loadGeneration) return;
+      _user = null;
+      if (user != null) {
+        _profileLoadError = 'profileLoadTimeout';
       }
     } catch (e) {
       if (generation != _loadGeneration) return;

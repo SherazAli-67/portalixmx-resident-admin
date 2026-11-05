@@ -70,7 +70,7 @@ class AuthService {
     }
   }
 
-  String _handleFirebaseAuthError(FirebaseAuthException e) {
+  String handleFirebaseAuthError(FirebaseAuthException e) {
     switch (e.code) {
       case 'invalid-email':
         return 'The email address is not valid.';
@@ -92,6 +92,19 @@ class AuthService {
         return 'requires-recent-login';
       default:
         return e.message ?? 'An unknown error occurred.';
+    }
+  }
+
+  String _handleFirebaseAuthError(FirebaseAuthException e) =>
+      handleFirebaseAuthError(e);
+
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw handleFirebaseAuthError(e);
+    } catch (e) {
+      throw e.toString();
     }
   }
 

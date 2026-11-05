@@ -22,6 +22,7 @@ class _CreatePollBottomSheetState extends State<CreatePollBottomSheet> {
     TextEditingController(),
   ];
   XFile? _image;
+  String? _formError;
 
   @override
   void dispose() {
@@ -37,82 +38,95 @@ class _CreatePollBottomSheetState extends State<CreatePollBottomSheet> {
     final l = AppLocalizations.of(context)!;
     return Material(
       color: Colors.white,
-      child: Padding(
-        padding: const .symmetric(horizontal: 16.0, vertical: 8),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 15,
-            children: [
-              Text(l.createPoll, style: AppTextStyles.bottomSheetHeadingTextStyle),
-              const SizedBox(height: 10),
-              AppTextField(
-                controller: _questionController,
-                hintText: l.pollQuestion,
-                fillColor: AppColors.fillColorGrey,
-              ),
-              ...List.generate(_optionControllers.length, (index) {
-                return Row(
-                  children: [
-                    Expanded(
-                      child: AppTextField(
-                        controller: _optionControllers[index],
-                        hintText: 'Option ${index + 1}',
-                        fillColor: AppColors.fillColorGrey,
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const .symmetric(horizontal: 16.0, vertical: 8),
+              child: Column(
+                spacing: 15,
+                children: [
+                  Text(l.createPoll, style: AppTextStyles.bottomSheetHeadingTextStyle),
+                  const SizedBox(height: 10),
+                  AppTextField(
+                    controller: _questionController,
+                    hintText: l.pollQuestion,
+                    fillColor: AppColors.fillColorGrey,
+                  ),
+                  ...List.generate(_optionControllers.length, (index) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: AppTextField(
+                            controller: _optionControllers[index],
+                            hintText: 'Option ${index + 1}',
+                            fillColor: AppColors.fillColorGrey,
+                          ),
+                        ),
+                        if (_optionControllers.length > 2)
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _optionControllers[index].dispose();
+                                _optionControllers.removeAt(index);
+                              });
+                            },
+                            icon: const Icon(Icons.remove_circle_outline),
+                          ),
+                      ],
+                    );
+                  }),
+                  TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _optionControllers.add(TextEditingController());
+                      });
+                    },
+                    icon: const Icon(Icons.add),
+                    label: Text(l.addOption),
+                  ),
+                  Row(
+                    spacing: 20,
+                    children: [
+                      Expanded(child: _buildUploadWidget(title: l.uploadPhotos, icon: AppIcons.icUploadPhotos, onTap: _onUploadTap)),
+                      Expanded(child: _buildUploadWidget(title: l.openCamera, icon: AppIcons.icCamera, onTap: _onCameraTap)),
+                    ],
+                  ),
+                  if (_image != null)
+                    Row(
+                      children: [
+                        Expanded(child: Text(_image!.path.split('/').last, style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor))),
+                        IconButton(
+                          onPressed: () {
+                            setState(() => _image = null);
+                          },
+                          icon: const Icon(Icons.delete),
+                        ),
+                      ],
+                    ),
+                  if (_formError != null)
+                    Align(
+                      alignment: .centerLeft,
+                      child: Text(
+                        _formError!,
+                        style: AppTextStyles.tileSubtitleTextStyle.copyWith(color: Colors.red),
                       ),
                     ),
-                    if (_optionControllers.length > 2)
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _optionControllers[index].dispose();
-                            _optionControllers.removeAt(index);
-                          });
-                        },
-                        icon: const Icon(Icons.remove_circle_outline),
-                      ),
-                  ],
-                );
-              }),
-              TextButton.icon(
-                onPressed: () {
-                  setState(() {
-                    _optionControllers.add(TextEditingController());
-                  });
-                },
-                icon: const Icon(Icons.add),
-                label: Text(l.addOption),
-              ),
-              Row(
-                spacing: 20,
-                children: [
-                  Expanded(child: _buildUploadWidget(title: l.uploadPhotos, icon: AppIcons.icUploadPhotos, onTap: _onUploadTap)),
-                  Expanded(child: _buildUploadWidget(title: l.openCamera, icon: AppIcons.icCamera, onTap: _onCameraTap)),
                 ],
               ),
-              if (_image != null)
-                Row(
-                  children: [
-                    Expanded(child: Text(_image!.path.split('/').last, style: AppTextStyles.tileTitleTextStyle.copyWith(color: AppColors.primaryColor))),
-                    IconButton(
-                      onPressed: () {
-                        setState(() => _image = null);
-                      },
-                      icon: const Icon(Icons.delete),
-                    ),
-                  ],
-                ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 18.0),
-                child: SizedBox(
-                  height: 50,
-                  width: double.infinity,
-                  child: PrimaryBtn(onTap: _onSubmitTap, btnText: l.submit),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          SafeArea(
+            child: Padding(
+              padding: const .symmetric(horizontal: 16.0, vertical: 18.0),
+              child: SizedBox(
+                height: 50,
+                width: .infinity,
+                child: PrimaryBtn(onTap: _onSubmitTap, btnText: l.submit),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -122,15 +136,15 @@ class _CreatePollBottomSheetState extends State<CreatePollBottomSheet> {
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.fillColorGrey,
         elevation: 0,
-        padding: const EdgeInsets.all(20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        padding: const .all(20),
+        shape: RoundedRectangleBorder(borderRadius: .circular(10)),
       ),
       onPressed: onTap,
       child: Column(
         spacing: 12,
         children: [
           SvgPicture.asset(icon),
-          Text(title, style: AppTextStyles.hintTextStyle.copyWith(fontWeight: FontWeight.w400, color: const Color(0xff777777))),
+          Text(title, style: AppTextStyles.hintTextStyle.copyWith(fontWeight: .w400, color: const Color(0xff777777))),
         ],
       ),
     );
@@ -149,11 +163,23 @@ class _CreatePollBottomSheetState extends State<CreatePollBottomSheet> {
   }
 
   void _onSubmitTap() {
+    final l = AppLocalizations.of(context)!;
     final question = _questionController.text.trim();
     final options = _optionControllers.map((c) => c.text.trim()).where((s) => s.isNotEmpty).toList();
-    if (question.isEmpty || options.length < 2) {
+    if (question.isEmpty) {
+      setState(() => _formError = l.pleaseEnterPollQuestion);
       return;
     }
+    if (options.length < 2) {
+      setState(() => _formError = l.pleaseEnterAtLeastTwoOptions);
+      return;
+    }
+    final unique = options.map((o) => o.toLowerCase()).toSet();
+    if (unique.length != options.length) {
+      setState(() => _formError = l.duplicatePollOptions);
+      return;
+    }
+    setState(() => _formError = null);
     Navigator.pop(context, {'question': question, 'options': options, 'image': _image});
   }
 }

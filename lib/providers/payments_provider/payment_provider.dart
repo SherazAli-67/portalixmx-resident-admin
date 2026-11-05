@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:portalixmx_resident_admin/core/helpers/formating_helper.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_submitted_model.dart';
 import 'package:portalixmx_resident_admin/core/models/user_model.dart';
@@ -17,11 +20,13 @@ class PaymentStatusCounts {
   final int pending;
   final int submitted;
   final int received;
+  final int rejected;
 
   const PaymentStatusCounts({
     this.pending = 0,
     this.submitted = 0,
     this.received = 0,
+    this.rejected = 0
   });
 }
 
@@ -36,6 +41,8 @@ class PaymentProvider extends ChangeNotifier{
   List<PaymentModel> get payments => _payments;
   List<UserModel> _residents = [];
   Map<String, List<PaymentSubmittedModel>> _submissionsByPayment = {};
+  StreamSubscription<List<PaymentModel>>? _paymentsSub;
+  StreamSubscription<List<UserModel>>? _residentsSub;
 
   PaymentProvider(){
     _initPayments();
@@ -50,6 +57,7 @@ class PaymentProvider extends ChangeNotifier{
       localization.pending,
       localization.submitted,
       localization.received,
+      localization.rejected,
     ];
   }
 
@@ -58,16 +66,30 @@ class PaymentProvider extends ChangeNotifier{
     final residentIds = _residents.map((r) => r.userID).toSet();
     int submitted = 0;
     int received = 0;
+    int rejected = 0;
+    final residentsWithSubmission = <String>{};
     for (final submission in submissions) {
       if (!residentIds.contains(submission.paymentByUID)) continue;
-      if (submission.approvedOnDate != null) {
-        received++;
-      } else {
-        submitted++;
+      residentsWithSubmission.add(submission.paymentByUID);
+      switch (submission.paymentStatus) {
+        case PaymentStatus.received:
+          received++;
+        case PaymentStatus.rejected:
+          rejected++;
+        case PaymentStatus.submitted:
+          submitted++;
+        case PaymentStatus.pending:
+          break;
       }
     }
-    final pending = (residentIds.length - submitted - received).clamp(0, residentIds.length);
-    return PaymentStatusCounts(pending: pending, submitted: submitted, received: received);
+    final pending = (residentIds.length - residentsWithSubmission.length)
+        .clamp(0, residentIds.length);
+    return PaymentStatusCounts(
+      pending: pending,
+      submitted: submitted,
+      received: received,
+      rejected: rejected,
+    );
   }
 
   List<PaymentModel> getFilteredPayments(AppLocalizations l10n) {
@@ -78,12 +100,16 @@ class PaymentProvider extends ChangeNotifier{
       statusFilter = .submitted;
     } else if (selectedPaymentStatusFilter == l10n.received) {
       statusFilter = .received;
+    } else if (selectedPaymentStatusFilter == l10n.rejected) {
+      statusFilter = .rejected;
     }
-    return _payments.where((p) {
+    final filtered = _payments.where((p) {
       if (!DateTimeFormatHelpers.isInInclusiveDateRange(p.dateTime, dateFrom, dateTo)) return false;
       if (statusFilter != null && !_matchesStatus(p.paymentID, statusFilter)) return false;
       return true;
     }).toList();
+    filtered.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+    return filtered;
   }
 
   bool _matchesStatus(String paymentID, PaymentStatus statusFilter) {
@@ -95,6 +121,9 @@ class PaymentProvider extends ChangeNotifier{
         return counts.submitted > 0;
       case .received:
         return counts.received > 0;
+
+      case .rejected:
+        return counts.rejected > 0;
     }
   }
 
@@ -109,15 +138,33 @@ class PaymentProvider extends ChangeNotifier{
         notifyListeners();
         return;
       }
-      _payments = await _paymentsService.getPayments(user.societyID);
-      _payments.sort((a, b)=> b.dateTime.compareTo(a.dateTime));
-      _residents = await ResidentsService.instance.loadResidentsOfSociety(societyID: user.societyID);
-      await _loadSubmissions();
+      _paymentsSub?.cancel();
+      _residentsSub?.cancel();
+      _paymentsSub = _paymentsService.watchPayments(user.societyID).listen(
+        (list) async {
+          _payments = list;
+          _payments.sort((a, b)=> b.dateTime.compareTo(a.dateTime));
+          await _loadSubmissions();
+          loadingPayments = false;
+          notifyListeners();
+        },
+        onError: (e) {
+          error = e.toString();
+          loadingPayments = false;
+          notifyListeners();
+        },
+      );
+      _residentsSub = ResidentsService.instance.watchResidentsOfSociety(societyID: user.societyID).listen(
+        (list) {
+          _residents = list;
+          notifyListeners();
+        },
+      );
     }catch(e){
       error = e.toString();
+      loadingPayments = false;
+      notifyListeners();
     }
-    loadingPayments = false;
-    notifyListeners();
   }
 
   Future<void> _loadSubmissions() async {
@@ -169,12 +216,16 @@ class PaymentProvider extends ChangeNotifier{
       scaffoldKey: scaffoldKey,
       child: const AddPaymentSheet(),
       initialHeight: 0.5,
+      scrollChild: false,
     );
     if (result == null) return null;
     final paymentFor = result['paymentFor'] ?? '';
     final description = result['description'] ?? '';
-    final amount = result['amount'] ?? '0';
+    final amount = FormatingHelper.normalizeAmountInput(result['amount']?.toString() ?? '');
     final receipts = (result['receipts'] as List<XFile>?) ?? <XFile>[];
+    if (paymentFor.toString().trim().isEmpty || FormatingHelper.validatePaymentAmount(amount) != null) {
+      return false;
+    }
     try {
       addingPayment = true;
       notifyListeners();
@@ -186,6 +237,7 @@ class PaymentProvider extends ChangeNotifier{
       );
       if (payment != null) {
         _payments.add(payment);
+        _payments.sort((a, b) => b.dateTime.compareTo(a.dateTime));
         _submissionsByPayment[payment.paymentID] = [];
         return true;
       }
@@ -223,5 +275,12 @@ class PaymentProvider extends ChangeNotifier{
       error = e.toString().replaceFirst('Exception: ', '');
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    _paymentsSub?.cancel();
+    _residentsSub?.cancel();
+    super.dispose();
   }
 }

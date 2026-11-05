@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portalixmx_resident_admin/core/helpers/formating_helper.dart';
 import 'package:portalixmx_resident_admin/core/models/payment_model.dart';
 import 'package:portalixmx_resident_admin/core/res/app_colors.dart';
 import 'package:portalixmx_resident_admin/core/res/app_textstyles.dart';
@@ -99,7 +100,7 @@ class ResidentPaymentHistoryPage extends StatelessWidget{
                                           ),
                                         ),
                                         Text(
-                                          "\$${payment.amount}",
+                                          FormatingHelper.formatCurrency(payment.amount),
                                           style: TextStyle(fontSize: 12, fontWeight: .w700, color: AppColors.btnColor),
                                         ),
                                       ],

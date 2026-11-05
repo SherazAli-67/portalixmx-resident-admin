@@ -56,6 +56,8 @@ class BottomSheetHelper {
   static Future<T?> showDraggableBottomSheet<T>({
     required GlobalKey<ScaffoldState> scaffoldKey,
     required Widget child,
+    Widget? stickyFooter,
+    bool scrollChild = true,
     double minHeight = 0.3,
     double maxHeight = 0.9,
     double? initialHeight,
@@ -69,6 +71,8 @@ class BottomSheetHelper {
           maxHeight: maxHeight,
           initialHeight: initialHeight,
           onDismiss: () => Navigator.of(ctx).pop<T>(null),
+          stickyFooter: stickyFooter,
+          scrollChild: scrollChild,
           child: child,
         ),
       ),
@@ -107,6 +111,8 @@ class BottomSheetHelper {
     bool showDragHandle = true,
     bool isScrollControlled = true,
     bool useSafeArea = true,
+    bool wrapChildInScrollView = true,
+    Widget? stickyFooter,
     Color? backgroundColor,
     ShapeBorder? shape,
   }) {
@@ -146,11 +152,14 @@ class BottomSheetHelper {
                       ),
                     ),
                   Expanded(
-                    child: SingleChildScrollView(
-                      controller: scrollController,
-                      child: child,
-                    ),
+                    child: wrapChildInScrollView
+                        ? SingleChildScrollView(
+                            controller: scrollController,
+                            child: child,
+                          )
+                        : child,
                   ),
+                  if (stickyFooter != null) stickyFooter,
                 ],
               ),
             );

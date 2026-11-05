@@ -145,6 +145,8 @@ class _CommunityCalendarPageState extends State<CommunityCalendarPage> {
   }
 
   Future<void> onDeleteEventTap({required CommunityEventModel event, required CommunityCalendarProvider provider})async{
+    final confirmed = await CommonUI.confirmDelete(context);
+    if (!confirmed || !mounted) return;
     final error = await provider.deleteEvent(event: event);
     if(error != null){
       CommonUI.showSnackBarMessage(context, message: error, isError: true);

@@ -133,6 +133,8 @@ class CommunityPollsPage extends StatelessWidget {
   }
 
   Future<void> _onDeletePollTap(BuildContext context, {required CommunityPollModel poll, required CommunityPollsProvider provider, required AppLocalizations localization}) async {
+    final confirmed = await CommonUI.confirmDelete(context);
+    if (!confirmed || !context.mounted) return;
     final error = await provider.deletePoll(poll);
     if (!context.mounted) return;
     if (error != null) {
