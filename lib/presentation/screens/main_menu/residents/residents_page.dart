@@ -43,8 +43,8 @@ class ResidentsPage extends StatelessWidget{
                           Row(
                             spacing: 20,
                             children: [
-                              Expanded(child: AppDropdownWidget<String>(list: provider.getFilterList(localization), title: 'Date', value: provider.selectedFilter, onChanged: (val)=> provider.onChangeFilterTap(val), getTitle: (item) => item)),
-                              Expanded(child: AppDropdownWidget<String>(list: provider.getStatusList(localization), title: 'Status', value: provider.selectedPaymentStatusFilter, onChanged: (val)=> provider.onChangeStatusFilterTap(val), getTitle: (item) => item)),
+                              Expanded(child: AppDropdownWidget<String>(list: provider.getFilterList(localization), title: localization.date, value: provider.selectedFilter, onChanged: (val)=> provider.onChangeFilterTap(val), getTitle: (item) => item)),
+                              Expanded(child: AppDropdownWidget<String>(list: provider.getStatusList(localization), title: localization.status, value: provider.selectedPaymentStatusFilter, onChanged: (val)=> provider.onChangeStatusFilterTap(val), getTitle: (item) => item)),
                             ],
                           ),
                           Expanded(

@@ -52,8 +52,8 @@ class _PaymentsToAdminPageState extends State<PaymentsToAdminPage> {
                         Row(
                           spacing: 20,
                           children: [
-                            Expanded(child: AppDropdownWidget<String>(list: provider.getFilterList(localization), title: 'Date', value: provider.selectedFilter, onChanged: (val)=> provider.onChangeFilterTap(val), getTitle: (item) => item)),
-                            Expanded(child: AppDropdownWidget<String>(list: provider.getStatusList(localization), title: 'Status', value: provider.selectedPaymentStatusFilter, onChanged: (val)=> provider.onChangeStatusFilterTap(val), getTitle: (item) => item)),
+                            Expanded(child: AppDropdownWidget<String>(list: provider.getFilterList(localization), title: localization.date, value: provider.selectedFilter, onChanged: (val)=> provider.onChangeFilterTap(val), getTitle: (item) => item)),
+                            Expanded(child: AppDropdownWidget<String>(list: provider.getStatusList(localization), title: localization.status, value: provider.selectedPaymentStatusFilter, onChanged: (val)=> provider.onChangeStatusFilterTap(val), getTitle: (item) => item)),
                           ],
                         ),
                         Expanded(
@@ -62,7 +62,7 @@ class _PaymentsToAdminPageState extends State<PaymentsToAdminPage> {
                                 : ((){
                               final list = provider.getFilteredPayments(localization);
                               return list.isEmpty
-                                  ? Center(child: Text("No payment requests found", style: AppTextStyles.regularTextStyle,),)
+                                  ? Center(child: Text(localization.noPaymentRequestsFound, style: AppTextStyles.regularTextStyle,),)
                                   : ListView.builder(
                                   itemCount: list.length,
                                   itemBuilder: (ctx, index){

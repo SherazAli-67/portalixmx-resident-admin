@@ -70,7 +70,7 @@ class _ResidentPaymentReceiptSheetState extends State<ResidentPaymentReceiptShee
                     ),
                   )
                 else
-                  Text('No receipt available', style: AppTextStyles.tileSubtitleTextStyle),
+                  Text(localizations.noReceiptAvailable, style: AppTextStyles.tileSubtitleTextStyle),
               ],
             ),
           ),

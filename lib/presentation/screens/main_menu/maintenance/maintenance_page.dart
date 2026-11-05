@@ -148,9 +148,9 @@ class MaintenanceMenu extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(complaintByUser?.userName ?? 'Unknown',
+                            Text(complaintByUser?.userName ?? localizations.unknown,
                                 style: AppTextStyles.tileTitleTextStyle),
-                            Text(complaintByUser?.phoneNum ?? 'Unknown',
+                            Text(complaintByUser?.phoneNum ?? localizations.unknown,
                                 style: AppTextStyles.tileTitleTextStyle),
                           ],
                         ),

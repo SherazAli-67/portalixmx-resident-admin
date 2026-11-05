@@ -37,7 +37,7 @@ class PendingRequestPage extends StatelessWidget {
                 FutureBuilder(
                   future: AuthService.instance.getSociety(),
                   builder: (ctx, snapshot) {
-                    final societyName = snapshot.data?.name ?? 'Society';
+                    final societyName = snapshot.data?.name ?? localization.society;
                     return Text(
                       localization.accountRequestPending(societyName),
                       style: AppTextStyles.regularTextStyle.copyWith(color: Colors.white),
@@ -46,7 +46,7 @@ class PendingRequestPage extends StatelessWidget {
                   },
                 ),
                 Text(
-                  'Your account is awaiting approval. You can refresh or sign out.',
+                  localization.accountAwaitingApproval,
                   style: AppTextStyles.tileSubtitleTextStyle.copyWith(color: Colors.white70),
                   textAlign: .center,
                 ),
@@ -54,7 +54,7 @@ class PendingRequestPage extends StatelessWidget {
                 SizedBox(
                   width: .infinity,
                   child: PrimaryBtn(
-                    btnText: 'Refresh',
+                    btnText: localization.refresh,
                     bgColor: Colors.white,
                     textColor: AppColors.primaryColor,
                     onTap: () => context.read<ProfileProvider>().reloadCurrentUser(),

@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
    UserModel? user =  await context.read<AuthenticationProvider>().onLoginTap(email: email, password: password);
     if (!mounted) return;
     if(user == null){
-      CommonUI.showSnackBarMessage(context, isError: true, message: 'User not found!');
+      CommonUI.showSnackBarMessage(context, isError: true, message: AppLocalizations.of(context)!.userNotFound);
     }else if(user.status == .pending){
       context.go(NamedRoutes.pendingRequest.routeName);
     } else{

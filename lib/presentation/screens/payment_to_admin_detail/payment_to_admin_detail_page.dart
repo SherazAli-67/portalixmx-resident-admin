@@ -122,7 +122,7 @@ class _PaymentToAdminDetailPageState extends State<PaymentToAdminDetailPage> {
                                       ? _buildReceiptImage(localizations, receiptUrl)
                                       : Center(
                                           child: Text(
-                                            'No receipt uploaded',
+                                            localizations.noReceiptUploaded,
                                             style: AppTextStyles.tileSubtitleTextStyle,
                                           ),
                                         ),

@@ -279,5 +279,17 @@
   "signOut" : "Sign out",
   "pleaseEnterValidPhone" : "Please enter a valid 10-digit phone number",
   "confirmRejectReceipt" : "Reject this payment receipt?",
-  "failedToUpdatePaymentStatus" : "Failed to update payment status"
+  "failedToUpdatePaymentStatus" : "Failed to update payment status",
+  "noPaymentRequestsFound" : "No payment requests found",
+  "noReceiptAvailable" : "No receipt available",
+  "noReceiptUploaded" : "No receipt uploaded",
+  "noEventsYet" : "No Events yet",
+  "noPollsYet" : "No polls yet",
+  "photos" : "Photos",
+  "phoneNumber" : "Phone Number",
+  "userNotFound" : "User not found!",
+  "signupFailed" : "Signup failed",
+  "accountAwaitingApproval" : "Your account is awaiting approval. You can refresh or sign out.",
+  "refresh" : "Refresh",
+  "society" : "Society"
 }

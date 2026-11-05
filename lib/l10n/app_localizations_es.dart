@@ -891,4 +891,41 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get failedToUpdatePaymentStatus =>
       'Error al actualizar el estado del pago';
+
+  @override
+  String get noPaymentRequestsFound => 'No se encontraron solicitudes de pago';
+
+  @override
+  String get noReceiptAvailable => 'No hay comprobante disponible';
+
+  @override
+  String get noReceiptUploaded => 'No se ha subido ningún comprobante';
+
+  @override
+  String get noEventsYet => 'Aún no hay eventos';
+
+  @override
+  String get noPollsYet => 'Aún no hay encuestas';
+
+  @override
+  String get photos => 'Fotos';
+
+  @override
+  String get phoneNumber => 'Número de teléfono';
+
+  @override
+  String get userNotFound => '¡Usuario no encontrado!';
+
+  @override
+  String get signupFailed => 'Error al registrarse';
+
+  @override
+  String get accountAwaitingApproval =>
+      'Su cuenta está pendiente de aprobación. Puede actualizar o cerrar sesión.';
+
+  @override
+  String get refresh => 'Actualizar';
+
+  @override
+  String get society => 'Sociedad';
 }

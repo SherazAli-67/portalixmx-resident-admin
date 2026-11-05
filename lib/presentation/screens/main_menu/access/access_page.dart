@@ -135,8 +135,8 @@ class AccessMenu extends StatelessWidget{
                               child: Column(
                                 crossAxisAlignment: .start,
                                 children: [
-                                  Text(complaintByUser?.userName ?? 'Unknown', style: AppTextStyles.tileTitleTextStyle,),
-                                  Text(complaintByUser?.phoneNum ?? 'Unknown', style: AppTextStyles.tileTitleTextStyle,),
+                                  Text(complaintByUser?.userName ?? localization.unknown, style: AppTextStyles.tileTitleTextStyle,),
+                                  Text(complaintByUser?.phoneNum ?? localization.unknown, style: AppTextStyles.tileTitleTextStyle,),
                                 ],
                               ),
                             ),

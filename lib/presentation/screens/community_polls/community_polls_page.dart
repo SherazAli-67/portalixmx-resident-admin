@@ -62,7 +62,7 @@ class CommunityPollsPage extends StatelessWidget {
                           child: provider.loadingCommunityPolls
                               ? LoadingWidget(color: AppColors.primaryColor)
                               : provider.communityPolls.isEmpty
-                                  ? const Center(child: Text('No polls yet'))
+                                  ? Center(child: Text(localization.noPollsYet))
                                   : ListView.builder(
                                       itemCount: provider.communityPolls.length,
                                       itemBuilder: (ctx, index) {

@@ -73,7 +73,7 @@ class _CommunityCalendarPageState extends State<CommunityCalendarPage> {
                               padding: const EdgeInsets.symmetric(horizontal: 15.0),
                               child: provider.loadingCommunityEvents
                                   ? LoadingWidget(color: AppColors.primaryColor,)
-                                  : provider.communityEvents.isEmpty ? Center(child: Text("No Events yet",),)
+                                  : provider.communityEvents.isEmpty ? Center(child: Text(_localization.noEventsYet,),)
                                   : ListView.builder(
                                   itemCount: provider.communityEvents.length,
                                   itemBuilder: (ctx, index){

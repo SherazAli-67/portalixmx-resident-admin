@@ -167,7 +167,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                   final contacts = snapshot.data ?? [];
                                   if (contacts.isEmpty) {
                                     return Text(
-                                      'No emergency contacts',
+                                      localization.noEmergencyContacts,
                                       style: AppTextStyles.visitorDetailSubtitleTextStyle.copyWith(fontSize: 14),
                                     );
                                   }

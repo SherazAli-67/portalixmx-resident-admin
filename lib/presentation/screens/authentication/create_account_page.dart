@@ -84,7 +84,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                     backgroundImage: _provider.pickedImage != null
                                         ? FileImage(File(_provider.pickedImage!.path))
                                         : null,
-                                    // backgroundImage: AssetImage(AppIcons.icSplashLogo),
                                   ),
                                 ),
                               Positioned(
@@ -170,7 +169,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       String? isError = await _provider.onCreateAccountTap(localization: _localization, name: name, email: email, password: password);
       if (!mounted) return;
       if(isError != null){
-        CommonUI.showSnackBarMessage(context, isError: true, message: isError, title: "Signup failed");
+        CommonUI.showSnackBarMessage(context, isError: true, message: isError, title: _localization.signupFailed);
       }else{
         final profileProvider = context.read<ProfileProvider>();
         await profileProvider.reloadCurrentUser();

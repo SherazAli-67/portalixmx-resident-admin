@@ -70,7 +70,7 @@ class PaymentsMenu extends StatelessWidget{
                                 children: [
                                   SizedBox(
                                     height: MediaQuery.sizeOf(context).height * 0.35,
-                                    child: Center(child: Text("No payment requests found", style: AppTextStyles.regularTextStyle,),),
+                                    child: Center(child: Text(localization.noPaymentRequestsFound, style: AppTextStyles.regularTextStyle,),),
                                   ),
                                 ],
                               )

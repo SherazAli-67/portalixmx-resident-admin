@@ -869,4 +869,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get failedToUpdatePaymentStatus => 'Failed to update payment status';
+
+  @override
+  String get noPaymentRequestsFound => 'No payment requests found';
+
+  @override
+  String get noReceiptAvailable => 'No receipt available';
+
+  @override
+  String get noReceiptUploaded => 'No receipt uploaded';
+
+  @override
+  String get noEventsYet => 'No Events yet';
+
+  @override
+  String get noPollsYet => 'No polls yet';
+
+  @override
+  String get photos => 'Photos';
+
+  @override
+  String get phoneNumber => 'Phone Number';
+
+  @override
+  String get userNotFound => 'User not found!';
+
+  @override
+  String get signupFailed => 'Signup failed';
+
+  @override
+  String get accountAwaitingApproval =>
+      'Your account is awaiting approval. You can refresh or sign out.';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
+  String get society => 'Society';
 }

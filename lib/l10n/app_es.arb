@@ -275,5 +275,17 @@
   "signOut" : "Cerrar sesión",
   "pleaseEnterValidPhone" : "Por favor ingrese un número de teléfono válido de 10 dígitos",
   "confirmRejectReceipt" : "¿Rechazar este comprobante de pago?",
-  "failedToUpdatePaymentStatus" : "Error al actualizar el estado del pago"
+  "failedToUpdatePaymentStatus" : "Error al actualizar el estado del pago",
+  "noPaymentRequestsFound" : "No se encontraron solicitudes de pago",
+  "noReceiptAvailable" : "No hay comprobante disponible",
+  "noReceiptUploaded" : "No se ha subido ningún comprobante",
+  "noEventsYet" : "Aún no hay eventos",
+  "noPollsYet" : "Aún no hay encuestas",
+  "photos" : "Fotos",
+  "phoneNumber" : "Número de teléfono",
+  "userNotFound" : "¡Usuario no encontrado!",
+  "signupFailed" : "Error al registrarse",
+  "accountAwaitingApproval" : "Su cuenta está pendiente de aprobación. Puede actualizar o cerrar sesión.",
+  "refresh" : "Actualizar",
+  "society" : "Sociedad"
 }

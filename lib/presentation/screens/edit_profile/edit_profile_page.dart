@@ -88,8 +88,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 Column(
                                   spacing: 10,
                                   children: [
-                                    AppTextField(title: 'Name', hintText: 'Name', controller: _nameController,titleTextStyle: AppTextStyles.editProfileHeadingTextStyle, isDense: true, borderColor: AppColors.lightGreyBackgroundColor,),
-                                    AppTextField(title: 'Phone', hintText: 'Phone Number', controller: _phoneNumController,titleTextStyle: AppTextStyles.editProfileHeadingTextStyle, textInputType: .phone, isDense: true, borderColor: AppColors.lightGreyBackgroundColor,),
+                                    AppTextField(title: localization.name, hintText: localization.name, controller: _nameController,titleTextStyle: AppTextStyles.editProfileHeadingTextStyle, isDense: true, borderColor: AppColors.lightGreyBackgroundColor,),
+                                    AppTextField(title: localization.phone, hintText: localization.phoneNumber, controller: _phoneNumController,titleTextStyle: AppTextStyles.editProfileHeadingTextStyle, textInputType: .phone, isDense: true, borderColor: AppColors.lightGreyBackgroundColor,),
                                     if (_phoneError != null)
                                       Align(
                                         alignment: .centerLeft,

@@ -57,7 +57,7 @@ class ResidentPaymentHistoryPage extends StatelessWidget{
                     final payments = snapshot.data ?? <PaymentModel>[];
                     if (payments.isEmpty) {
                       return Center(
-                        child: Text("No payment requests found", style: AppTextStyles.regularTextStyle),
+                        child: Text(localizations.noPaymentRequestsFound, style: AppTextStyles.regularTextStyle),
                       );
                     }
                     return ListView.builder(

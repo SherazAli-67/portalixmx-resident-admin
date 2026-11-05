@@ -29,7 +29,6 @@ import '../core/models/complaints_model.dart';
 import '../presentation/screens/authentication/create_account_page.dart';
 import '../presentation/screens/authentication/forget_password_page.dart';
 import '../presentation/screens/authentication/login_page.dart';
-import '../presentation/screens/authentication/otp_page.dart';
 import '../presentation/screens/edit_community/edit_community_page.dart';
 import '../presentation/screens/main_menu/access/access_page.dart';
 import '../presentation/screens/main_menu/access/access_summary_page.dart';
@@ -113,13 +112,6 @@ GoRouter createAppRouter(ProfileProvider profileProvider) {
                 complaint: state.extra as ComplaintModel,
               )),
       GoRoute(
-          path: NamedRoutes.privacyPolicy.routeName,
-          builder: (ctx, state) =>
-              Center(child: Text("Privacy Policy Page"))),
-      GoRoute(
-          path: NamedRoutes.verifyOtp.routeName,
-          builder: (ctx, state) => VerifyOTPPage()),
-      GoRoute(
           path: NamedRoutes.residentDetail.routeName,
           builder: (ctx, state) => ProfileDetailPage(resident: state.extra as UserModel)),
       GoRoute(
@@ -179,14 +171,10 @@ GoRouter createAppRouter(ProfileProvider profileProvider) {
           loc == NamedRoutes.forgetPassword.routeName;
       final isOnSplash = loc == NamedRoutes.splash.routeName;
       final isOnPending = loc == NamedRoutes.pendingRequest.routeName;
-      final isVerifyOtp = loc == NamedRoutes.verifyOtp.routeName;
-      final isPrivacy = loc == NamedRoutes.privacyPolicy.routeName;
 
       final authScreens = isOnLoginPage ||
           isOnSignupPage ||
-          isOnForgetPasswordPage ||
-          isVerifyOtp ||
-          isPrivacy;
+          isOnForgetPasswordPage;
 
       if (!isAuthenticated) {
         if (profileProvider.profileLoadError != null) {
@@ -229,8 +217,7 @@ GoRouter createAppRouter(ProfileProvider profileProvider) {
           isOnSplash ||
           isOnLoginPage ||
           isOnSignupPage ||
-          isOnForgetPasswordPage ||
-          isVerifyOtp) {
+          isOnForgetPasswordPage) {
         return NamedRoutes.home.routeName;
       }
 
@@ -253,8 +240,6 @@ enum NamedRoutes {
   profile('/profile-menu'),
   accessRequestDetail('/access-request-detail'),
   complaintSummary('/complaint-detail'),
-  privacyPolicy('/privacy-policy'),
-  verifyOtp('/verify-otp'),
   residentDetail('/resident-detail'),
   editProfile('/edit-profile'),
   communityCalendar('/community-calendar'),

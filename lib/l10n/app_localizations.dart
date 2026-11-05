@@ -1711,6 +1711,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to update payment status'**
   String get failedToUpdatePaymentStatus;
+
+  /// No description provided for @noPaymentRequestsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment requests found'**
+  String get noPaymentRequestsFound;
+
+  /// No description provided for @noReceiptAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No receipt available'**
+  String get noReceiptAvailable;
+
+  /// No description provided for @noReceiptUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'No receipt uploaded'**
+  String get noReceiptUploaded;
+
+  /// No description provided for @noEventsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Events yet'**
+  String get noEventsYet;
+
+  /// No description provided for @noPollsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No polls yet'**
+  String get noPollsYet;
+
+  /// No description provided for @photos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get photos;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phoneNumber;
+
+  /// No description provided for @userNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found!'**
+  String get userNotFound;
+
+  /// No description provided for @signupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Signup failed'**
+  String get signupFailed;
+
+  /// No description provided for @accountAwaitingApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is awaiting approval. You can refresh or sign out.'**
+  String get accountAwaitingApproval;
+
+  /// No description provided for @refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
+
+  /// No description provided for @society.
+  ///
+  /// In en, this message translates to:
+  /// **'Society'**
+  String get society;
 }
 
 class _AppLocalizationsDelegate

@@ -133,8 +133,8 @@ class ComplaintSummaryPage extends StatelessWidget{
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(complaintByUser?.userName ?? 'Unknown', style: AppTextStyles.tileTitleTextStyle),
-                                      Text(complaintByUser?.phoneNum ?? 'Unknown', style: AppTextStyles.tileTitleTextStyle),
+                                      Text(complaintByUser?.userName ?? localizations.unknown, style: AppTextStyles.tileTitleTextStyle),
+                                      Text(complaintByUser?.phoneNum ?? localizations.unknown, style: AppTextStyles.tileTitleTextStyle),
                                     ],
                                   ),
                                 ),
@@ -166,7 +166,7 @@ class ComplaintSummaryPage extends StatelessWidget{
                           ),
                           Padding(
                             padding: const .only(top: 15.0),
-                            child: VisitorInfoItemWidget(title: localizations.email, subTitle: complaintByUser?.email ?? 'Unknown'),
+                            child: VisitorInfoItemWidget(title: localizations.email, subTitle: complaintByUser?.email ?? localizations.unknown),
                           ),
                           VisitorInfoItemWidget(
                             title: localizations.houseNumber,
@@ -192,16 +192,16 @@ class ComplaintSummaryPage extends StatelessWidget{
                               children: [
                                 Expanded(
                                   child: VisitorInfoItemWidget(
-                                    title: 'Date', subTitle: DateTimeFormatHelpers.formatDateTime(complaint.createdAt), ),
+                                    title: localizations.date, subTitle: DateTimeFormatHelpers.formatDateTime(complaint.createdAt), ),
                                 ),
                                 Expanded(
                                     child: VisitorInfoItemWidget(
-                                      title: 'Status', subTitle: complaint.status.name.toUpperCase(),)
+                                      title: localizations.status, subTitle: complaint.status.name.toUpperCase(),)
                                 ),
                               ],
                             ),
-                            VisitorInfoItemWidget(title: 'Complaint', subTitle: complaint.complaint, showDivider: true),
-                            Text("Photos", style: AppTextStyles.visitorDetailTitleTextStyle,),
+                            VisitorInfoItemWidget(title: localizations.complaint, subTitle: complaint.complaint, showDivider: true),
+                            Text(localizations.photos, style: AppTextStyles.visitorDetailTitleTextStyle,),
                             GridView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
