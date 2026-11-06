@@ -1,44 +1,60 @@
+import 'package:portalixmx_resident_admin/core/helpers/formating_helper.dart';
+import 'package:portalixmx_resident_admin/l10n/app_localizations.dart';
+
 class Validators {
-  static String? validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Email is required';
-    }
-    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-      return 'Please enter a valid email address';
-    }
-    return null;
+  static String? Function(String?) validateEmail(AppLocalizations localization) {
+    return (value) {
+      if (value == null || value.trim().isEmpty) {
+        return localization.enterEmailAddress;
+      }
+      if (!FormatingHelper.isValidEmail(value)) {
+        return localization.pleaseEnterValidEmail;
+      }
+      return null;
+    };
   }
 
-  static String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Password is required';
-    }
-    return null;
+  static String? Function(String?) validatePassword(
+    AppLocalizations localization, {
+    bool requireMinLength = true,
+  }) {
+    return (value) {
+      if (value == null || value.isEmpty) {
+        return localization.passwordRequired;
+      }
+      if (requireMinLength && value.trim().length < 8) {
+        return localization.passwordMinLength;
+      }
+      return null;
+    };
   }
 
-  static String? validateFullName(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Full name is required';
-    }
-    if (value.trim().length < 2) {
-      return 'Full name must be at least 2 characters';
-    }
-    return null;
+  static String? Function(String?) validateFullName(AppLocalizations localization) {
+    return (value) {
+      if (value == null || value.trim().isEmpty) {
+        return localization.pleaseEnterName;
+      }
+      if (value.trim().length < 2) {
+        return localization.fullNameMinLength;
+      }
+      return null;
+    };
   }
 
-  static String? validateAppointmentDate(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Appointment date is required';
-    }
-    // debugPrint("Value is: $value");
-    final trimmed = value.trim();
-    final parts = trimmed.split(',');
-    final dateParts = parts.first.split(' ');
-    final day = int.tryParse(dateParts[0]);
+  static String? Function(String?) validateAppointmentDate(AppLocalizations localization) {
+    return (value) {
+      if (value == null || value.trim().isEmpty) {
+        return localization.appointmentDateRequired;
+      }
+      final trimmed = value.trim();
+      final parts = trimmed.split(',');
+      final dateParts = parts.first.split(' ');
+      final day = int.tryParse(dateParts[0]);
 
-    if (day! < 1 || day > 31) {
-      return 'Day must be between 1 and 31';
-    }
-    return null;
+      if (day == null || day < 1 || day > 31) {
+        return localization.dayMustBeBetween1And31;
+      }
+      return null;
+    };
   }
 }

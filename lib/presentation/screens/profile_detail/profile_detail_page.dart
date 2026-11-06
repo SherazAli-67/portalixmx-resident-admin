@@ -7,7 +7,6 @@ import 'package:portalixmx_resident_admin/presentation/widgets/app_textfield_wid
 import 'package:portalixmx_resident_admin/presentation/widgets/primary_btn.dart';
 import 'package:portalixmx_resident_admin/providers/datetime_format_helpers.dart';
 import 'package:portalixmx_resident_admin/providers/home_provider.dart';
-import 'package:portalixmx_resident_admin/services/user_service/user_service.dart';
 import 'package:provider/provider.dart';
 import '../../../core/res/app_textstyles.dart';
 import '../../widgets/bg_gradient_screen.dart';
@@ -22,7 +21,6 @@ class ProfileDetailPage extends StatefulWidget {
 }
 
 class _ProfileDetailPageState extends State<ProfileDetailPage> {
-  late Future<List<String>> _emergencyContactLabels;
   late final TextEditingController _houseNumberController;
   String? _houseNumberError;
 
@@ -30,7 +28,6 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
   void initState() {
     super.initState();
     _houseNumberController = TextEditingController(text: widget.resident.houseNumber ?? '');
-    _emergencyContactLabels = _loadEmergencyContacts();
   }
 
   @override
@@ -39,21 +36,6 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
     super.dispose();
   }
 
-  Future<List<String>> _loadEmergencyContacts() async {
-    final ids = widget.resident.emergencyContacts;
-    if (ids.isEmpty) return [];
-    final labels = <String>[];
-    for (final id in ids) {
-      final user = await UserService.instance.getUserByID(userID: id);
-      if (user == null) {
-        labels.add(id);
-        continue;
-      }
-      final phone = user.phoneNum?.trim();
-      labels.add((phone != null && phone.isNotEmpty) ? '${user.userName} ($phone)' : user.userName);
-    }
-    return labels;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,40 +133,17 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                   fontWeight: .w400,
                                 ),
                               ),
-                              FutureBuilder<List<String>>(
-                                future: _emergencyContactLabels,
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState == .waiting) {
-                                    return const Padding(
-                                      padding: .symmetric(vertical: 8),
-                                      child: SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(strokeWidth: 2),
-                                      ),
-                                    );
-                                  }
-                                  final contacts = snapshot.data ?? [];
-                                  if (contacts.isEmpty) {
-                                    return Text(
-                                      localization.noEmergencyContacts,
-                                      style: AppTextStyles.visitorDetailSubtitleTextStyle.copyWith(fontSize: 14),
-                                    );
-                                  }
-                                  return Column(
-                                    spacing: 5,
-                                    crossAxisAlignment: .start,
-                                    children: contacts
-                                        .map(
-                                          (label) => Text(
-                                            label,
-                                            style: AppTextStyles.visitorDetailSubtitleTextStyle.copyWith(fontSize: 14),
-                                          ),
-                                        )
-                                        .toList(),
-                                  );
-                                },
-                              ),
+                              if(resident.personalEmergencyPhone != null)
+                              Text(
+                                resident.personalEmergencyPhone!,
+                                style: AppTextStyles.visitorDetailSubtitleTextStyle.copyWith(fontSize: 14),
+                              )
+                              else
+                                Text(
+                                  localization.noEmergencyContacts,
+                                  style: AppTextStyles.visitorDetailSubtitleTextStyle.copyWith(fontSize: 14),
+                                )
+
                             ],
                           ),
                           if (resident.status == .pending) ...[

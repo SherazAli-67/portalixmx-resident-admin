@@ -12,8 +12,15 @@ import 'package:portalixmx_resident_admin/services/auth_service/auth_service.dar
 import 'package:portalixmx_resident_admin/services/push_notification_service/push_notification_service.dart';
 import 'package:provider/provider.dart';
 
-class PendingRequestPage extends StatelessWidget {
+class PendingRequestPage extends StatefulWidget {
   const PendingRequestPage({super.key});
+
+  @override
+  State<PendingRequestPage> createState() => _PendingRequestPageState();
+}
+
+class _PendingRequestPageState extends State<PendingRequestPage> {
+  bool _isLoggingOut = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,18 +64,18 @@ class PendingRequestPage extends StatelessWidget {
                     btnText: localization.refresh,
                     bgColor: Colors.white,
                     textColor: AppColors.primaryColor,
-                    onTap: () => context.read<ProfileProvider>().reloadCurrentUser(),
+                    onTap: () {
+                      if (_isLoggingOut) return;
+                      context.read<ProfileProvider>().reloadCurrentUser();
+                    },
                   ),
                 ),
                 SizedBox(
                   width: .infinity,
                   child: PrimaryBtn(
                     btnText: localization.logout,
-                    onTap: () async {
-                      await PushNotificationService.instance.removeTokenForSignOut();
-                      await AuthService.instance.signOut();
-                      if (context.mounted) context.go(NamedRoutes.login.routeName);
-                    },
+                    isLoading: _isLoggingOut,
+                    onTap: _onLogoutTap,
                   ),
                 ),
               ],
@@ -77,5 +84,18 @@ class PendingRequestPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _onLogoutTap() async {
+    if (_isLoggingOut) return;
+    setState(() => _isLoggingOut = true);
+    try {
+      await PushNotificationService.instance.removeTokenForSignOut();
+      await AuthService.instance.signOut();
+      if (!mounted) return;
+      context.go(NamedRoutes.login.routeName);
+    } finally {
+      if (mounted) setState(() => _isLoggingOut = false);
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import '../../core/models/fund_report_model.dart';
 import '../../core/res/firebase_constant.dart';
 
@@ -48,6 +49,7 @@ class FundReportsService {
     try {
       await _getReportsCollection().doc(reportId).delete();
     } catch (e) {
+      print("Error while deleting: $e");
       throw Exception('Failed to delete fund report: $e');
     }
   }

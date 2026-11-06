@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:portalixmx_resident_admin/core/res/app_textstyles.dart';
 import 'package:portalixmx_resident_admin/l10n/app_localizations.dart';
 
@@ -23,6 +24,25 @@ class CommonUI {
               if(message != null)
                 Text(message, style: AppTextStyles.regularTextStyle.copyWith(color: textIconColor),)
             ])));
+  }
+
+  static void showToastMessage(
+    String message, {
+    bool isError = false,
+    bool isSuccess = false,
+  }) {
+    final bgColor = isError
+        ? Colors.red
+        : isSuccess
+            ? Colors.green
+            : Colors.black87;
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: .LENGTH_LONG,
+      gravity: .BOTTOM,
+      backgroundColor: bgColor,
+      textColor: Colors.white,
+    );
   }
 
   static Future<bool> confirmDelete(

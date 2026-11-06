@@ -156,6 +156,10 @@ class _CreateCalendarEventBottomSheetState extends State<CreateCalendarEventBott
       setState(() => _formError = localization.pleaseEnterEventTitle);
       return;
     }
+    if (title.length < 2) {
+      setState(() => _formError = localization.titleMinLength);
+      return;
+    }
     if (_eventDate == null || _eventTime == null) {
       setState(() => _formError = localization.pleaseSelectEventDateTime);
       return;

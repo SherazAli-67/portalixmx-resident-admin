@@ -6,6 +6,7 @@ import 'package:portalixmx_resident_admin/core/helpers/bottom_sheet_helper.dart'
 import 'package:portalixmx_resident_admin/core/res/app_constants.dart';
 import 'package:portalixmx_resident_admin/presentation/screens/main_menu/main_menu.dart';
 import 'package:portalixmx_resident_admin/presentation/screens/webview/webview_screen.dart';
+import 'package:portalixmx_resident_admin/presentation/widgets/full_page_loading_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/res/app_icons.dart';
@@ -17,64 +18,85 @@ import '../../../../services/push_notification_service/push_notification_service
 import '../../../widgets/loading_widget.dart';
 import '../../../widgets/profile_image_widget.dart';
 
-class ProfileMenu extends StatelessWidget{
+class ProfileMenu extends StatefulWidget {
   const ProfileMenu({super.key});
+
+  @override
+  State<ProfileMenu> createState() => _ProfileMenuState();
+}
+
+class _ProfileMenuState extends State<ProfileMenu> {
+  bool _isLoggingOut = false;
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    return Center(
-      child: SingleChildScrollView(
-        child: Column(
-          spacing: 34,
-          children: [
-            Consumer<ProfileProvider>(builder: (ctx, provider, _){
-              return  provider.loadingProfile
-                  ? LoadingWidget()
-                  : provider.user != null
-                  ? Padding(
-                padding: const EdgeInsets.only(top: 45.0),
-                child: Column(
-                  spacing: 5,
-                  children: [
-                    ProfileImageWidget(imageUrl: provider.user!.profileImg),
-                    Text(provider.user!.userName, style: AppTextStyles.bottomSheetHeadingTextStyle.copyWith(color: Colors.white),),
-                    InkWell(
-                        onTap: ()=> context.push(NamedRoutes.editProfile.routeName),
-                        child: Text(localizations.viewProfile, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: Colors.white),))
-                  ],
-                ),
-              )
-                  : const SizedBox();
-            }),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
+      children: [
+        Center(
+          child: SingleChildScrollView(
+            child: Column(
+              spacing: 34,
               children: [
-                ProfileItemWidget(title: localizations.communityCalendar, icon: AppIcons.icCalendar, onTap: ()=> context.push(NamedRoutes.communityCalendar.routeName)),
-                ProfileItemWidget(title: localizations.communityPolls, icon: AppIcons.icCommunityPolls,  onTap: ()=> context.push(NamedRoutes.communityPolls.routeName)),
-                ProfileItemWidget(title: localizations.fundManagement, icon: AppIcons.icPaymentsMenu, onTap: ()=> context.push(NamedRoutes.fundManagement.routeName)),
-                ProfileItemWidget(title: localizations.paymentToAdmin, icon: AppIcons.icPaymentsMenu, onTap: ()=> context.push(NamedRoutes.paymentsToAdmin.routeName)),
-                ProfileItemWidget(title: localizations.editCommunity, icon: AppIcons.icEdit, onTap: () => context.push(NamedRoutes.editCommunity.routeName)),
-                ProfileItemWidget(title: localizations.directory, icon: AppIcons.icDirectory, onTap: () => context.push(NamedRoutes.communityDirectory.routeName)),
-                ProfileItemWidget(title: localizations.emergencyCalls, icon: AppIcons.icEmergencyCalls, onTap: ()=> context.push(NamedRoutes.emergencyCall.routeName)),
-                TextButton(onPressed: ()=> onPrivacyPolicyTap(localizations: localizations), child: Text(localizations.privacyPolicy, style: AppTextStyles.tileTitleTextStyle2, )),
-                TextButton(onPressed: ()=> onTermsConditionTap(localizations: localizations), child: Text(localizations.termsCondition, style: AppTextStyles.tileTitleTextStyle2,)),
-                TextButton(onPressed: ()=> _onLogoutTap(context), child: Text(localizations.logout, style: AppTextStyles.tileTitleTextStyle2,)),
+                Consumer<ProfileProvider>(builder: (ctx, provider, _){
+                  return  provider.loadingProfile
+                      ? LoadingWidget()
+                      : provider.user != null
+                      ? Padding(
+                    padding: const EdgeInsets.only(top: 45.0),
+                    child: Column(
+                      spacing: 5,
+                      children: [
+                        ProfileImageWidget(imageUrl: provider.user!.profileImg),
+                        Text(provider.user!.userName, style: AppTextStyles.bottomSheetHeadingTextStyle.copyWith(color: Colors.white),),
+                        InkWell(
+                            onTap: ()=> context.push(NamedRoutes.editProfile.routeName),
+                            child: Text(localizations.viewProfile, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: Colors.white),))
+                      ],
+                    ),
+                  )
+                      : const SizedBox();
+                }),
+                Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    ProfileItemWidget(title: localizations.communityCalendar, icon: AppIcons.icCalendar, onTap: ()=> context.push(NamedRoutes.communityCalendar.routeName)),
+                    ProfileItemWidget(title: localizations.communityPolls, icon: AppIcons.icCommunityPolls,  onTap: ()=> context.push(NamedRoutes.communityPolls.routeName)),
+                    ProfileItemWidget(title: localizations.fundManagement, icon: AppIcons.icPaymentsMenu, onTap: ()=> context.push(NamedRoutes.fundManagement.routeName)),
+                    ProfileItemWidget(title: localizations.paymentToAdmin, icon: AppIcons.icPaymentsMenu, onTap: ()=> context.push(NamedRoutes.paymentsToAdmin.routeName)),
+                    ProfileItemWidget(title: localizations.editCommunity, icon: AppIcons.icEdit, onTap: () => context.push(NamedRoutes.editCommunity.routeName)),
+                    ProfileItemWidget(title: localizations.directory, icon: AppIcons.icDirectory, onTap: () => context.push(NamedRoutes.communityDirectory.routeName)),
+                    ProfileItemWidget(title: localizations.emergencyCalls, icon: AppIcons.icEmergencyCalls, onTap: ()=> context.push(NamedRoutes.emergencyCall.routeName)),
+                    TextButton(onPressed: ()=> onPrivacyPolicyTap(localizations: localizations), child: Text(localizations.privacyPolicy, style: AppTextStyles.tileTitleTextStyle2, )),
+                    TextButton(onPressed: ()=> onTermsConditionTap(localizations: localizations), child: Text(localizations.termsCondition, style: AppTextStyles.tileTitleTextStyle2,)),
+                    TextButton(
+                      onPressed: _isLoggingOut ? null : () => _onLogoutTap(context),
+                      child: Text(localizations.logout, style: AppTextStyles.tileTitleTextStyle2,),
+                    ),
+                  ],
+                )
               ],
-            )
-          ],
+            ),
+          ),
         ),
-      ),
+        if (_isLoggingOut) const FullPageLoadingWidget(),
+      ],
     );
   }
 
-  void _onLogoutTap(BuildContext context)async{
-
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.clear();
-    await PushNotificationService.instance.removeTokenForSignOut();
-    await FirebaseAuth.instance.signOut();
-    context.go(NamedRoutes.login.routeName);
+  Future<void> _onLogoutTap(BuildContext context) async {
+    if (_isLoggingOut) return;
+    setState(() => _isLoggingOut = true);
+    try {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences.clear();
+      await PushNotificationService.instance.removeTokenForSignOut();
+      await FirebaseAuth.instance.signOut();
+      if (!context.mounted) return;
+      context.go(NamedRoutes.login.routeName);
+    } finally {
+      if (mounted) setState(() => _isLoggingOut = false);
+    }
   }
 
   void onPrivacyPolicyTap({required AppLocalizations localizations}){

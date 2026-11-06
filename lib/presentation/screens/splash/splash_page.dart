@@ -18,6 +18,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   bool _recoveryRequested = false;
+  bool _isLoggingOut = false;
 
   void _maybeRecover(ProfileProvider profile) {
     final auth = FirebaseAuth.instance.currentUser != null;
@@ -82,12 +83,25 @@ class _SplashPageState extends State<SplashPage> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () async {
-                        await p.recoverFromFailedProfileLoad();
-                        if (!context.mounted) return;
-                        context.go(NamedRoutes.login.routeName);
-                      },
-                      child: Text(localization.logout),
+                      onPressed: _isLoggingOut
+                          ? null
+                          : () async {
+                              setState(() => _isLoggingOut = true);
+                              try {
+                                await p.recoverFromFailedProfileLoad();
+                                if (!context.mounted) return;
+                                context.go(NamedRoutes.login.routeName);
+                              } finally {
+                                if (mounted) setState(() => _isLoggingOut = false);
+                              }
+                            },
+                      child: _isLoggingOut
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(localization.logout),
                     ),
                   ],
                 ),

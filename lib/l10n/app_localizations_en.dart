@@ -825,6 +825,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pleaseEnterValidEmail => 'Please enter a valid email address';
 
   @override
+  String get passwordRequired => 'Password is required';
+
+  @override
+  String get passwordMinLength => 'Password must be at least 8 characters';
+
+  @override
+  String get fullNameMinLength => 'Full name must be at least 2 characters';
+
+  @override
+  String get titleMinLength => 'Title must be at least 2 characters';
+
+  @override
+  String get appointmentDateRequired => 'Appointment date is required';
+
+  @override
+  String get dayMustBeBetween1And31 => 'Day must be between 1 and 31';
+
+  @override
   String get failedToSendResetLink => 'Failed to send reset password link';
 
   @override

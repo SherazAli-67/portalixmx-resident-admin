@@ -322,6 +322,10 @@ class _CreateFundReportBottomSheetState extends State<CreateFundReportBottomShee
       setState(() => _formError = l.pleaseEnterReportTitle);
       return;
     }
+    if (title.length < 2) {
+      setState(() => _formError = l.titleMinLength);
+      return;
+    }
 
     final income = FormatingHelper.tryParseAmount(incomeText);
     if (incomeText.isEmpty || income == null || income < 0) {

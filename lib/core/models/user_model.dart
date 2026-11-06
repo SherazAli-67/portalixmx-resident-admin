@@ -25,6 +25,7 @@ class UserModel {
   final List<String> emergencyContacts;
   final UserStatus status;
   final String? houseNumber;
+  final String? personalEmergencyPhone;
 
   UserModel({
     required this.userID,
@@ -37,7 +38,8 @@ class UserModel {
     this.vehicleInformation,
     this.emergencyContacts = const [],
     this.status = UserStatus.pending,
-    this.houseNumber
+    this.houseNumber,
+    this.personalEmergencyPhone
   });
 
   Map<String, dynamic> toMap() {
@@ -52,7 +54,8 @@ class UserModel {
       'vehicleInformation': vehicleInformation?.toMap(),
       'emergencyContacts': emergencyContacts,
       'status': status.index,
-      'houseNumber': houseNumber
+      'houseNumber': houseNumber,
+      'personalEmergencyPhone' : personalEmergencyPhone
     };
   }
 
@@ -75,7 +78,8 @@ class UserModel {
           ? List<String>.from(map['emergencyContacts'])
           : [],
       status: _userStatusFromMap(map['status']),
-      houseNumber: map['houseNumber']
+      houseNumber: map['houseNumber'],
+        personalEmergencyPhone: map['personalEmergencyPhone']
     );
   }
 
@@ -90,7 +94,8 @@ class UserModel {
     VehicleInformation? vehicleInformation,
     List<String>? emergencyContacts,
     UserStatus? status,
-    String? houseNumber
+    String? houseNumber,
+    String? personalEmergencyPhone
   }) {
     return UserModel(
       userID: userID ?? this.userID,
@@ -105,7 +110,8 @@ class UserModel {
       emergencyContacts:
       emergencyContacts ?? this.emergencyContacts,
       status: status ?? this.status,
-      houseNumber: houseNumber ?? this.houseNumber
+      houseNumber: houseNumber ?? this.houseNumber,
+      personalEmergencyPhone: personalEmergencyPhone ?? this.personalEmergencyPhone
     );
   }
 }

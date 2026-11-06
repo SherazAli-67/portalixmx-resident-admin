@@ -83,7 +83,6 @@ class ProfileProvider extends ChangeNotifier {
       } else {
         final fetched = await _fetchCurrentUserWithRetry()
             .timeout(const Duration(seconds: 15));
-        debugPrint("Fetched: ${fetched?.userID}");
         if (generation != _loadGeneration) return;
         _user = fetched;
         if (_user != null) {

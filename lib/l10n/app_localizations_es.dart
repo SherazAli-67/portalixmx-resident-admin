@@ -842,6 +842,26 @@ class AppLocalizationsEs extends AppLocalizations {
       'Por favor ingrese un correo electrónico válido';
 
   @override
+  String get passwordRequired => 'La contraseña es obligatoria';
+
+  @override
+  String get passwordMinLength =>
+      'La contraseña debe tener al menos 8 caracteres';
+
+  @override
+  String get fullNameMinLength =>
+      'El nombre completo debe tener al menos 2 caracteres';
+
+  @override
+  String get titleMinLength => 'El título debe tener al menos 2 caracteres';
+
+  @override
+  String get appointmentDateRequired => 'La fecha de la cita es obligatoria';
+
+  @override
+  String get dayMustBeBetween1And31 => 'El día debe estar entre 1 y 31';
+
+  @override
   String get failedToSendResetLink =>
       'Error al enviar el enlace de restablecimiento';
 

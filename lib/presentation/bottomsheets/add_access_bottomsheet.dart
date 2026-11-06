@@ -121,6 +121,10 @@ class _AddAccessBottomSheetState extends State<AddAccessBottomSheet> {
       setState(() => _formError = localization.pleaseEnterTitle);
       return;
     }
+    if (access.length < 2) {
+      setState(() => _formError = localization.titleMinLength);
+      return;
+    }
     if (_selectedAccessImage == null && _existingImageUrl == null) {
       setState(() => _formError = localization.pleaseSelectImage);
       return;

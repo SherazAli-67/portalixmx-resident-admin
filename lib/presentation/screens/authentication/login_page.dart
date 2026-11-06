@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portalixmx_resident_admin/core/common_ui.dart';
 import 'package:portalixmx_resident_admin/core/models/user_model.dart';
+import 'package:portalixmx_resident_admin/core/validators/validators.dart';
 import 'package:portalixmx_resident_admin/providers/authentication_provider/authentication_provider.dart';
 import 'package:portalixmx_resident_admin/providers/profile_provider.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +26,8 @@ class _LoginPageState extends State<LoginPage> {
 
   final TextEditingController _emailController = .new();
   final TextEditingController _passwordController = .new();
+  final _formKey = GlobalKey<FormState>();
 
-  final bool _isLogging = false;
   bool _profileErrorShown = false;
 
   @override
@@ -67,27 +68,51 @@ class _LoginPageState extends State<LoginPage> {
             Expanded(
               child: SingleChildScrollView(
                 padding: .only(top: 16),
-                child: Column(
-                  crossAxisAlignment: .start,
-                  spacing: 16,
-                  children: [
-                    AppTextField(
-                      title: localization.email,
-                      controller: _emailController, hintText: localization.email,textInputType: TextInputType.emailAddress,),
-                    AppTextField(title: localization.password,controller: _passwordController, hintText: localization.password, isPassword: true,),
-                    Align(
-                      alignment: .topRight,
-                      child: TextButton(onPressed: ()=> context.push(NamedRoutes.forgetPassword.routeName), child: Text(localization.forgetPassword, style: AppTextStyles.btnTextStyle,)),
-                    ),
-                  ],
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    spacing: 16,
+                    children: [
+                      AppTextField(
+                        title: localization.email,
+                        controller: _emailController,
+                        hintText: localization.email,
+                        textInputType: .emailAddress,
+                        validator: Validators.validateEmail(localization),
+                      ),
+                      AppTextField(
+                        title: localization.password,
+                        controller: _passwordController,
+                        hintText: localization.password,
+                        isPassword: true,
+                        validator: Validators.validatePassword(localization, requireMinLength: false),
+                      ),
+                      Align(
+                        alignment: .topRight,
+                        child: TextButton(
+                          onPressed: () => context.push(NamedRoutes.forgetPassword.routeName),
+                          child: Text(localization.forgetPassword, style: AppTextStyles.btnTextStyle),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-
             SizedBox(
               height: 50,
               width: .infinity,
-              child: PrimaryBtn(onTap: _onLoginTap, btnText: localization.login, isLoading: _isLogging,),),
+              child: Consumer<AuthenticationProvider>(
+                builder: (context, auth, _) {
+                  return PrimaryBtn(
+                    onTap: _onLoginTap,
+                    btnText: localization.login,
+                    isLoading: auth.isSigningIn,
+                  );
+                },
+              ),
+            ),
             RichText(text: TextSpan(
               text: localization.dontHaveAnAccount,
               style: AppTextStyles.subHeadingTextStyle.copyWith(fontFamily: AppConstants.appFontFamily),
@@ -105,22 +130,20 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _onLoginTap()async{
+  void _onLoginTap() async {
     FocusManager.instance.primaryFocus?.unfocus();
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+    if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    if(email.isEmpty || password.isEmpty){
-      return;
-    }
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
-   UserModel? user =  await context.read<AuthenticationProvider>().onLoginTap(email: email, password: password);
+    UserModel? user = await context.read<AuthenticationProvider>().onLoginTap(email: email, password: password);
     if (!mounted) return;
-    if(user == null){
+    if (user == null) {
       CommonUI.showSnackBarMessage(context, isError: true, message: AppLocalizations.of(context)!.userNotFound);
-    }else if(user.status == .pending){
+    } else if (user.status == .pending) {
       context.go(NamedRoutes.pendingRequest.routeName);
-    } else{
+    } else {
       await context.read<ProfileProvider>().reloadCurrentUser();
       if (!mounted) return;
       context.go(NamedRoutes.home.routeName);

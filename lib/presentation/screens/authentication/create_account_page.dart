@@ -102,9 +102,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           ),
                         ),
                       ),
-                      AppTextField(title: _localization.name, controller: _nameController, hintText: _localization.name, validator: Validators.validateFullName,),
-                      AppTextField(title: _localization.email, controller: _emailController, hintText: _localization.email,textInputType: TextInputType.emailAddress, validator: Validators.validateEmail,),
-                      AppTextField(title: _localization.password, controller: _passwordController, hintText: _localization.password, isPassword: true, validator: Validators.validatePassword,),
+                      AppTextField(title: _localization.name, controller: _nameController, hintText: _localization.name, validator: Validators.validateFullName(_localization),),
+                      AppTextField(title: _localization.email, controller: _emailController, hintText: _localization.email,textInputType: TextInputType.emailAddress, validator: Validators.validateEmail(_localization),),
+                      AppTextField(title: _localization.password, controller: _passwordController, hintText: _localization.password, isPassword: true, validator: Validators.validatePassword(_localization),),
                       if (_provider.loadingSocieties)
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 8),

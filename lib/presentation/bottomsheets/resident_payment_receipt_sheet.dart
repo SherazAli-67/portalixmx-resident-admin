@@ -134,9 +134,8 @@ class _ResidentPaymentReceiptSheetState extends State<ResidentPaymentReceiptShee
       if (mounted) Navigator.pop(context, true);
     } catch (_) {
       if (!mounted) return;
-      CommonUI.showSnackBarMessage(
-        context,
-        message: localizations.failedToUpdatePaymentStatus,
+      CommonUI.showToastMessage(
+        localizations.failedToUpdatePaymentStatus,
         isError: true,
       );
       setState(() => _busy = false);
@@ -176,9 +175,8 @@ class _ResidentPaymentReceiptSheetState extends State<ResidentPaymentReceiptShee
       if (mounted) Navigator.pop(context, true);
     } catch (_) {
       if (!mounted) return;
-      CommonUI.showSnackBarMessage(
-        context,
-        message: localizations.failedToUpdatePaymentStatus,
+      CommonUI.showToastMessage(
+        localizations.failedToUpdatePaymentStatus,
         isError: true,
       );
       setState(() => _busy = false);

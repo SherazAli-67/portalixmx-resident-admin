@@ -276,7 +276,7 @@ service cloud.firestore {
       allow create: if isApprovedAdmin() && sameSocietyRequest();
       allow update: if isApprovedAdmin()
         && sameSocietyResource() && sameSocietyRequest();
-      allow delete: if false;
+      allow delete: if isApprovedAdmin() && sameSocietyResource();
     }
 
     // -------- community_calendar_events --------

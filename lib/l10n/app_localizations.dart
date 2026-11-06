@@ -1628,6 +1628,42 @@ abstract class AppLocalizations {
   /// **'Please enter a valid email address'**
   String get pleaseEnterValidEmail;
 
+  /// No description provided for @passwordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get passwordRequired;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters'**
+  String get passwordMinLength;
+
+  /// No description provided for @fullNameMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name must be at least 2 characters'**
+  String get fullNameMinLength;
+
+  /// No description provided for @titleMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Title must be at least 2 characters'**
+  String get titleMinLength;
+
+  /// No description provided for @appointmentDateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment date is required'**
+  String get appointmentDateRequired;
+
+  /// No description provided for @dayMustBeBetween1And31.
+  ///
+  /// In en, this message translates to:
+  /// **'Day must be between 1 and 31'**
+  String get dayMustBeBetween1And31;
+
   /// No description provided for @failedToSendResetLink.
   ///
   /// In en, this message translates to:
