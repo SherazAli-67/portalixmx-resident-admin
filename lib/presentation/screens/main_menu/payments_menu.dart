@@ -104,8 +104,9 @@ class PaymentsMenu extends StatelessWidget{
                                               const SizedBox(height: 3,),
                                               Row(
                                                 mainAxisAlignment: .spaceBetween,
+                                                spacing: 10,
                                                 children: [
-                                                  Text(payment.description, style: AppTextStyles.emergencyContactTitleTextStyle,),
+                                                  Expanded(child: Text(payment.description, style: AppTextStyles.emergencyContactTitleTextStyle, maxLines: 1, overflow: .ellipsis,)),
                                                   Text(FormatingHelper.formatCurrency(payment.amount), style: TextStyle(fontSize: 12, fontWeight: .w700, color: AppColors.btnColor),)
                                                 ],
                                               ),

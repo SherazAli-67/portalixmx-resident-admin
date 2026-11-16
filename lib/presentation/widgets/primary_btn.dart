@@ -13,9 +13,7 @@ class PrimaryBtn extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-            backgroundColor: bgColor
-        ),
+        style: ElevatedButton.styleFrom(backgroundColor: bgColor),
         onPressed: isLoading ? null : onTap,
         child: isLoading
             ? const LoadingWidget()

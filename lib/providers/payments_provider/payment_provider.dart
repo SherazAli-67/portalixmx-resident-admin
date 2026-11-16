@@ -212,6 +212,7 @@ class PaymentProvider extends ChangeNotifier{
     notifyListeners();
   }
   Future<bool?> onAddPaymentTap() async {
+    if (addingPayment) return null;
     final result = await BottomSheetHelper.showDraggableBottomSheet(
       scaffoldKey: scaffoldKey,
       child: const AddPaymentSheet(),
@@ -236,7 +237,9 @@ class PaymentProvider extends ChangeNotifier{
         receipts: receipts,
       );
       if (payment != null) {
-        _payments.add(payment);
+        if (!_payments.any((p) => p.paymentID == payment.paymentID)) {
+          _payments.add(payment);
+        }
         _payments.sort((a, b) => b.dateTime.compareTo(a.dateTime));
         _submissionsByPayment[payment.paymentID] = [];
         return true;

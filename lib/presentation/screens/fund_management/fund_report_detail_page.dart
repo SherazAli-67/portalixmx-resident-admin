@@ -247,7 +247,6 @@ class _FundReportDetailPageState extends State<FundReportDetailPage> {
       final published = report.copyWith(
         status: .published,
         publishedAt: now,
-        showToResidents: true,
       );
       await FundReportsService.instance.updateReport(published);
       if (!mounted) return;

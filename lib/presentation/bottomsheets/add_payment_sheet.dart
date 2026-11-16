@@ -22,6 +22,7 @@ class _AddPaymentSheetState extends State<AddPaymentSheet> {
   final List<XFile> _pickedImages =  [];
   String? _paymentForError;
   String? _amountError;
+  bool _submitting = false;
 
   @override
   void dispose() {
@@ -75,7 +76,7 @@ class _AddPaymentSheetState extends State<AddPaymentSheet> {
               child: SizedBox(
                 height: 50,
                 width: .infinity,
-                child: PrimaryBtn(onTap: _onSubmitTap, btnText: localization.submit,),
+                child: PrimaryBtn(onTap: _onSubmitTap, btnText: localization.submit, isLoading: _submitting,),
               ),
             ),
           ),
@@ -85,6 +86,7 @@ class _AddPaymentSheetState extends State<AddPaymentSheet> {
   }
 
   void _onSubmitTap() {
+    if (_submitting) return;
     final localization = AppLocalizations.of(context)!;
     final paymentFor = _paymentForController.text.trim();
     final description = _descriptionController.text.trim();
@@ -120,6 +122,7 @@ class _AddPaymentSheetState extends State<AddPaymentSheet> {
 
     if (paymentForError != null || amountError != null) return;
 
+    setState(() => _submitting = true);
     Navigator.pop(context, {
       'paymentFor': paymentFor,
       'description': description,

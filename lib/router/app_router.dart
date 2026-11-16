@@ -156,8 +156,7 @@ GoRouter createAppRouter(ProfileProvider profileProvider) {
           builder: (ctx, state) => FundManagementPage()),
       GoRoute(
           path: NamedRoutes.fundReportDetail.routeName,
-          builder: (ctx, state) => FundReportDetailPage(
-              report: state.extra as FundReportModel)),
+          builder: (ctx, state) => FundReportDetailPage(report: state.extra as FundReportModel)),
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final loc = state.matchedLocation;
