@@ -124,18 +124,30 @@ class PaymentsService {
     }
   }
 
-  Future<List<PaymentSubmittedModel>> getSubmissions({required String paymentID}) async {
+  Future<List<PaymentSubmittedModel>> getSubmissions({
+    required String paymentID,
+    required List<String> residentIds,
+  }) async {
     try {
-      final snapshot = await _firestore
+      if (residentIds.isEmpty) return [];
+      final collection = _firestore
           .collection(FirebaseConst.paymentsCol)
           .doc(paymentID)
-          .collection(FirebaseConst.paymentsSubmittedCol)
-          .get();
-      return snapshot.docs.map((doc) {
-        final data = Map<String, dynamic>.from(doc.data());
-        data['paymentByUID'] = doc.id;
-        return PaymentSubmittedModel.fromMap(data);
-      }).toList();
+          .collection(FirebaseConst.paymentsSubmittedCol);
+      final submissions = <PaymentSubmittedModel>[];
+      const chunkSize = 10;
+      for (var i = 0; i < residentIds.length; i += chunkSize) {
+        final end = (i + chunkSize < residentIds.length) ? i + chunkSize : residentIds.length;
+        final chunk = residentIds.sublist(i, end);
+        final snapshots = await Future.wait(chunk.map((id) => collection.doc(id).get()));
+        for (final doc in snapshots) {
+          if (!doc.exists || doc.data() == null) continue;
+          final data = Map<String, dynamic>.from(doc.data()!);
+          data['paymentByUID'] = doc.id;
+          submissions.add(PaymentSubmittedModel.fromMap(data));
+        }
+      }
+      return submissions;
     } catch (e) {
       throw Exception(e.toString());
     }

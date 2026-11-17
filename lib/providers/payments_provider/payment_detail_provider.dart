@@ -49,7 +49,10 @@ class PaymentDetailProvider extends ChangeNotifier {
 
   Future<void> refreshSubmissions() async {
     try {
-      final submissions = await _paymentsService.getSubmissions(paymentID: payment.paymentID);
+      final submissions = await _paymentsService.getSubmissions(
+        paymentID: payment.paymentID,
+        residentIds: residents.map((resident) => resident.userID).toList(),
+      );
       _submissionsByUid = {
         for (final submission in submissions) submission.paymentByUID: submission
       };

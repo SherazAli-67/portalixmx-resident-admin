@@ -144,7 +144,11 @@ class PaymentProvider extends ChangeNotifier{
         (list) async {
           _payments = list;
           _payments.sort((a, b)=> b.dateTime.compareTo(a.dateTime));
-          await _loadSubmissions();
+          try {
+            await _loadSubmissions();
+          } catch (e) {
+            error = e.toString();
+          }
           loadingPayments = false;
           notifyListeners();
         },
@@ -155,8 +159,13 @@ class PaymentProvider extends ChangeNotifier{
         },
       );
       _residentsSub = ResidentsService.instance.watchResidentsOfSociety(societyID: user.societyID).listen(
-        (list) {
+        (list) async {
           _residents = list;
+          try {
+            await _loadSubmissions();
+          } catch (e) {
+            error = e.toString();
+          }
           notifyListeners();
         },
       );
@@ -168,8 +177,18 @@ class PaymentProvider extends ChangeNotifier{
   }
 
   Future<void> _loadSubmissions() async {
+    final residentIds = _residents.map((resident) => resident.userID).toList();
+    if (residentIds.isEmpty) {
+      _submissionsByPayment = {
+        for (final payment in _payments) payment.paymentID: <PaymentSubmittedModel>[],
+      };
+      return;
+    }
     final entries = await Future.wait(_payments.map((payment) async {
-      final submissions = await _paymentsService.getSubmissions(paymentID: payment.paymentID);
+      final submissions = await _paymentsService.getSubmissions(
+        paymentID: payment.paymentID,
+        residentIds: residentIds,
+      );
       return MapEntry(payment.paymentID, submissions);
     }));
     _submissionsByPayment = Map.fromEntries(entries);
